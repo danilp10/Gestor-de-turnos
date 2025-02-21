@@ -8,17 +8,14 @@ const port = 5701;
 app.use(cors());
 app.use(express.json());
 
-// Ruta al archivo JSON
 const DATA_FILE = path.join(__dirname, 'trabajadores/disponibilidades.json');
 
-// Función para leer datos del archivo
 async function leerDatos() {
     try {
         const data = await fs.readFile(DATA_FILE, 'utf8');
         return JSON.parse(data);
     } catch (error) {
         if (error.code === 'ENOENT') {
-            // Si el archivo no existe, crear uno nuevo con array vacío
             await fs.writeFile(DATA_FILE, JSON.stringify([], null, 2));
             return [];
         }
@@ -26,36 +23,52 @@ async function leerDatos() {
     }
 }
 
-// Función para guardar datos en el archivo
 async function guardarDatos(datos) {
     await fs.writeFile(DATA_FILE, JSON.stringify(datos, null, 2));
 }
 
-// Función para determinar el estado del trabajador
-function determinarEstado(reincorporacion) {
-    if (!reincorporacion) return 'activo';
-    const fechaReincorporacion = new Date(reincorporacion);
+function determinarEstado(reincorporacion, vacaciones) {
     const fechaActual = new Date();
+
+    if (vacaciones && vacaciones.inicio && vacaciones.fin) {
+        const fechaInicioVacaciones = new Date(vacaciones.inicio);
+        const fechaFinVacaciones = new Date(vacaciones.fin);
+
+        if (fechaActual >= fechaInicioVacaciones && fechaActual <= fechaFinVacaciones) {
+            return 'vacaciones';
+        }
+    }
+
+    if (!reincorporacion) return 'activo';
+
+    const fechaReincorporacion = new Date(reincorporacion);
     return fechaReincorporacion > fechaActual ? 'baja' : 'activo';
 }
 
-// Endpoint para recibir datos de recursos humanos
+function validarVacaciones(reincorporacion, vacacionesInicio) {
+    if (reincorporacion) {
+        const reincorporacionDate = new Date(reincorporacion);
+        const vacacionesInicioDate = new Date(vacacionesInicio);
+
+        if (vacacionesInicioDate <= reincorporacionDate) {
+            print("No")
+        }
+    }
+}
+
 app.post('/api/recursos', async (req, res) => {
     try {
-        const { id, nombre, apellidos, disponibilidad, diasNoDisponibles, excepciones } = req.body;
+        const { id, nombre, apellidos, turnos, excepciones } = req.body;
 
-        // Validación básica de datos
-        if (!id || !nombre || !apellidos || !disponibilidad) {
+        if (!id || !nombre || !apellidos) {
             return res.status(400).json({
                 status: 'error',
-                mensaje: 'Faltan campos obligatorios (id, nombre, apellidos, disponibilidad)'
+                mensaje: 'Faltan campos obligatorios (id, nombre, apellidos)'
             });
         }
 
-        // Leer datos existentes
         const recursos = await leerDatos();
 
-        // Verificar si ya existe un trabajador con ese ID
         const trabajadorExistente = recursos.find(r => r.id === id);
         if (trabajadorExistente) {
             return res.status(409).json({
@@ -65,22 +78,23 @@ app.post('/api/recursos', async (req, res) => {
             });
         }
 
-        // Determinar el estado del trabajador
-        const estado = determinarEstado(excepciones?.reincorporacion);
+        const estado = determinarEstado(excepciones?.reincorporacion, excepciones?.vacaciones);
 
-        // Construir el objeto con timestamp y estado
+        // Validar que las vacaciones estén después de la reincorporación si es necesario
+        if (excepciones?.vacaciones?.inicio) {
+            validarVacaciones(excepciones.reincorporacion, excepciones.vacaciones.inicio);
+        }
+
         const recurso = {
             id,
             nombre,
             apellidos,
             estado,
-            disponibilidad,
-            diasNoDisponibles: diasNoDisponibles || [],
+            disponibilidad: turnos,
             excepciones: excepciones || {},
             timestamp: new Date().toISOString()
         };
 
-        // Añadir al array y guardar en archivo
         recursos.push(recurso);
         await guardarDatos(recursos);
 
@@ -95,19 +109,19 @@ app.post('/api/recursos', async (req, res) => {
         console.error('Error al procesar la solicitud:', error);
         res.status(500).json({
             status: 'error',
-            mensaje: 'Error interno del servidor'
+            mensaje: error.message || 'Error interno del servidor'
         });
     }
 });
 
-// Endpoint para actualizar datos de un recurso existente
+
 app.put('/api/recursos/:id', async (req, res) => {
     try {
         const { id } = req.params;
-        const datosActualizados = req.body;
+        const { nombre, apellidos, turnos, excepciones } = req.body;
 
         const recursos = await leerDatos();
-        const index = recursos.findIndex(r => r.id === id)
+        const index = recursos.findIndex(r => r.id === id);
 
         if (index === -1) {
             return res.status(404).json({
@@ -116,13 +130,26 @@ app.put('/api/recursos/:id', async (req, res) => {
             });
         }
 
-        // Actualizar estado
-        datosActualizados.estado = determinarEstado(datosActualizados.excepciones?.reincorporacion);
-        datosActualizados.timestamp = new Date().toISOString();
+        const todosDias = ['lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado', 'domingo'];
+
+        const disponibilidad = {};
+        Object.entries(turnos).forEach(([dia, turnosDelDia]) => {
+            if (turnosDelDia.length > 0) {
+                disponibilidad[dia] = turnosDelDia;
+            }
+        });
+
+        const diasNoDisponibles = todosDias.filter(dia => !disponibilidad[dia]);
 
         recursos[index] = {
             ...recursos[index],
-            ...datosActualizados
+            nombre,
+            apellidos,
+            estado: determinarEstado(excepciones?.reincorporacion, excepciones?.vacaciones),
+            disponibilidad,
+            diasNoDisponibles,
+            excepciones: excepciones || {},
+            timestamp: new Date().toISOString()
         };
 
         await guardarDatos(recursos);
@@ -141,7 +168,7 @@ app.put('/api/recursos/:id', async (req, res) => {
     }
 });
 
-// Endpoint para obtener un recurso específico
+
 app.get('/api/recursos/:id', async (req, res) => {
     try {
         const { id } = req.params;
@@ -165,7 +192,6 @@ app.get('/api/recursos/:id', async (req, res) => {
     }
 });
 
-// Endpoint para ver todos los recursos almacenados
 app.get('/api/recursos', async (req, res) => {
     try {
         const recursos = await leerDatos();

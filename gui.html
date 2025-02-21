@@ -61,8 +61,33 @@
         .back-button:hover {
             background-color: #555;
         }
+        .shift-selection {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .day-container {
+            margin: 15px 0;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        .day-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .shift-option {
+            margin: 5px 0;
+            display: inline-block;
+            margin-right: 20px;
+        }
+        .shift-option input[type="radio"] {
+            margin-right: 5px;
+        }
+        .no-shift-option {
+            color: #666;
+        }
     </style>
-
 </head>
 <body>
     <div class="container">
@@ -94,30 +119,27 @@
                 <label>Apellidos: <input type="text" id="apellidos" required></label><br><br>
                 <div id="estadoTrabajador" class="estado-trabajador"></div>
 
-                <!-- Resto del formulario igual que antes -->
-                <div id="disponibilidad">
-                    <h3>Disponibilidad</h3>
+                <div class="shift-selection">
+                    <h3>Turnos Semanales</h3>
                     <script>
                         const diasSemana = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
                         document.write(diasSemana.map(dia => `
-                            <div class="dia-container" data-dia="${dia}">
-                                <label><strong>${dia}:</strong></label>
-                                <select class="horaEntrada" onchange="actualizarDisponibilidad('${dia}')">
-                                    <option value="">Hora de entrada</option>
-                                    ${Array.from({length: 24}, (_, i) =>
-                                        `<option value="${String(i).padStart(2, '0')}:00">${String(i).padStart(2, '0')}:00</option>`
-                                    ).join('')}
-                                </select>
-
-                                <select class="horaSalida" onchange="actualizarDisponibilidad('${dia}')">
-                                    <option value="">Hora de salida</option>
-                                    ${Array.from({length: 24}, (_, i) =>
-                                        `<option value="${String(i).padStart(2, '0')}:00">${String(i).padStart(2, '0')}:00</option>`
-                                    ).join('')}
-                                </select>
-                                <span class="estado-disponibilidad" style="margin-left: 10px; color: red;"></span>
-                            </div><br>
-                        `).join(""));
+                            <div class="day-container">
+                                <div class="day-title">${dia}</div>
+                                <div class="shift-option">
+                                    <input type="checkbox" id="${dia.toLowerCase()}_diurno"
+                                           name="turno_${dia.toLowerCase()}"
+                                           value="diurno">
+                                    <label for="${dia.toLowerCase()}_diurno">Diurno (08:00 - 20:00)</label>
+                                </div>
+                                <div class="shift-option">
+                                    <input type="checkbox" id="${dia.toLowerCase()}_nocturno"
+                                           name="turno_${dia.toLowerCase()}"
+                                           value="nocturno">
+                                    <label for="${dia.toLowerCase()}_nocturno">Nocturno (20:00 - 08:00)</label>
+                                </div>
+                            </div>
+                        `).join(''));
                     </script>
                 </div>
 
@@ -180,33 +202,41 @@
             document.getElementById('formContainer').style.display = 'block';
             document.getElementById('formTitle').textContent = 'Modificar Trabajador';
 
-            // Cargar datos en el formulario
+            // Cargar datos básicos
             document.getElementById('id').value = datos.id;
             document.getElementById('id').disabled = true;
             document.getElementById('nombre').value = datos.nombre;
             document.getElementById('apellidos').value = datos.apellidos;
-            document.getElementById('reincorporacion').value = datos.excepciones?.reincorporacion || '';
 
-            if (datos.excepciones?.vacaciones) {
-                document.getElementById('vacacionesInicio').value = datos.excepciones.vacaciones.inicio;
-                document.getElementById('vacacionesFin').value = datos.excepciones.vacaciones.fin;
+            // Cargar excepciones
+            if (datos.excepciones) {
+                if (datos.excepciones.reincorporacion) {
+                    document.getElementById('reincorporacion').value = datos.excepciones.reincorporacion;
+                }
+                if (datos.excepciones.vacaciones) {
+                    document.getElementById('vacacionesInicio').value = datos.excepciones.vacaciones.inicio;
+                    document.getElementById('vacacionesFin').value = datos.excepciones.vacaciones.fin;
+                }
             }
 
-            // Cargar disponibilidad
+            // Limpiar todos los checkboxes primero
             diasSemana.forEach(dia => {
-                const container = document.querySelector(`.dia-container[data-dia="${dia}"]`);
-                const entrada = container.querySelector('.horaEntrada');
-                const salida = container.querySelector('.horaSalida');
-
-                if (datos.disponibilidad[dia]) {
-                    entrada.value = datos.disponibilidad[dia].entrada;
-                    salida.value = datos.disponibilidad[dia].salida;
-                } else {
-                    entrada.value = '';
-                    salida.value = '';
-                }
-                actualizarDisponibilidad(dia);
+                const diaLower = dia.toLowerCase();
+                document.getElementById(`${diaLower}_diurno`).checked = false;
+                document.getElementById(`${diaLower}_nocturno`).checked = false;
             });
+
+            // Cargar disponibilidad
+            if (datos.disponibilidad) {
+                Object.entries(datos.disponibilidad).forEach(([dia, turnos]) => {
+                    turnos.forEach(turno => {
+                        const checkbox = document.getElementById(`${dia}_${turno}`);
+                        if (checkbox) {
+                            checkbox.checked = true;
+                        }
+                    });
+                });
+            }
 
             actualizarEstadoVisual();
         }
@@ -214,10 +244,12 @@
         function actualizarEstadoVisual() {
             const reincorporacion = document.getElementById('reincorporacion').value;
             const estadoDiv = document.getElementById('estadoTrabajador');
+            const vacacionesInicio = document.getElementById('vacacionesInicio');
 
             if (!reincorporacion) {
                 estadoDiv.textContent = 'Estado: Activo';
                 estadoDiv.style.color = 'green';
+                vacacionesInicio.disabled = false;
             } else {
                 const fechaReincorporacion = new Date(reincorporacion);
                 const fechaActual = new Date();
@@ -225,25 +257,27 @@
                 if (fechaReincorporacion > fechaActual) {
                     estadoDiv.textContent = 'Estado: Baja';
                     estadoDiv.style.color = 'red';
+                    vacacionesInicio.disabled = true;
+                    vacacionesInicio.setCustomValidity("No puede solicitar vacaciones mientras está de baja.");
                 } else {
                     estadoDiv.textContent = 'Estado: Activo';
                     estadoDiv.style.color = 'green';
+                    vacacionesInicio.disabled = false;
+                    vacacionesInicio.setCustomValidity("");
+                }
+            }
+
+            // Validar que las vacaciones estén después de la reincorporación si está de baja
+            if (reincorporacion && vacacionesInicio.value) {
+                const vacacionesInicioDate = new Date(vacacionesInicio.value);
+                if (vacacionesInicioDate <= new Date(reincorporacion)) {
+                    vacacionesInicio.setCustomValidity("La fecha de inicio de las vacaciones debe ser posterior a la fecha de reincorporación.");
+                } else {
+                    vacacionesInicio.setCustomValidity("");
                 }
             }
         }
 
-        function actualizarDisponibilidad(dia) {
-            const container = document.querySelector(`.dia-container[data-dia="${dia}"]`);
-            const entrada = container.querySelector('.horaEntrada').value;
-            const salida = container.querySelector('.horaSalida').value;
-            const estadoSpan = container.querySelector('.estado-disponibilidad');
-
-            if (!entrada || !salida) {
-                estadoSpan.textContent = "No disponible";
-            } else {
-                estadoSpan.textContent = "";
-            }
-        }
 
         document.getElementById('datosForm').addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -252,18 +286,18 @@
             const nombre = document.getElementById('nombre').value;
             const apellidos = document.getElementById('apellidos').value;
 
-            const disponibilidad = {};
-            const diasNoDisponibles = [];
-
+            // Recoger turnos por día
+            const turnos = {};
             diasSemana.forEach(dia => {
-                const container = document.querySelector(`.dia-container[data-dia="${dia}"]`);
-                const entrada = container.querySelector('.horaEntrada').value;
-                const salida = container.querySelector('.horaSalida').value;
+                const diaLower = dia.toLowerCase();
+                const turnoDiurno = document.getElementById(`${diaLower}_diurno`).checked;
+                const turnoNocturno = document.getElementById(`${diaLower}_nocturno`).checked;
 
-                if (entrada && salida) {
-                    disponibilidad[dia] = { entrada, salida };
-                } else {
-                    diasNoDisponibles.push(dia);
+                // Si hay algún turno seleccionado, añadirlo al objeto turnos
+                if (turnoDiurno || turnoNocturno) {
+                    turnos[diaLower] = [];
+                    if (turnoDiurno) turnos[diaLower].push('diurno');
+                    if (turnoNocturno) turnos[diaLower].push('nocturno');
                 }
             });
 
@@ -274,7 +308,26 @@
                 reincorporacion: document.getElementById('reincorporacion').value || null
             };
 
-            const datos = { id, nombre, apellidos, disponibilidad, diasNoDisponibles, excepciones };
+            // Validar que las vacaciones no son antes de la reincorporación
+            const reincorporacion = document.getElementById('reincorporacion').value;
+            const vacacionesInicio = document.getElementById('vacacionesInicio').value;
+            if (reincorporacion && vacacionesInicio) {
+                const reincorporacionDate = new Date(reincorporacion);
+                const vacacionesInicioDate = new Date(vacacionesInicio);
+
+                if (vacacionesInicioDate <= reincorporacionDate) {
+                    alert("La fecha de inicio de las vacaciones debe ser posterior a la fecha de reincorporación.");
+                    return;
+                }
+            }
+
+            const datos = {
+                id,
+                nombre,
+                apellidos,
+                turnos,
+                excepciones
+            };
 
             try {
                 const url = modoEdicion ?
@@ -304,6 +357,7 @@
                 alert('Error al procesar la solicitud');
             }
         });
+
     </script>
 </body>
 </html>
