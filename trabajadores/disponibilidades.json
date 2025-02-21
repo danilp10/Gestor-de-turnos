@@ -1,0 +1,183 @@
+[
+  {
+    "id": "1",
+    "nombre": "Tiopipi",
+    "apellidos": "Jr",
+    "estado": "activo",
+    "disponibilidad": {
+      "Lunes": {
+        "entrada": "02:00",
+        "salida": "09:00"
+      },
+      "Jueves": {
+        "entrada": "10:00",
+        "salida": "12:00"
+      }
+    },
+    "diasNoDisponibles": [
+      "Martes",
+      "Miércoles",
+      "Viernes",
+      "Sábado",
+      "Domingo"
+    ],
+    "excepciones": {
+      "vacaciones": null,
+      "reincorporacion": null
+    },
+    "timestamp": "2025-02-20T10:53:51.842Z"
+  },
+  {
+    "id": "2",
+    "nombre": "arturo",
+    "apellidos": "perez",
+    "estado": "baja",
+    "disponibilidad": {
+      "Lunes": {
+        "entrada": "07:00",
+        "salida": "18:00"
+      },
+      "Martes": {
+        "entrada": "17:00",
+        "salida": "22:00"
+      }
+    },
+    "diasNoDisponibles": [
+      "Miércoles",
+      "Jueves",
+      "Viernes",
+      "Sábado",
+      "Domingo"
+    ],
+    "excepciones": {
+      "vacaciones": null,
+      "reincorporacion": "2025-03-03"
+    },
+    "timestamp": "2025-02-20T10:00:07.211Z"
+  },
+  {
+    "id": "11",
+    "nombre": "Tiopipi",
+    "apellidos": "Jr",
+    "estado": "activo",
+    "disponibilidad": {
+      "Lunes": {
+        "entrada": "09:00",
+        "salida": "14:00"
+      }
+    },
+    "diasNoDisponibles": [
+      "Martes",
+      "Miércoles",
+      "Jueves",
+      "Viernes",
+      "Sábado",
+      "Domingo"
+    ],
+    "excepciones": {
+      "vacaciones": null,
+      "reincorporacion": null
+    },
+    "timestamp": "2025-02-20T10:34:28.905Z"
+  },
+  {
+    "id": "12",
+    "nombre": "Tiopipi",
+    "apellidos": "e",
+    "estado": "activo",
+    "disponibilidad": {
+      "Lunes": {
+        "entrada": "02:00",
+        "salida": "08:00"
+      }
+    },
+    "diasNoDisponibles": [
+      "Martes",
+      "Miércoles",
+      "Jueves",
+      "Viernes",
+      "Sábado",
+      "Domingo"
+    ],
+    "excepciones": {
+      "vacaciones": null,
+      "reincorporacion": null
+    },
+    "timestamp": "2025-02-20T10:38:04.206Z"
+  },
+  {
+    "id": "22",
+    "nombre": "dani",
+    "apellidos": "lp",
+    "estado": "baja",
+    "disponibilidad": {
+      "Miércoles": {
+        "entrada": "08:00",
+        "salida": "12:00"
+      }
+    },
+    "diasNoDisponibles": [
+      "Lunes",
+      "Martes",
+      "Jueves",
+      "Viernes",
+      "Sábado",
+      "Domingo"
+    ],
+    "excepciones": {
+      "vacaciones": null,
+      "reincorporacion": "2025-03-03"
+    },
+    "timestamp": "2025-02-20T10:38:42.753Z"
+  },
+  {
+    "id": "15",
+    "nombre": "samu",
+    "apellidos": "Jr",
+    "estado": "activo",
+    "disponibilidad": {
+      "Miércoles": {
+        "entrada": "10:00",
+        "salida": "11:00"
+      }
+    },
+    "diasNoDisponibles": [
+      "Lunes",
+      "Martes",
+      "Jueves",
+      "Viernes",
+      "Sábado",
+      "Domingo"
+    ],
+    "excepciones": {
+      "vacaciones": null,
+      "reincorporacion": "2025-02-03"
+    },
+    "timestamp": "2025-02-20T10:53:10.567Z"
+  },
+  {
+    "id": "88",
+    "nombre": "Tiopipi",
+    "apellidos": "perez",
+    "estado": "activo",
+    "disponibilidad": {
+      "Jueves": {
+        "entrada": "08:00",
+        "salida": "10:00"
+      }
+    },
+    "diasNoDisponibles": [
+      "Lunes",
+      "Martes",
+      "Miércoles",
+      "Viernes",
+      "Sábado",
+      "Domingo"
+    ],
+    "excepciones": {
+      "vacaciones": null,
+      "reincorporacion": null
+    },
+    "timestamp": "2025-02-21T07:40:17.722Z"
+  }
+]

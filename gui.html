@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestión de Recursos Humanos</title>
+    <style>
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+        }
+        .options {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .option-button {
+            padding: 15px 30px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            background-color: #4CAF50;
+            color: white;
+            flex: 1;
+        }
+        .option-button:hover {
+            background-color: #45a049;
+        }
+        .search-container {
+            display: none;
+            margin-top: 20px;
+        }
+        .error-message {
+            color: red;
+            margin-top: 5px;
+            display: none;
+        }
+        .success-message {
+            color: green;
+            margin-top: 5px;
+            display: none;
+        }
+        #formContainer {
+            display: none;
+        }
+        .estado-trabajador {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        .back-button {
+            margin-bottom: 20px;
+            padding: 10px 20px;
+            background-color: #666;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .back-button:hover {
+            background-color: #555;
+        }
+    </style>
+
+</head>
+<body>
+    <div class="container">
+        <div id="optionsContainer">
+            <h1>Gestión de Recursos Humanos</h1>
+            <div class="options">
+                <button class="option-button" onclick="mostrarNuevo()">Nuevo Trabajador</button>
+                <button class="option-button" onclick="mostrarBusqueda()">Modificar Existente</button>
+            </div>
+
+            <div id="searchContainer" class="search-container">
+                <h2>Buscar Trabajador</h2>
+                <input type="number" id="searchId" placeholder="Introducir ID del trabajador">
+                <button onclick="buscarTrabajador()">Buscar</button>
+                <div id="searchError" class="error-message"></div>
+            </div>
+        </div>
+
+        <div id="formContainer">
+            <button class="back-button" onclick="volverAOpciones()">← Volver</button>
+            <h2 id="formTitle">Ingresar Nuevo Trabajador</h2>
+            <form id="datosForm">
+                <div>
+                    <label>ID: <input type="number" id="id" required></label>
+                    <div id="idError" class="error-message">Este ID ya está en uso. Por favor, elija otro.</div>
+                </div>
+                <br>
+                <label>Nombre: <input type="text" id="nombre" required></label><br><br>
+                <label>Apellidos: <input type="text" id="apellidos" required></label><br><br>
+                <div id="estadoTrabajador" class="estado-trabajador"></div>
+
+                <!-- Resto del formulario igual que antes -->
+                <div id="disponibilidad">
+                    <h3>Disponibilidad</h3>
+                    <script>
+                        const diasSemana = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
+                        document.write(diasSemana.map(dia => `
+                            <div class="dia-container" data-dia="${dia}">
+                                <label><strong>${dia}:</strong></label>
+                                <select class="horaEntrada" onchange="actualizarDisponibilidad('${dia}')">
+                                    <option value="">Hora de entrada</option>
+                                    ${Array.from({length: 24}, (_, i) =>
+                                        `<option value="${String(i).padStart(2, '0')}:00">${String(i).padStart(2, '0')}:00</option>`
+                                    ).join('')}
+                                </select>
+
+                                <select class="horaSalida" onchange="actualizarDisponibilidad('${dia}')">
+                                    <option value="">Hora de salida</option>
+                                    ${Array.from({length: 24}, (_, i) =>
+                                        `<option value="${String(i).padStart(2, '0')}:00">${String(i).padStart(2, '0')}:00</option>`
+                                    ).join('')}
+                                </select>
+                                <span class="estado-disponibilidad" style="margin-left: 10px; color: red;"></span>
+                            </div><br>
+                        `).join(""));
+                    </script>
+                </div>
+
+                <h3>Excepciones</h3>
+                <label>Vacaciones desde: <input type="date" id="vacacionesInicio"></label>
+                <label>Hasta: <input type="date" id="vacacionesFin"></label><br><br>
+                <label>Fecha de reincorporación (si está de baja):
+                    <input type="date" id="reincorporacion" onchange="actualizarEstadoVisual()">
+                </label><br><br>
+
+                <button type="submit" id="submitButton">Guardar</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let modoEdicion = false;
+        let trabajadorActual = null;
+
+        function mostrarNuevo() {
+            modoEdicion = false;
+            document.getElementById('optionsContainer').style.display = 'none';
+            document.getElementById('formContainer').style.display = 'block';
+            document.getElementById('formTitle').textContent = 'Ingresar Nuevo Trabajador';
+            document.getElementById('id').disabled = false;
+            document.getElementById('datosForm').reset();
+            actualizarEstadoVisual();
+        }
+
+        function mostrarBusqueda() {
+            document.getElementById('searchContainer').style.display = 'block';
+        }
+
+        function volverAOpciones() {
+            document.getElementById('optionsContainer').style.display = 'block';
+            document.getElementById('formContainer').style.display = 'none';
+            document.getElementById('searchContainer').style.display = 'none';
+            document.getElementById('searchError').style.display = 'none';
+            document.getElementById('idError').style.display = 'none';
+        }
+
+        async function buscarTrabajador() {
+            const id = document.getElementById('searchId').value;
+            try {
+                const response = await fetch(`http://localhost:5701/api/recursos/${id}`);
+                if (!response.ok) {
+                    throw new Error('Trabajador no encontrado');
+                }
+                trabajadorActual = await response.json();
+                cargarDatosTrabajador(trabajadorActual);
+            } catch (error) {
+                document.getElementById('searchError').textContent = 'Trabajador no encontrado';
+                document.getElementById('searchError').style.display = 'block';
+            }
+        }
+
+        function cargarDatosTrabajador(datos) {
+            modoEdicion = true;
+            document.getElementById('optionsContainer').style.display = 'none';
+            document.getElementById('formContainer').style.display = 'block';
+            document.getElementById('formTitle').textContent = 'Modificar Trabajador';
+
+            // Cargar datos en el formulario
+            document.getElementById('id').value = datos.id;
+            document.getElementById('id').disabled = true;
+            document.getElementById('nombre').value = datos.nombre;
+            document.getElementById('apellidos').value = datos.apellidos;
+            document.getElementById('reincorporacion').value = datos.excepciones?.reincorporacion || '';
+
+            if (datos.excepciones?.vacaciones) {
+                document.getElementById('vacacionesInicio').value = datos.excepciones.vacaciones.inicio;
+                document.getElementById('vacacionesFin').value = datos.excepciones.vacaciones.fin;
+            }
+
+            // Cargar disponibilidad
+            diasSemana.forEach(dia => {
+                const container = document.querySelector(`.dia-container[data-dia="${dia}"]`);
+                const entrada = container.querySelector('.horaEntrada');
+                const salida = container.querySelector('.horaSalida');
+
+                if (datos.disponibilidad[dia]) {
+                    entrada.value = datos.disponibilidad[dia].entrada;
+                    salida.value = datos.disponibilidad[dia].salida;
+                } else {
+                    entrada.value = '';
+                    salida.value = '';
+                }
+                actualizarDisponibilidad(dia);
+            });
+
+            actualizarEstadoVisual();
+        }
+
+        function actualizarEstadoVisual() {
+            const reincorporacion = document.getElementById('reincorporacion').value;
+            const estadoDiv = document.getElementById('estadoTrabajador');
+
+            if (!reincorporacion) {
+                estadoDiv.textContent = 'Estado: Activo';
+                estadoDiv.style.color = 'green';
+            } else {
+                const fechaReincorporacion = new Date(reincorporacion);
+                const fechaActual = new Date();
+
+                if (fechaReincorporacion > fechaActual) {
+                    estadoDiv.textContent = 'Estado: Baja';
+                    estadoDiv.style.color = 'red';
+                } else {
+                    estadoDiv.textContent = 'Estado: Activo';
+                    estadoDiv.style.color = 'green';
+                }
+            }
+        }
+
+        function actualizarDisponibilidad(dia) {
+            const container = document.querySelector(`.dia-container[data-dia="${dia}"]`);
+            const entrada = container.querySelector('.horaEntrada').value;
+            const salida = container.querySelector('.horaSalida').value;
+            const estadoSpan = container.querySelector('.estado-disponibilidad');
+
+            if (!entrada || !salida) {
+                estadoSpan.textContent = "No disponible";
+            } else {
+                estadoSpan.textContent = "";
+            }
+        }
+
+        document.getElementById('datosForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const id = document.getElementById('id').value;
+            const nombre = document.getElementById('nombre').value;
+            const apellidos = document.getElementById('apellidos').value;
+
+            const disponibilidad = {};
+            const diasNoDisponibles = [];
+
+            diasSemana.forEach(dia => {
+                const container = document.querySelector(`.dia-container[data-dia="${dia}"]`);
+                const entrada = container.querySelector('.horaEntrada').value;
+                const salida = container.querySelector('.horaSalida').value;
+
+                if (entrada && salida) {
+                    disponibilidad[dia] = { entrada, salida };
+                } else {
+                    diasNoDisponibles.push(dia);
+                }
+            });
+
+            const excepciones = {
+                vacaciones: document.getElementById('vacacionesInicio').value && document.getElementById('vacacionesFin').value ?
+                    { inicio: document.getElementById('vacacionesInicio').value, fin: document.getElementById('vacacionesFin').value }
+                    : null,
+                reincorporacion: document.getElementById('reincorporacion').value || null
+            };
+
+            const datos = { id, nombre, apellidos, disponibilidad, diasNoDisponibles, excepciones };
+
+            try {
+                const url = modoEdicion ?
+                    `http://localhost:5701/api/recursos/${id}` :
+                    'http://localhost:5701/api/recursos';
+
+                const response = await fetch(url, {
+                    method: modoEdicion ? 'PUT' : 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(datos)
+                });
+
+                const resultado = await response.json();
+
+                if (resultado.status === 'error' && resultado.tipo === 'ID_DUPLICADO') {
+                    document.getElementById('idError').style.display = 'block';
+                    return;
+                }
+
+                document.getElementById('idError').style.display = 'none';
+                alert(modoEdicion ? 'Datos actualizados correctamente' : 'Datos guardados correctamente');
+                volverAOpciones();
+                document.getElementById('datosForm').reset();
+
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error al procesar la solicitud');
+            }
+        });
+    </script>
+</body>
+</html>
