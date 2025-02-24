@@ -243,37 +243,57 @@
 
         function actualizarEstadoVisual() {
             const reincorporacion = document.getElementById('reincorporacion').value;
+            const vacacionesInicio = document.getElementById('vacacionesInicio').value;
+            const vacacionesFin = document.getElementById('vacacionesFin').value;
             const estadoDiv = document.getElementById('estadoTrabajador');
-            const vacacionesInicio = document.getElementById('vacacionesInicio');
+            const inputVacacionesInicio = document.getElementById('vacacionesInicio');
 
-            if (!reincorporacion) {
-                estadoDiv.textContent = 'Estado: Activo';
-                estadoDiv.style.color = 'green';
-                vacacionesInicio.disabled = false;
-            } else {
-                const fechaReincorporacion = new Date(reincorporacion);
-                const fechaActual = new Date();
+            // Limpiar cualquier validación previa
+            inputVacacionesInicio.setCustomValidity("");
+            inputVacacionesInicio.disabled = false;
 
-                if (fechaReincorporacion > fechaActual) {
-                    estadoDiv.textContent = 'Estado: Baja';
-                    estadoDiv.style.color = 'red';
-                    vacacionesInicio.disabled = true;
-                    vacacionesInicio.setCustomValidity("No puede solicitar vacaciones mientras está de baja.");
-                } else {
-                    estadoDiv.textContent = 'Estado: Activo';
-                    estadoDiv.style.color = 'green';
-                    vacacionesInicio.disabled = false;
-                    vacacionesInicio.setCustomValidity("");
+            const fechaActual = new Date();
+
+            // Comprobar si está de vacaciones
+            if (vacacionesInicio && vacacionesFin) {
+                const inicioVacaciones = new Date(vacacionesInicio);
+                const finVacaciones = new Date(vacacionesFin);
+
+                if (fechaActual >= inicioVacaciones && fechaActual <= finVacaciones) {
+                    estadoDiv.textContent = 'Estado: Vacaciones';
+                    estadoDiv.style.color = '#FF8C00'; // Naranja para vacaciones
+                    return; // Salimos de la función porque el estado de vacaciones tiene prioridad
                 }
             }
 
-            // Validar que las vacaciones estén después de la reincorporación si está de baja
-            if (reincorporacion && vacacionesInicio.value) {
-                const vacacionesInicioDate = new Date(vacacionesInicio.value);
-                if (vacacionesInicioDate <= new Date(reincorporacion)) {
-                    vacacionesInicio.setCustomValidity("La fecha de inicio de las vacaciones debe ser posterior a la fecha de reincorporación.");
+            // Si no está de vacaciones, comprobamos la baja
+            if (!reincorporacion) {
+                // Si no hay fecha de reincorporación (no está de baja)
+                estadoDiv.textContent = 'Estado: Activo';
+                estadoDiv.style.color = 'green';
+            } else {
+                const fechaReincorporacion = new Date(reincorporacion);
+
+                if (fechaReincorporacion > fechaActual) {
+                    // Si está de baja (fecha de reincorporación futura)
+                    estadoDiv.textContent = 'Estado: Baja';
+                    estadoDiv.style.color = 'red';
+                    inputVacacionesInicio.disabled = false;
+                    //inputVacacionesInicio.setCustomValidity("No puede solicitar vacaciones mientras está de baja.");
                 } else {
-                    vacacionesInicio.setCustomValidity("");
+                    // Si la fecha de reincorporación es pasada
+                    estadoDiv.textContent = 'Estado: Activo';
+                    estadoDiv.style.color = 'green';
+                }
+            }
+
+            // Solo validar las fechas si ambas existen
+            if (reincorporacion && vacacionesInicio) {
+                const vacacionesInicioDate = new Date(vacacionesInicio);
+                const reincorporacionDate = new Date(reincorporacion);
+
+                if (reincorporacionDate > fechaActual && vacacionesInicioDate <= reincorporacionDate) {
+                    inputVacacionesInicio.setCustomValidity("La fecha de inicio de las vacaciones debe ser posterior a la fecha de reincorporación.");
                 }
             }
         }

@@ -56,6 +56,52 @@ function validarVacaciones(reincorporacion, vacacionesInicio) {
     }
 }
 
+async function actualizarEstadosIniciales() {
+    const recursos = await leerDatos();
+    const fechaActual = new Date();
+    fechaActual.setHours(0, 0, 0, 0);
+
+    let cambios = false;
+
+    recursos.forEach((recurso) => {
+        if (recurso.excepciones) {
+            let { reincorporacion, vacaciones } = recurso.excepciones;
+
+            const fechaReincorporacion = reincorporacion ? new Date(reincorporacion) : null;
+            const fechaInicioVacaciones = vacaciones?.inicio ? new Date(vacaciones.inicio) : null;
+            const fechaFinVacaciones = vacaciones?.fin ? new Date(vacaciones.fin) : null;
+
+            if (fechaReincorporacion) fechaReincorporacion.setHours(0, 0, 0, 0);
+            if (fechaInicioVacaciones) fechaInicioVacaciones.setHours(0, 0, 0, 0);
+            if (fechaFinVacaciones) fechaFinVacaciones.setHours(0, 0, 0, 0);
+
+            if (fechaInicioVacaciones && fechaActual.getTime() === fechaInicioVacaciones.getTime()) {
+                recurso.estado = 'vacaciones';
+                cambios = true;
+                console.log(`Trabajador ${recurso.id} actualizado a VACACIONES (Inicio: ${vacaciones.inicio})`);
+            }
+
+            else if ((fechaReincorporacion && fechaActual >= fechaReincorporacion) ||
+                     (fechaFinVacaciones && fechaActual >= fechaFinVacaciones)) {
+                recurso.estado = 'activo';
+                recurso.excepciones.reincorporacion = null;
+                recurso.excepciones.vacaciones = null;
+                cambios = true;
+                console.log(`Trabajador ${recurso.id} actualizado a ACTIVO (Reincorporación o fin de vacaciones alcanzado)`);
+            }
+        }
+    });
+
+    if (cambios) {
+        await guardarDatos(recursos);
+        console.log("Estados actualizados según la fecha actual.");
+    } else {
+        console.log("No se encontraron cambios en los estados de los trabajadores.");
+    }
+}
+
+actualizarEstadosIniciales();
+
 app.post('/api/recursos', async (req, res) => {
     try {
         const { id, nombre, apellidos, turnos, excepciones } = req.body;
@@ -80,7 +126,6 @@ app.post('/api/recursos', async (req, res) => {
 
         const estado = determinarEstado(excepciones?.reincorporacion, excepciones?.vacaciones);
 
-        // Validar que las vacaciones estén después de la reincorporación si es necesario
         if (excepciones?.vacaciones?.inicio) {
             validarVacaciones(excepciones.reincorporacion, excepciones.vacaciones.inicio);
         }
