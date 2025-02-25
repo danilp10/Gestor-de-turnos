@@ -104,7 +104,7 @@ actualizarEstadosIniciales();
 
 app.post('/api/recursos', async (req, res) => {
     try {
-        const { id, nombre, apellidos, turnos, excepciones } = req.body;
+        const { id, nombre, apellidos, turnos, excepciones, personalCabildo } = req.body;
 
         if (!id || !nombre || !apellidos) {
             return res.status(400).json({
@@ -126,17 +126,37 @@ app.post('/api/recursos', async (req, res) => {
 
         const estado = determinarEstado(excepciones?.reincorporacion, excepciones?.vacaciones);
 
-        if (excepciones?.vacaciones?.inicio) {
-            validarVacaciones(excepciones.reincorporacion, excepciones.vacaciones.inicio);
+        const todosDias = ['lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado', 'domingo'];
+        let disponibilidad = {};
+        let diasNoDisponibles = [];
+
+        if (personalCabildo) {
+            // Si es personal del Cabildo, se guardan los días seleccionados y los días no seleccionados
+            const diasSeleccionados = turnos || [];
+            disponibilidad = diasSeleccionados;
+            diasNoDisponibles = todosDias.filter(dia => !diasSeleccionados.includes(dia));
+        } else {
+            // Si no es personal del Cabildo, se usa el formato original con turnos diurnos/nocturnos
+            disponibilidad = {};
+            Object.entries(turnos || {}).forEach(([dia, turnosDelDia]) => {
+                if (turnosDelDia.length > 0) {
+                    disponibilidad[dia] = turnosDelDia;
+                }
+            });
+            diasNoDisponibles = todosDias.filter(dia =>
+                !Object.keys(disponibilidad).includes(dia.toLowerCase())
+            );
         }
 
         const recurso = {
             id,
             nombre,
             apellidos,
+            personalCabildo,
             estado,
-            disponibilidad: turnos,
+            disponibilidad,
             excepciones: excepciones || {},
+            diasNoDisponibles,
             timestamp: new Date().toISOString()
         };
 
@@ -163,7 +183,7 @@ app.post('/api/recursos', async (req, res) => {
 app.put('/api/recursos/:id', async (req, res) => {
     try {
         const { id } = req.params;
-        const { nombre, apellidos, turnos, excepciones } = req.body;
+        const { nombre, apellidos, turnos, excepciones, personalCabildo } = req.body;
 
         const recursos = await leerDatos();
         const index = recursos.findIndex(r => r.id === id);
@@ -176,24 +196,35 @@ app.put('/api/recursos/:id', async (req, res) => {
         }
 
         const todosDias = ['lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado', 'domingo'];
+        let disponibilidad = [];
+        let diasNoDisponibles = [];
 
-        const disponibilidad = {};
-        Object.entries(turnos).forEach(([dia, turnosDelDia]) => {
-            if (turnosDelDia.length > 0) {
-                disponibilidad[dia] = turnosDelDia;
-            }
-        });
-
-        const diasNoDisponibles = todosDias.filter(dia => !disponibilidad[dia]);
+        if (personalCabildo) {
+            // Si es del Cabildo, guardamos solo los días seleccionados en disponibilidad
+            disponibilidad = turnos || [];
+            diasNoDisponibles = todosDias.filter(dia => !disponibilidad.includes(dia));
+        } else {
+            // Si NO es del Cabildo, mantenemos el formato de turnos diurnos/nocturnos
+            disponibilidad = {};
+            Object.entries(turnos || {}).forEach(([dia, turnosDelDia]) => {
+                if (turnosDelDia.length > 0) {
+                    disponibilidad[dia] = turnosDelDia;
+                }
+            });
+            diasNoDisponibles = todosDias.filter(dia =>
+                !Object.keys(disponibilidad).includes(dia.toLowerCase())
+            );
+        }
 
         recursos[index] = {
             ...recursos[index],
             nombre,
             apellidos,
+            personalCabildo,
             estado: determinarEstado(excepciones?.reincorporacion, excepciones?.vacaciones),
             disponibilidad,
-            diasNoDisponibles,
             excepciones: excepciones || {},
+            diasNoDisponibles,
             timestamp: new Date().toISOString()
         };
 
@@ -212,6 +243,7 @@ app.put('/api/recursos/:id', async (req, res) => {
         });
     }
 });
+
 
 
 app.get('/api/recursos/:id', async (req, res) => {

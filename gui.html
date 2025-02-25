@@ -87,6 +87,18 @@
         .no-shift-option {
             color: #666;
         }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+        }
+        .hidden {
+            display: none;
+        }
+        .day-container {
+            margin: 10px 0;
+        }
     </style>
 </head>
 <body>
@@ -117,30 +129,23 @@
                 <br>
                 <label>Nombre: <input type="text" id="nombre" required></label><br><br>
                 <label>Apellidos: <input type="text" id="apellidos" required></label><br><br>
+                <label>
+                    <input type="checkbox" id="personalCabildo" onchange="actualizarInterfaz()">
+                    Personal del Cabildo
+                </label><br><br>
+
                 <div id="estadoTrabajador" class="estado-trabajador"></div>
 
-                <div class="shift-selection">
+                <!-- Turnos Diurno/Nocturno -->
+                <div id="turnosContainer" class="shift-selection">
                     <h3>Turnos Semanales</h3>
-                    <script>
-                        const diasSemana = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
-                        document.write(diasSemana.map(dia => `
-                            <div class="day-container">
-                                <div class="day-title">${dia}</div>
-                                <div class="shift-option">
-                                    <input type="checkbox" id="${dia.toLowerCase()}_diurno"
-                                           name="turno_${dia.toLowerCase()}"
-                                           value="diurno">
-                                    <label for="${dia.toLowerCase()}_diurno">Diurno (08:00 - 20:00)</label>
-                                </div>
-                                <div class="shift-option">
-                                    <input type="checkbox" id="${dia.toLowerCase()}_nocturno"
-                                           name="turno_${dia.toLowerCase()}"
-                                           value="nocturno">
-                                    <label for="${dia.toLowerCase()}_nocturno">Nocturno (20:00 - 08:00)</label>
-                                </div>
-                            </div>
-                        `).join(''));
-                    </script>
+                    <div id="turnos"></div>
+                </div>
+
+                <!-- Días de la Semana (para Personal del Cabildo) -->
+                <div id="diasContainer" class="day-selection hidden">
+                    <h3>Días Disponibles</h3>
+                    <div id="dias"></div>
                 </div>
 
                 <h3>Excepciones</h3>
@@ -154,6 +159,38 @@
             </form>
         </div>
     </div>
+
+    <script>
+        const diasSemana = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
+
+        function generarTurnos() {
+            return diasSemana.map(dia => `
+                <div class="day-container">
+                    <strong>${dia}</strong>
+                    <label><input type="checkbox" id="${dia.toLowerCase()}_diurno"> Diurno (07:30 - 17:30)</label>
+                    <label><input type="checkbox" id="${dia.toLowerCase()}_nocturno"> Nocturno (21:30 - 07:30)</label>
+                </div>
+            `).join('');
+        }
+
+        function generarDiasDisponibles() {
+            return diasSemana.map(dia => `
+                <div class="day-container">
+                    <label><input type="checkbox" id="${dia.toLowerCase()}"> ${dia}</label>
+                </div>
+            `).join('');
+        }
+
+        function actualizarInterfaz() {
+            const esCabildo = document.getElementById('personalCabildo').checked;
+            document.getElementById('turnosContainer').classList.toggle('hidden', esCabildo);
+            document.getElementById('diasContainer').classList.toggle('hidden', !esCabildo);
+        }
+
+        // Cargar la estructura inicial de turnos y días disponibles
+        document.getElementById('turnos').innerHTML = generarTurnos();
+        document.getElementById('dias').innerHTML = generarDiasDisponibles();
+    </script>
 
     <script>
         let modoEdicion = false;
@@ -202,13 +239,15 @@
             document.getElementById('formContainer').style.display = 'block';
             document.getElementById('formTitle').textContent = 'Modificar Trabajador';
 
-            // Cargar datos básicos
             document.getElementById('id').value = datos.id;
             document.getElementById('id').disabled = true;
             document.getElementById('nombre').value = datos.nombre;
             document.getElementById('apellidos').value = datos.apellidos;
+            document.getElementById('personalCabildo').checked = datos.personalCabildo || false;
 
-            // Cargar excepciones
+            // Actualizar la interfaz según si es personal del Cabildo o no
+            actualizarInterfaz();
+
             if (datos.excepciones) {
                 if (datos.excepciones.reincorporacion) {
                     document.getElementById('reincorporacion').value = datos.excepciones.reincorporacion;
@@ -219,23 +258,43 @@
                 }
             }
 
-            // Limpiar todos los checkboxes primero
+            // Primero, desmarcamos todos los días y turnos
             diasSemana.forEach(dia => {
                 const diaLower = dia.toLowerCase();
-                document.getElementById(`${diaLower}_diurno`).checked = false;
-                document.getElementById(`${diaLower}_nocturno`).checked = false;
+                // Desmarcamos los turnos (para no-Cabildo)
+                const checkboxDiurno = document.getElementById(`${diaLower}_diurno`);
+                const checkboxNocturno = document.getElementById(`${diaLower}_nocturno`);
+                if (checkboxDiurno) checkboxDiurno.checked = false;
+                if (checkboxNocturno) checkboxNocturno.checked = false;
+
+                // Desmarcamos los días (para Cabildo)
+                const checkboxDia = document.getElementById(diaLower);
+                if (checkboxDia) checkboxDia.checked = false;
             });
 
-            // Cargar disponibilidad
-            if (datos.disponibilidad) {
-                Object.entries(datos.disponibilidad).forEach(([dia, turnos]) => {
-                    turnos.forEach(turno => {
-                        const checkbox = document.getElementById(`${dia}_${turno}`);
+            // Ahora marcamos según corresponda
+            if (datos.personalCabildo) {
+                // Si es personal del Cabildo, la disponibilidad es un array de días
+                if (Array.isArray(datos.disponibilidad)) {
+                    datos.disponibilidad.forEach(dia => {
+                        const checkbox = document.getElementById(dia);
                         if (checkbox) {
                             checkbox.checked = true;
                         }
                     });
-                });
+                }
+            } else {
+                // Si no es personal del Cabildo, la disponibilidad es un objeto con días y turnos
+                if (datos.disponibilidad && typeof datos.disponibilidad === 'object') {
+                    Object.entries(datos.disponibilidad).forEach(([dia, turnos]) => {
+                        turnos.forEach(turno => {
+                            const checkbox = document.getElementById(`${dia}_${turno}`);
+                            if (checkbox) {
+                                checkbox.checked = true;
+                            }
+                        });
+                    });
+                }
             }
 
             actualizarEstadoVisual();
@@ -248,46 +307,38 @@
             const estadoDiv = document.getElementById('estadoTrabajador');
             const inputVacacionesInicio = document.getElementById('vacacionesInicio');
 
-            // Limpiar cualquier validación previa
             inputVacacionesInicio.setCustomValidity("");
             inputVacacionesInicio.disabled = false;
 
             const fechaActual = new Date();
 
-            // Comprobar si está de vacaciones
             if (vacacionesInicio && vacacionesFin) {
                 const inicioVacaciones = new Date(vacacionesInicio);
                 const finVacaciones = new Date(vacacionesFin);
 
                 if (fechaActual >= inicioVacaciones && fechaActual <= finVacaciones) {
                     estadoDiv.textContent = 'Estado: Vacaciones';
-                    estadoDiv.style.color = '#FF8C00'; // Naranja para vacaciones
-                    return; // Salimos de la función porque el estado de vacaciones tiene prioridad
+                    estadoDiv.style.color = '#FF8C00';
+                    return;
                 }
             }
 
-            // Si no está de vacaciones, comprobamos la baja
             if (!reincorporacion) {
-                // Si no hay fecha de reincorporación (no está de baja)
                 estadoDiv.textContent = 'Estado: Activo';
                 estadoDiv.style.color = 'green';
             } else {
                 const fechaReincorporacion = new Date(reincorporacion);
 
                 if (fechaReincorporacion > fechaActual) {
-                    // Si está de baja (fecha de reincorporación futura)
                     estadoDiv.textContent = 'Estado: Baja';
                     estadoDiv.style.color = 'red';
                     inputVacacionesInicio.disabled = false;
-                    //inputVacacionesInicio.setCustomValidity("No puede solicitar vacaciones mientras está de baja.");
                 } else {
-                    // Si la fecha de reincorporación es pasada
                     estadoDiv.textContent = 'Estado: Activo';
                     estadoDiv.style.color = 'green';
                 }
             }
 
-            // Solo validar las fechas si ambas existen
             if (reincorporacion && vacacionesInicio) {
                 const vacacionesInicioDate = new Date(vacacionesInicio);
                 const reincorporacionDate = new Date(reincorporacion);
@@ -305,22 +356,33 @@
             const id = document.getElementById('id').value;
             const nombre = document.getElementById('nombre').value;
             const apellidos = document.getElementById('apellidos').value;
+            const personalCabildo = document.getElementById('personalCabildo').checked;
 
-            // Recoger turnos por día
-            const turnos = {};
-            diasSemana.forEach(dia => {
-                const diaLower = dia.toLowerCase();
-                const turnoDiurno = document.getElementById(`${diaLower}_diurno`).checked;
-                const turnoNocturno = document.getElementById(`${diaLower}_nocturno`).checked;
 
-                // Si hay algún turno seleccionado, añadirlo al objeto turnos
-                if (turnoDiurno || turnoNocturno) {
-                    turnos[diaLower] = [];
-                    if (turnoDiurno) turnos[diaLower].push('diurno');
-                    if (turnoNocturno) turnos[diaLower].push('nocturno');
-                }
-            });
+            let turnos = {};
+            if (personalCabildo) {
+                // Si es personal del Cabildo, recogemos los días seleccionados como array
+                turnos = [];
+                diasSemana.forEach(dia => {
+                    const diaLower = dia.toLowerCase();
+                    if (document.getElementById(diaLower).checked) {
+                        turnos.push(diaLower);
+                    }
+                });
+            } else {
+                // Si no es personal del Cabildo, mantenemos la estructura original
+                diasSemana.forEach(dia => {
+                    const diaLower = dia.toLowerCase();
+                    const turnoDiurno = document.getElementById(`${diaLower}_diurno`).checked;
+                    const turnoNocturno = document.getElementById(`${diaLower}_nocturno`).checked;
 
+                    if (turnoDiurno || turnoNocturno) {
+                        turnos[diaLower] = [];
+                        if (turnoDiurno) turnos[diaLower].push('diurno');
+                        if (turnoNocturno) turnos[diaLower].push('nocturno');
+                    }
+                });
+            }
             const excepciones = {
                 vacaciones: document.getElementById('vacacionesInicio').value && document.getElementById('vacacionesFin').value ?
                     { inicio: document.getElementById('vacacionesInicio').value, fin: document.getElementById('vacacionesFin').value }
@@ -328,7 +390,6 @@
                 reincorporacion: document.getElementById('reincorporacion').value || null
             };
 
-            // Validar que las vacaciones no son antes de la reincorporación
             const reincorporacion = document.getElementById('reincorporacion').value;
             const vacacionesInicio = document.getElementById('vacacionesInicio').value;
             if (reincorporacion && vacacionesInicio) {
@@ -345,6 +406,7 @@
                 id,
                 nombre,
                 apellidos,
+                personalCabildo,
                 turnos,
                 excepciones
             };
