@@ -6,6 +6,7 @@ from separar_planificaciones import separar_planificaciones
 from convertir_tabla import convertir_a_tabla
 from generar_html import generar_html_con_toggle
 import pandas as pd
+from datetime import datetime
 
 
 def main():
@@ -43,7 +44,8 @@ def main():
         planificacion_no_incendio_df = pd.DataFrame(columns=['Fecha', 'Día', 'Turno', 'Trabajadores'])
 
     print("Generando HTML interactivo...")
-    html_content = generar_html_con_toggle(planificacion_incendio_df, planificacion_no_incendio_df)
+    hora_actual = datetime.now().time()
+    html_content = generar_html_con_toggle(planificacion_incendio_df, planificacion_no_incendio_df, hora_actual)
 
     filename = "planificacion_turnos_interactiva.html"
     with open(filename, "w", encoding='utf-8') as f:

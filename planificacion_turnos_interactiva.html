@@ -98,6 +98,49 @@
             margin: 20px 0;
             text-align: center;
         }
+        .tiempo-indicador {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-left: 5px;
+            vertical-align: middle;
+        }
+        .indicador-verde {
+            background-color: #4CAF50;
+        }
+        .indicador-amarillo {
+            background-color: #FFEB3B;
+        }
+        .indicador-naranja {
+            background-color: #FF9800;
+        }
+        .indicador-rojo {
+            background-color: #F44336;
+        }
+        .leyenda {
+            margin: 20px 0;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .leyenda-item {
+            display: flex;
+            align-items: center;
+            margin: 5px 0;
+        }
+        .leyenda-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 10px;
+            display: inline-block;
+        }
+        .fecha-actual {
+            background-color: #f0f8ff;
+            border-left: 4px solid #4285f4;
+        }
     </style>
     </head>
     <body>
@@ -112,6 +155,26 @@
             SITUACIÓN ACTUAL: INCENDIO
         </div>
         
+    <div class="leyenda">
+        <h3>Leyenda de Tiempo Restante (solo para trabajadores del turno actual)</h3>
+        <div class="leyenda-item">
+            <span class="leyenda-color indicador-verde"></span>
+            <span>8-12 horas restantes de turno</span>
+        </div>
+        <div class="leyenda-item">
+            <span class="leyenda-color indicador-amarillo"></span>
+            <span>6-8 horas restantes de turno</span>
+        </div>
+        <div class="leyenda-item">
+            <span class="leyenda-color indicador-naranja"></span>
+            <span>2-4 horas restantes de turno</span>
+        </div>
+        <div class="leyenda-item">
+            <span class="leyenda-color indicador-rojo"></span>
+            <span>Menos de 2 horas restantes de turno</span>
+        </div>
+    </div>
+    
         <div id="planIncendio" class="planificacion active">
             <h2>Planificación en Caso de Incendio</h2>
             <table>
@@ -125,99 +188,99 @@
                 </thead>
                 <tbody>
     
-                        <tr class="turno-diurno">
-                            <td>25/02/2025</td>
+                        <tr class="turno-diurno fecha-actual">
+                            <td>26/02/2025</td>
                             <td>Día 1</td>
                             <td>Diurno (08:00-20:00)</td>
-                            <td>Pepe Mel, Omenuke Mfulu, Fernando Torres, Pedro Gónzalez</td>
+                            <td>Pepe Mel <span class='tiempo-indicador indicador-amarillo' title='7.8 horas restantes'></span>, Omenuke Mfulu <span class='tiempo-indicador indicador-amarillo' title='7.8 horas restantes'></span>, Fernando Torres <span class='tiempo-indicador indicador-amarillo' title='7.8 horas restantes'></span>, Pedro Gónzalez <span class='tiempo-indicador indicador-amarillo' title='7.8 horas restantes'></span></td>
                         </tr>
             
-                        <tr class="turno-nocturno">
-                            <td>25/02/2025</td>
+                        <tr class="turno-nocturno fecha-actual">
+                            <td>26/02/2025</td>
                             <td>Día 1</td>
                             <td>Nocturno (20:00-08:00)</td>
                             <td>Juan Mata, Sergio López, Juanma Rodríguez, Alberto Melián</td>
                         </tr>
             
                         <tr class="turno-diurno">
-                            <td>26/02/2025</td>
+                            <td>27/02/2025</td>
                             <td>Día 2</td>
                             <td>Diurno (08:00-20:00)</td>
                             <td>Jaime Mata, Sergio Ramos, Sergio Santana, Felipe Hernández</td>
                         </tr>
             
                         <tr class="turno-nocturno">
-                            <td>26/02/2025</td>
+                            <td>27/02/2025</td>
                             <td>Día 2</td>
                             <td>Nocturno (20:00-08:00)</td>
                             <td>Kike García, Pablo Maffeo, Andrés Jímenez, Diego Martínez</td>
                         </tr>
             
                         <tr class="turno-diurno">
-                            <td>27/02/2025</td>
+                            <td>28/02/2025</td>
                             <td>Día 3</td>
                             <td>Diurno (08:00-20:00)</td>
                             <td>Pepe Mel, Omenuke Mfulu, Fernando Torres, Pedro Gónzalez</td>
                         </tr>
             
                         <tr class="turno-nocturno">
-                            <td>27/02/2025</td>
+                            <td>28/02/2025</td>
                             <td>Día 3</td>
                             <td>Nocturno (20:00-08:00)</td>
                             <td>Juan Mata, Sergio López, Juanma Rodríguez, Alberto Melián</td>
                         </tr>
             
                         <tr class="turno-diurno">
-                            <td>28/02/2025</td>
+                            <td>01/03/2025</td>
                             <td>Día 4</td>
                             <td>Diurno (08:00-20:00)</td>
                             <td>Jaime Mata, Sergio Ramos, Sergio Santana, Felipe Hernández</td>
                         </tr>
             
                         <tr class="turno-nocturno">
-                            <td>28/02/2025</td>
+                            <td>01/03/2025</td>
                             <td>Día 4</td>
                             <td>Nocturno (20:00-08:00)</td>
                             <td>Kike García, Pablo Maffeo, Andrés Jímenez, Diego Martínez</td>
                         </tr>
             
                         <tr class="turno-diurno">
-                            <td>01/03/2025</td>
+                            <td>02/03/2025</td>
                             <td>Día 5</td>
                             <td>Diurno (08:00-20:00)</td>
                             <td>Pepe Mel, Omenuke Mfulu, Fernando Torres, Pedro Gónzalez</td>
                         </tr>
             
                         <tr class="turno-nocturno">
-                            <td>01/03/2025</td>
+                            <td>02/03/2025</td>
                             <td>Día 5</td>
                             <td>Nocturno (20:00-08:00)</td>
                             <td>Juan Mata, Sergio López, Juanma Rodríguez, Alberto Melián</td>
-                        </tr>
-            
-                        <tr class="turno-diurno">
-                            <td>02/03/2025</td>
-                            <td>Día 6</td>
-                            <td>Diurno (08:00-20:00)</td>
-                            <td>Jaime Mata, Sergio Ramos, Sergio Santana, Felipe Hernández</td>
-                        </tr>
-            
-                        <tr class="turno-nocturno">
-                            <td>02/03/2025</td>
-                            <td>Día 6</td>
-                            <td>Nocturno (20:00-08:00)</td>
-                            <td>Kike García, Pablo Maffeo, Andrés Jímenez, Diego Martínez</td>
                         </tr>
             
                         <tr class="turno-diurno">
                             <td>03/03/2025</td>
+                            <td>Día 6</td>
+                            <td>Diurno (08:00-20:00)</td>
+                            <td>Jaime Mata, Sergio Ramos, Sergio Santana, Felipe Hernández</td>
+                        </tr>
+            
+                        <tr class="turno-nocturno">
+                            <td>03/03/2025</td>
+                            <td>Día 6</td>
+                            <td>Nocturno (20:00-08:00)</td>
+                            <td>Kike García, Pablo Maffeo, Andrés Jímenez, Diego Martínez</td>
+                        </tr>
+            
+                        <tr class="turno-diurno">
+                            <td>04/03/2025</td>
                             <td>Día 7</td>
                             <td>Diurno (08:00-20:00)</td>
                             <td>Pepe Mel, Omenuke Mfulu, Fernando Torres, Pedro Gónzalez</td>
                         </tr>
             
                         <tr class="turno-nocturno">
-                            <td>03/03/2025</td>
+                            <td>04/03/2025</td>
                             <td>Día 7</td>
                             <td>Nocturno (20:00-08:00)</td>
                             <td>Juan Mata, Sergio López, Juanma Rodríguez, Alberto Melián</td>
@@ -240,148 +303,148 @@
                 </thead>
                 <tbody>
     
-                        <tr class="turno-refuerzo1">
-                            <td>25/02/2025</td>
+                        <tr class="turno-refuerzo1 fecha-actual">
+                            <td>26/02/2025</td>
                             <td>Día 1</td>
                             <td>Retenes de refuerzo 1 (21:30-07:30)</td>
                             <td>Juan Mata, Sergio López, Alberto Melián, Pablo Maffeo</td>
                         </tr>
             
-                        <tr class="turno-refuerzo2">
-                            <td>25/02/2025</td>
+                        <tr class="turno-refuerzo2 fecha-actual">
+                            <td>26/02/2025</td>
                             <td>Día 1</td>
                             <td>Retenes de refuerzo 2 (07:30-17:30)</td>
                             <td>Juanma Rodríguez, Kike García, Andrés Jímenez, Rubén Días</td>
                         </tr>
             
-                        <tr class="turno-cabildo">
-                            <td>25/02/2025</td>
+                        <tr class="turno-cabildo fecha-actual">
+                            <td>26/02/2025</td>
                             <td>Día 1</td>
                             <td>Retenes del Cabildo (12:30-21:30)</td>
                             <td>Pepe Mel, Omenuke Mfulu, Fernando Torres, Pedro Gónzalez</td>
                         </tr>
             
                         <tr class="turno-refuerzo1">
-                            <td>26/02/2025</td>
+                            <td>27/02/2025</td>
                             <td>Día 2</td>
                             <td>Retenes de refuerzo 1 (21:30-07:30)</td>
                             <td>Juan Mata, Sergio López, Alberto Melián, Pablo Maffeo</td>
                         </tr>
             
                         <tr class="turno-refuerzo2">
-                            <td>26/02/2025</td>
+                            <td>27/02/2025</td>
                             <td>Día 2</td>
                             <td>Retenes de refuerzo 2 (07:30-17:30)</td>
                             <td>Juanma Rodríguez, Kike García, Andrés Jímenez, Rubén Días</td>
                         </tr>
             
                         <tr class="turno-cabildo">
-                            <td>26/02/2025</td>
+                            <td>27/02/2025</td>
                             <td>Día 2</td>
                             <td>Retenes del Cabildo (12:30-21:30)</td>
                             <td>Jaime Mata, Sergio Ramos, Sergio Santana, Felipe Hernández</td>
                         </tr>
             
                         <tr class="turno-refuerzo1">
-                            <td>27/02/2025</td>
+                            <td>28/02/2025</td>
                             <td>Día 3</td>
                             <td>Retenes de refuerzo 1 (21:30-07:30)</td>
                             <td>Juan Mata, Sergio López, Alberto Melián, Pablo Maffeo</td>
                         </tr>
             
                         <tr class="turno-refuerzo2">
-                            <td>27/02/2025</td>
+                            <td>28/02/2025</td>
                             <td>Día 3</td>
                             <td>Retenes de refuerzo 2 (07:30-17:30)</td>
                             <td>Juanma Rodríguez, Kike García, Andrés Jímenez, Rubén Días</td>
                         </tr>
             
                         <tr class="turno-cabildo">
-                            <td>27/02/2025</td>
+                            <td>28/02/2025</td>
                             <td>Día 3</td>
                             <td>Retenes del Cabildo (12:30-21:30)</td>
                             <td>Pepe Mel, Omenuke Mfulu, Fernando Torres, Pedro Gónzalez</td>
                         </tr>
             
                         <tr class="turno-refuerzo1">
-                            <td>28/02/2025</td>
+                            <td>01/03/2025</td>
                             <td>Día 4</td>
                             <td>Retenes de refuerzo 1 (21:30-07:30)</td>
                             <td>Juan Mata, Sergio López, Alberto Melián, Pablo Maffeo</td>
                         </tr>
             
                         <tr class="turno-refuerzo2">
-                            <td>28/02/2025</td>
+                            <td>01/03/2025</td>
                             <td>Día 4</td>
                             <td>Retenes de refuerzo 2 (07:30-17:30)</td>
                             <td>Juanma Rodríguez, Kike García, Andrés Jímenez, Rubén Días</td>
                         </tr>
             
                         <tr class="turno-cabildo">
-                            <td>28/02/2025</td>
+                            <td>01/03/2025</td>
                             <td>Día 4</td>
                             <td>Retenes del Cabildo (12:30-21:30)</td>
                             <td>Jaime Mata, Sergio Ramos, Sergio Santana, Felipe Hernández</td>
                         </tr>
             
                         <tr class="turno-refuerzo1">
-                            <td>01/03/2025</td>
+                            <td>02/03/2025</td>
                             <td>Día 5</td>
                             <td>Retenes de refuerzo 1 (21:30-07:30)</td>
                             <td>Juan Mata, Sergio López, Alberto Melián, Pablo Maffeo</td>
                         </tr>
             
                         <tr class="turno-refuerzo2">
-                            <td>01/03/2025</td>
+                            <td>02/03/2025</td>
                             <td>Día 5</td>
                             <td>Retenes de refuerzo 2 (07:30-17:30)</td>
                             <td>Juanma Rodríguez, Kike García, Andrés Jímenez, Rubén Días</td>
                         </tr>
             
                         <tr class="turno-cabildo">
-                            <td>01/03/2025</td>
+                            <td>02/03/2025</td>
                             <td>Día 5</td>
                             <td>Retenes del Cabildo (12:30-21:30)</td>
                             <td>Pepe Mel, Omenuke Mfulu, Fernando Torres, Pedro Gónzalez</td>
-                        </tr>
-            
-                        <tr class="turno-refuerzo1">
-                            <td>02/03/2025</td>
-                            <td>Día 6</td>
-                            <td>Retenes de refuerzo 1 (21:30-07:30)</td>
-                            <td>Juan Mata, Sergio López, Alberto Melián, Pablo Maffeo</td>
-                        </tr>
-            
-                        <tr class="turno-refuerzo2">
-                            <td>02/03/2025</td>
-                            <td>Día 6</td>
-                            <td>Retenes de refuerzo 2 (07:30-17:30)</td>
-                            <td>Juanma Rodríguez, Kike García, Andrés Jímenez, Rubén Días</td>
-                        </tr>
-            
-                        <tr class="turno-cabildo">
-                            <td>02/03/2025</td>
-                            <td>Día 6</td>
-                            <td>Retenes del Cabildo (12:30-21:30)</td>
-                            <td>Jaime Mata, Sergio Ramos, Sergio Santana, Felipe Hernández</td>
                         </tr>
             
                         <tr class="turno-refuerzo1">
                             <td>03/03/2025</td>
+                            <td>Día 6</td>
+                            <td>Retenes de refuerzo 1 (21:30-07:30)</td>
+                            <td>Juan Mata, Sergio López, Alberto Melián, Pablo Maffeo</td>
+                        </tr>
+            
+                        <tr class="turno-refuerzo2">
+                            <td>03/03/2025</td>
+                            <td>Día 6</td>
+                            <td>Retenes de refuerzo 2 (07:30-17:30)</td>
+                            <td>Juanma Rodríguez, Kike García, Andrés Jímenez, Rubén Días</td>
+                        </tr>
+            
+                        <tr class="turno-cabildo">
+                            <td>03/03/2025</td>
+                            <td>Día 6</td>
+                            <td>Retenes del Cabildo (12:30-21:30)</td>
+                            <td>Jaime Mata, Sergio Ramos, Sergio Santana, Felipe Hernández</td>
+                        </tr>
+            
+                        <tr class="turno-refuerzo1">
+                            <td>04/03/2025</td>
                             <td>Día 7</td>
                             <td>Retenes de refuerzo 1 (21:30-07:30)</td>
                             <td>Juan Mata, Sergio López, Alberto Melián, Pablo Maffeo</td>
                         </tr>
             
                         <tr class="turno-refuerzo2">
-                            <td>03/03/2025</td>
+                            <td>04/03/2025</td>
                             <td>Día 7</td>
                             <td>Retenes de refuerzo 2 (07:30-17:30)</td>
                             <td>Juanma Rodríguez, Kike García, Andrés Jímenez, Rubén Días</td>
                         </tr>
             
                         <tr class="turno-cabildo">
-                            <td>03/03/2025</td>
+                            <td>04/03/2025</td>
                             <td>Día 7</td>
                             <td>Retenes del Cabildo (12:30-21:30)</td>
                             <td>Pepe Mel, Omenuke Mfulu, Fernando Torres, Pedro Gónzalez</td>
