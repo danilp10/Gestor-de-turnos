@@ -429,6 +429,21 @@ def generar_html_con_toggle(df_incendio, df_no_incendio, hora_actual=None):
                 mostrandoIncendio = !mostrandoIncendio;
             });
         </script>
+        <button id="rehacer-btn" class="toggle-btn">Rehacer Planificación</button>
+        <script>
+        document.getElementById('rehacer-btn').addEventListener('click', function() {
+            fetch('/generar', { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        location.reload();
+                    } else {
+                        alert('Error al generar la planificación.');
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        });
+        </script>
         """
 
     html += """
