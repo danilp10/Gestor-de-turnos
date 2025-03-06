@@ -9,11 +9,11 @@
       "martes",
       "miércoles",
       "jueves",
-      "viernes"
+      "viernes",
+      "domingo"
     ],
     "diasNoDisponibles": [
-      "sábado",
-      "domingo"
+      "sábado"
     ],
     "excepciones": {
       "vacaciones": {
@@ -91,10 +91,7 @@
       "sábado"
     ],
     "excepciones": {
-      "vacaciones": {
-        "inicio": "2025-02-28",
-        "fin": "2025-03-05"
-      },
+      "vacaciones": null,
       "reincorporacion": null
     },
     "timestamp": "2025-02-25T11:42:14.739Z",
@@ -128,24 +125,13 @@
     "nombre": "Juan",
     "apellidos": "Mata",
     "estado": "activo",
-    "disponibilidad": {
-      "lunes": [
-        "nocturno"
-      ],
-      "martes": [
-        "nocturno"
-      ],
-      "miércoles": [
-        "diurno",
-        "nocturno"
-      ],
-      "jueves": [
-        "nocturno"
-      ],
-      "viernes": [
-        "nocturno"
-      ]
-    },
+    "disponibilidad": [
+      "lunes",
+      "martes",
+      "miércoles",
+      "jueves",
+      "viernes"
+    ],
     "diasNoDisponibles": [
       "sábado",
       "domingo"
@@ -154,7 +140,7 @@
       "vacaciones": null,
       "reincorporacion": null
     },
-    "timestamp": "2025-02-25T11:42:51.479Z",
+    "timestamp": "2025-03-05T11:08:39.710Z",
     "personalCabildo": false
   },
   {
@@ -208,27 +194,13 @@
     "nombre": "Sergio",
     "apellidos": "López",
     "estado": "activo",
-    "disponibilidad": {
-      "lunes": [
-        "nocturno"
-      ],
-      "miércoles": [
-        "diurno",
-        "nocturno"
-      ],
-      "jueves": [
-        "diurno",
-        "nocturno"
-      ],
-      "sábado": [
-        "diurno",
-        "nocturno"
-      ],
-      "domingo": [
-        "diurno",
-        "nocturno"
-      ]
-    },
+    "disponibilidad": [
+      "lunes",
+      "miércoles",
+      "jueves",
+      "sábado",
+      "domingo"
+    ],
     "diasNoDisponibles": [
       "martes",
       "viernes"
@@ -237,14 +209,14 @@
       "vacaciones": null,
       "reincorporacion": null
     },
-    "timestamp": "2025-02-25T11:43:35.412Z",
+    "timestamp": "2025-03-05T11:08:47.638Z",
     "personalCabildo": false
   },
   {
     "id": "10",
     "nombre": "Alberto",
     "apellidos": "Moleiro",
-    "estado": "vacaciones",
+    "estado": "activo",
     "disponibilidad": [
       "lunes",
       "martes",
@@ -257,10 +229,7 @@
       "domingo"
     ],
     "excepciones": {
-      "vacaciones": {
-        "inicio": "2025-02-20",
-        "fin": "2025-02-28"
-      },
+      "vacaciones": null,
       "reincorporacion": null
     },
     "timestamp": "2025-02-25T11:43:46.322Z",
@@ -282,7 +251,7 @@
       "vacaciones": null,
       "reincorporacion": null
     },
-    "timestamp": "2025-02-25T11:43:56.461Z",
+    "timestamp": "2025-03-05T11:06:39.443Z",
     "diasNoDisponibles": [
       "lunes",
       "martes"
@@ -294,33 +263,18 @@
     "nombre": "Juanma",
     "apellidos": "Rodríguez",
     "estado": "activo",
-    "disponibilidad": {
-      "lunes": [
-        "diurno",
-        "nocturno"
-      ],
-      "martes": [
-        "diurno",
-        "nocturno"
-      ],
-      "miércoles": [
-        "diurno",
-        "nocturno"
-      ],
-      "jueves": [
-        "diurno",
-        "nocturno"
-      ],
-      "viernes": [
-        "diurno",
-        "nocturno"
-      ]
-    },
+    "disponibilidad": [
+      "lunes",
+      "martes",
+      "miércoles",
+      "jueves",
+      "viernes"
+    ],
     "excepciones": {
       "vacaciones": null,
       "reincorporacion": null
     },
-    "timestamp": "2025-02-25T11:44:03.530Z",
+    "timestamp": "2025-03-05T11:06:32.035Z",
     "diasNoDisponibles": [
       "sábado",
       "domingo"
@@ -331,33 +285,21 @@
     "id": "14",
     "nombre": "Pepe",
     "apellidos": "Bueno",
-    "estado": "baja",
-    "disponibilidad": {
-      "martes": [
-        "diurno",
-        "nocturno"
-      ],
-      "miércoles": [
-        "diurno",
-        "nocturno"
-      ],
-      "viernes": [
-        "diurno",
-        "nocturno"
-      ],
-      "sábado": [
-        "diurno",
-        "nocturno"
-      ]
-    },
+    "estado": "activo",
+    "disponibilidad": [
+      "martes",
+      "miércoles",
+      "jueves",
+      "viernes",
+      "sábado"
+    ],
     "excepciones": {
       "vacaciones": null,
-      "reincorporacion": "2025-02-26"
+      "reincorporacion": null
     },
-    "timestamp": "2025-02-25T10:38:09.251Z",
+    "timestamp": "2025-03-05T11:06:21.660Z",
     "diasNoDisponibles": [
       "lunes",
-      "jueves",
       "domingo"
     ],
     "personalCabildo": false
@@ -366,33 +308,23 @@
     "id": "15",
     "nombre": "Antonio",
     "apellidos": "Gil",
-    "estado": "baja",
-    "disponibilidad": {
-      "lunes": [
-        "diurno"
-      ],
-      "martes": [
-        "diurno"
-      ],
-      "miércoles": [
-        "diurno"
-      ],
-      "viernes": [
-        "nocturno"
-      ],
-      "sábado": [
-        "nocturno"
-      ]
-    },
+    "estado": "activo",
+    "disponibilidad": [
+      "lunes",
+      "martes",
+      "miércoles",
+      "viernes",
+      "sábado",
+      "domingo"
+    ],
     "excepciones": {
       "vacaciones": null,
-      "reincorporacion": "2025-03-03"
+      "reincorporacion": null
     },
-    "timestamp": "2025-02-25T11:46:02.221Z",
+    "timestamp": "2025-03-06T10:29:21.012Z",
     "personalCabildo": false,
     "diasNoDisponibles": [
-      "jueves",
-      "domingo"
+      "jueves"
     ]
   },
   {
@@ -400,28 +332,18 @@
     "nombre": "Raúl",
     "apellidos": "Asencio",
     "estado": "activo",
-    "disponibilidad": {
-      "martes": [
-        "diurno"
-      ],
-      "miércoles": [
-        "diurno"
-      ],
-      "viernes": [
-        "diurno"
-      ],
-      "sábado": [
-        "diurno"
-      ],
-      "domingo": [
-        "diurno"
-      ]
-    },
+    "disponibilidad": [
+      "martes",
+      "miércoles",
+      "viernes",
+      "sábado",
+      "domingo"
+    ],
     "excepciones": {
       "vacaciones": null,
       "reincorporacion": null
     },
-    "timestamp": "2025-02-24T11:59:38.323Z",
+    "timestamp": "2025-03-05T11:06:27.124Z",
     "personalCabildo": false,
     "diasNoDisponibles": [
       "lunes",
@@ -444,7 +366,7 @@
       "vacaciones": null,
       "reincorporacion": null
     },
-    "timestamp": "2025-02-25T11:44:53.974Z",
+    "timestamp": "2025-03-05T11:06:09.241Z",
     "personalCabildo": true,
     "diasNoDisponibles": [
       "lunes",
@@ -456,33 +378,18 @@
     "nombre": "Kike",
     "apellidos": "García",
     "estado": "activo",
-    "disponibilidad": {
-      "lunes": [
-        "diurno",
-        "nocturno"
-      ],
-      "martes": [
-        "diurno",
-        "nocturno"
-      ],
-      "miércoles": [
-        "diurno",
-        "nocturno"
-      ],
-      "viernes": [
-        "diurno",
-        "nocturno"
-      ],
-      "domingo": [
-        "diurno",
-        "nocturno"
-      ]
-    },
+    "disponibilidad": [
+      "lunes",
+      "martes",
+      "miércoles",
+      "viernes",
+      "domingo"
+    ],
     "excepciones": {
       "vacaciones": null,
       "reincorporacion": null
     },
-    "timestamp": "2025-02-25T11:46:23.796Z",
+    "timestamp": "2025-03-05T11:06:04.729Z",
     "personalCabildo": false,
     "diasNoDisponibles": [
       "jueves",
@@ -494,34 +401,22 @@
     "nombre": "Alberto",
     "apellidos": "Melián",
     "estado": "activo",
-    "disponibilidad": {
-      "lunes": [
-        "nocturno"
-      ],
-      "martes": [
-        "nocturno"
-      ],
-      "miércoles": [
-        "nocturno"
-      ],
-      "viernes": [
-        "nocturno"
-      ],
-      "sábado": [
-        "nocturno"
-      ],
-      "domingo": [
-        "nocturno"
-      ]
-    },
+    "disponibilidad": [
+      "lunes",
+      "martes",
+      "jueves",
+      "viernes",
+      "sábado",
+      "domingo"
+    ],
     "excepciones": {
       "vacaciones": null,
       "reincorporacion": null
     },
-    "timestamp": "2025-02-25T11:46:32.216Z",
+    "timestamp": "2025-03-05T11:05:58.678Z",
     "personalCabildo": false,
     "diasNoDisponibles": [
-      "jueves"
+      "miércoles"
     ]
   },
   {
@@ -529,36 +424,19 @@
     "nombre": "Pablo",
     "apellidos": "Maffeo",
     "estado": "activo",
-    "disponibilidad": {
-      "lunes": [
-        "diurno",
-        "nocturno"
-      ],
-      "martes": [
-        "diurno",
-        "nocturno"
-      ],
-      "jueves": [
-        "diurno",
-        "nocturno"
-      ],
-      "viernes": [
-        "diurno",
-        "nocturno"
-      ],
-      "sábado": [
-        "diurno"
-      ],
-      "domingo": [
-        "diurno",
-        "nocturno"
-      ]
-    },
+    "disponibilidad": [
+      "lunes",
+      "martes",
+      "jueves",
+      "viernes",
+      "sábado",
+      "domingo"
+    ],
     "excepciones": {
       "vacaciones": null,
       "reincorporacion": null
     },
-    "timestamp": "2025-02-25T11:46:38.543Z",
+    "timestamp": "2025-03-05T11:05:52.224Z",
     "personalCabildo": false,
     "diasNoDisponibles": [
       "miércoles"
@@ -569,31 +447,19 @@
     "nombre": "Andrés",
     "apellidos": "Jímenez",
     "estado": "activo",
-    "disponibilidad": {
-      "martes": [
-        "diurno"
-      ],
-      "miércoles": [
-        "nocturno"
-      ],
-      "jueves": [
-        "diurno"
-      ],
-      "viernes": [
-        "nocturno"
-      ],
-      "sábado": [
-        "diurno"
-      ],
-      "domingo": [
-        "nocturno"
-      ]
-    },
+    "disponibilidad": [
+      "martes",
+      "miércoles",
+      "jueves",
+      "viernes",
+      "sábado",
+      "domingo"
+    ],
     "excepciones": {
       "vacaciones": null,
       "reincorporacion": null
     },
-    "timestamp": "2025-02-25T11:46:44.776Z",
+    "timestamp": "2025-03-05T11:05:44.870Z",
     "personalCabildo": false,
     "diasNoDisponibles": [
       "lunes"
@@ -603,191 +469,7 @@
     "id": "21",
     "nombre": "Daniel",
     "apellidos": "Carvajal",
-    "estado": "baja",
-    "disponibilidad": {
-      "lunes": [
-        "diurno",
-        "nocturno"
-      ],
-      "miércoles": [
-        "diurno",
-        "nocturno"
-      ],
-      "jueves": [
-        "diurno",
-        "nocturno"
-      ],
-      "sábado": [
-        "diurno",
-        "nocturno"
-      ],
-      "domingo": [
-        "diurno",
-        "nocturno"
-      ]
-    },
-    "excepciones": {
-      "vacaciones": null,
-      "reincorporacion": "2025-07-10"
-    },
-    "timestamp": "2025-02-25T11:46:52.708Z",
-    "personalCabildo": false,
-    "diasNoDisponibles": [
-      "martes",
-      "viernes"
-    ]
-  },
-  {
-    "id": "22",
-    "nombre": "Diego",
-    "apellidos": "Martínez",
     "estado": "activo",
-    "disponibilidad": {
-      "martes": [
-        "diurno",
-        "nocturno"
-      ],
-      "miércoles": [
-        "nocturno"
-      ],
-      "viernes": [
-        "diurno",
-        "nocturno"
-      ],
-      "sábado": [
-        "diurno"
-      ],
-      "domingo": [
-        "diurno",
-        "nocturno"
-      ]
-    },
-    "excepciones": {
-      "vacaciones": {
-        "inicio": "2025-03-01",
-        "fin": "2025-03-10"
-      },
-      "reincorporacion": null
-    },
-    "timestamp": "2025-02-25T11:47:01.567Z",
-    "personalCabildo": false,
-    "diasNoDisponibles": [
-      "lunes",
-      "jueves"
-    ]
-  },
-  {
-    "id": "23",
-    "nombre": "Rubén",
-    "apellidos": "Días",
-    "estado": "activo",
-    "disponibilidad": {
-      "lunes": [
-        "diurno",
-        "nocturno"
-      ],
-      "martes": [
-        "diurno",
-        "nocturno"
-      ],
-      "viernes": [
-        "diurno",
-        "nocturno"
-      ],
-      "sábado": [
-        "diurno",
-        "nocturno"
-      ],
-      "domingo": [
-        "diurno",
-        "nocturno"
-      ]
-    },
-    "excepciones": {
-      "vacaciones": null,
-      "reincorporacion": null
-    },
-    "timestamp": "2025-02-25T11:47:06.556Z",
-    "personalCabildo": false,
-    "diasNoDisponibles": [
-      "miércoles",
-      "jueves"
-    ]
-  },
-  {
-    "id": "24",
-    "nombre": "Miguel Ángel",
-    "apellidos": "Ramírez",
-    "estado": "activo",
-    "disponibilidad": {
-      "lunes": [
-        "diurno"
-      ],
-      "martes": [
-        "diurno"
-      ],
-      "jueves": [
-        "nocturno"
-      ],
-      "viernes": [
-        "nocturno"
-      ],
-      "sábado": [
-        "nocturno"
-      ],
-      "domingo": [
-        "nocturno"
-      ]
-    },
-    "excepciones": {
-      "vacaciones": null,
-      "reincorporacion": null
-    },
-    "timestamp": "2025-02-25T11:47:11.666Z",
-    "personalCabildo": false,
-    "diasNoDisponibles": [
-      "miércoles"
-    ]
-  },
-  {
-    "id": "25",
-    "nombre": "Juan",
-    "apellidos": "Rodríguez",
-    "estado": "activo",
-    "disponibilidad": {
-      "martes": [
-        "diurno"
-      ],
-      "miércoles": [
-        "diurno",
-        "nocturno"
-      ],
-      "jueves": [
-        "nocturno"
-      ],
-      "sábado": [
-        "diurno"
-      ],
-      "domingo": [
-        "diurno"
-      ]
-    },
-    "excepciones": {
-      "vacaciones": null,
-      "reincorporacion": null
-    },
-    "timestamp": "2025-02-25T11:47:17.262Z",
-    "diasNoDisponibles": [
-      "lunes",
-      "viernes"
-    ],
-    "personalCabildo": false
-  },
-  {
-    "id": "26",
-    "nombre": "Federico",
-    "apellidos": "Valverde",
-    "estado": "vacaciones",
     "disponibilidad": [
       "lunes",
       "miércoles",
@@ -796,10 +478,30 @@
       "domingo"
     ],
     "excepciones": {
-      "vacaciones": {
-        "inicio": "2025-02-23",
-        "fin": "2025-02-28"
-      },
+      "vacaciones": null,
+      "reincorporacion": null
+    },
+    "timestamp": "2025-03-05T11:05:24.133Z",
+    "personalCabildo": false,
+    "diasNoDisponibles": [
+      "martes",
+      "viernes"
+    ]
+  },
+  {
+    "id": "22",
+    "nombre": "Federico",
+    "apellidos": "Valverde",
+    "estado": "activo",
+    "disponibilidad": [
+      "lunes",
+      "miércoles",
+      "jueves",
+      "sábado",
+      "domingo"
+    ],
+    "excepciones": {
+      "vacaciones": null,
       "reincorporacion": null
     },
     "timestamp": "2025-02-25T11:47:32.686Z",
@@ -810,49 +512,52 @@
     "personalCabildo": true
   },
   {
-    "id": "27",
-    "nombre": "Manolo",
-    "apellidos": "Rodríguez",
+    "id": "23",
+    "nombre": "Joaquín",
+    "apellidos": "Estévez",
     "personalCabildo": true,
-    "estado": "activo",
+    "estado": "vacaciones",
     "disponibilidad": [
       "lunes",
       "martes",
-      "miércoles",
-      "viernes",
-      "sábado"
-    ],
-    "excepciones": {
-      "vacaciones": null,
-      "reincorporacion": null
-    },
-    "timestamp": "2025-02-25T11:47:44.592Z",
-    "diasNoDisponibles": [
       "jueves",
-      "domingo"
-    ]
-  },
-  {
-    "id": "28",
-    "nombre": "Manuel",
-    "apellidos": "Carrasco",
-    "personalCabildo": true,
-    "estado": "activo",
-    "disponibilidad": [
-      "lunes",
-      "martes",
-      "miércoles",
-      "jueves",
-      "viernes"
-    ],
-    "excepciones": {
-      "vacaciones": null,
-      "reincorporacion": null
-    },
-    "timestamp": "2025-02-25T11:47:50.786Z",
-    "diasNoDisponibles": [
       "sábado",
       "domingo"
-    ]
+    ],
+    "excepciones": {
+      "vacaciones": {
+        "inicio": "2025-03-05",
+        "fin": "2025-06-15"
+      },
+      "reincorporacion": null
+    },
+    "diasNoDisponibles": [
+      "miércoles",
+      "viernes"
+    ],
+    "timestamp": "2025-03-06T11:13:11.480Z"
+  },
+  {
+    "id": "24",
+    "nombre": "Marcos",
+    "apellidos": "Guerra",
+    "personalCabildo": false,
+    "estado": "baja",
+    "disponibilidad": [
+      "lunes",
+      "miércoles",
+      "viernes",
+      "sábado",
+      "domingo"
+    ],
+    "excepciones": {
+      "vacaciones": null,
+      "reincorporacion": "2025-06-10"
+    },
+    "diasNoDisponibles": [
+      "martes",
+      "jueves"
+    ],
+    "timestamp": "2025-03-06T11:13:51.797Z"
   }
 ]

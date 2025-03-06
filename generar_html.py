@@ -429,19 +429,45 @@ def generar_html_con_toggle(df_incendio, df_no_incendio, hora_actual=None):
                 mostrandoIncendio = !mostrandoIncendio;
             });
         </script>
-        <button id="rehacer-btn" class="toggle-btn">Rehacer Planificación</button>
+        <div class="container mt-3 mb-3">
+        <button id="regenerarBtn" class="toggle-btn">Rehacer Planificación</button>
+        <div id="mensajeEstado" class="mt-2"></div>
+        </div>
+        
         <script>
-        document.getElementById('rehacer-btn').addEventListener('click', function() {
-            fetch('/generar', { method: 'POST' })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        location.reload();
-                    } else {
-                        alert('Error al generar la planificación.');
-                    }
-                })
-                .catch(error => console.error('Error:', error));
+        document.getElementById('regenerarBtn').addEventListener('click', function() {
+            // Mostrar mensaje de procesamiento
+            const mensajeEstado = document.getElementById('mensajeEstado');
+            mensajeEstado.innerHTML = '<div style="background-color: #d1ecf1; color: #0c5460; padding: 10px; border-radius: 5px; margin-top: 10px;">Generando nueva planificación, por favor espere...</div>';
+            
+            // Deshabilitar el botón mientras se procesa
+            this.disabled = true;
+            
+            // Realizar la petición AJAX a la ruta /generar
+            fetch('/generar', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    mensajeEstado.innerHTML = '<div style="background-color: #d4edda; color: #155724; padding: 10px; border-radius: 5px; margin-top: 10px;">¡Planificación regenerada correctamente! Recargando página...</div>';
+                    // Esperar un momento y recargar la página para mostrar la nueva planificación
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1500);
+                } else {
+                    mensajeEstado.innerHTML = '<div style="background-color: #f8d7da; color: #721c24; padding: 10px; border-radius: 5px; margin-top: 10px;">Error: ' + (data.error || 'Error desconocido') + '</div>';
+                    this.disabled = false;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                mensajeEstado.innerHTML = '<div style="background-color: #f8d7da; color: #721c24; padding: 10px; border-radius: 5px; margin-top: 10px;">Error en la comunicación con el servidor. Por favor, intente nuevamente.</div>';
+                this.disabled = false;
+            });
         });
         </script>
         """
