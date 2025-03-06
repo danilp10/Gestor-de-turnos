@@ -4,48 +4,83 @@ import re
 
 
 def convertir_a_tabla(planificacion):
-    if not planificacion:
+    """
+    Convierte una planificación de texto a formato tabular (DataFrame)
+
+    Args:
+        planificacion (str): Texto de la planificación
+
+    Returns:
+        pd.DataFrame: DataFrame con las columnas Fecha, Día, Turno, Trabajadores
+    """
+    if not planificacion or len(planificacion.strip()) == 0:
+        print("⚠ Planificación vacía")
         return pd.DataFrame(columns=['Fecha', 'Día', 'Turno', 'Trabajadores'])
 
     turnos_data = []
+
+    # Obtener la fecha real de hoy
     hoy = datetime.now()
-    fechas = [(hoy + timedelta(days=x)).strftime('%d/%m/%Y') for x in range(7)]
+
+    # Diccionario de mapeo de días de la semana
+    dia_a_numero = {
+        "Lunes": 0, "Martes": 1, "Miércoles": 2, "Jueves": 3,
+        "Viernes": 4, "Sábado": 5, "Domingo": 6
+    }
 
     lineas = planificacion.split('\n')
     dia_actual = None
+    dia_nombre = None
+    fecha_inicio = None
 
-    print("Procesando planificación con", len(lineas), "líneas")
+    print(f"📋 Procesando {len(lineas)} líneas de planificación...")
 
     for i, linea in enumerate(lineas):
         linea = linea.strip()
         if not linea:
             continue
 
-        dia_match = re.search(r'[Dd]ía\s+(\d+):', linea)
+        # Capturar "Día N (Nombre del día):"
+        dia_match = re.search(r'Día\s+(\d+)\s*\(([^)]+)\)', linea)
         if dia_match:
             dia_num = int(dia_match.group(1))
-            print(f"  Encontrado día: {dia_num}")
-            if 1 <= dia_num <= 7:
-                dia_actual = dia_num - 1
+            dia_nombre = dia_match.group(2).strip()
+            print(f"✅ Encontrado: Día {dia_num} - {dia_nombre}")
+
+            if dia_nombre.capitalize() in dia_a_numero:
+                dia_actual = dia_a_numero[dia_nombre.capitalize()]
+
+                # Calcular la fecha del "Día 1" según el día de la semana que OpenAI ha generado
+                if dia_num == 1:
+                    diferencia_dias = (dia_actual - hoy.weekday()) % 7
+                    fecha_inicio = hoy + timedelta(days=diferencia_dias)
+                    print(f"📅 Fecha inicial ajustada a: {fecha_inicio.strftime('%d/%m/%Y')} ({dia_nombre})")
+
             continue
 
-        turno_match = re.search(r'-\s*Turno\s+(.*?):\s+(.*)', linea)
-        if turno_match and dia_actual is not None:
-            try:
-                tipo_turno = turno_match.group(1).strip()
-                trabajadores = turno_match.group(2).strip()
+        # Capturar turnos con formato "Turno X (HH:MM-HH:MM): Trabajador1, Trabajador2..."
+        turno_match = re.search(r'-?\s*Turno\s+([\w\s]+)\s*\((\d{2}:\d{2}-\d{2}:\d{2})\):\s*(.+)', linea)
+        if turno_match and fecha_inicio:
+            tipo_turno = f"{turno_match.group(1).strip()} ({turno_match.group(2).strip()})"
+            trabajadores = turno_match.group(3).strip()
 
-                print(f"  Encontrado turno: {tipo_turno} con trabajadores: {trabajadores}")
+            # Calcular la fecha correcta para este turno sumando los días correspondientes
+            fecha_turno = fecha_inicio + timedelta(days=(dia_num - 1))
 
-                turnos_data.append({
-                    'Fecha': fechas[dia_actual],
-                    'Día': f'Día {dia_actual + 1}',
-                    'Turno': tipo_turno,
-                    'Trabajadores': trabajadores
-                })
-            except Exception as e:
-                print(f"Error procesando línea {i + 1}: {linea}")
-                print(f"Error: {e}")
+            print(
+                f"  ➡ Turno detectado: '{tipo_turno}' para {fecha_turno.strftime('%d/%m/%Y')} con trabajadores: '{trabajadores}'")
 
-    print(f"Datos procesados: {len(turnos_data)} turnos")
+            turnos_data.append({
+                'Fecha': fecha_turno.strftime('%d/%m/%Y'),
+                'Día': dia_nombre,
+                'Turno': tipo_turno,
+                'Trabajadores': trabajadores
+            })
+            continue
+
+    if not turnos_data:
+        print("❌ No se encontraron datos de turnos en la planificación.")
+        return pd.DataFrame(columns=['Fecha', 'Día', 'Turno', 'Trabajadores'])
+
+    print(f"✅ Datos procesados correctamente: {len(turnos_data)} turnos.")
     return pd.DataFrame(turnos_data)
