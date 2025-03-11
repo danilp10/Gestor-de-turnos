@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Menú Principal</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin: 50px; }
+        .container { max-width: 600px; margin: auto; padding: 20px; }
+        .btn { padding: 15px 30px; font-size: 18px; cursor: pointer; margin: 10px; border: none; border-radius: 5px; }
+        .btn-primary { background-color: #4CAF50; color: white; }
+        .btn-secondary { background-color: #2196F3; color: white; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Bienvenido</h1>
+        <p>Seleccione una opción:</p>
+        <button class="btn btn-primary" onclick="window.location.href='/trabajadores'">Gestión de Trabajadores</button>
+        <button class="btn btn-secondary" onclick="window.location.href='/configuracion'">Generar Planificación</button>
+    </div>
+</body>
+</html>

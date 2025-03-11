@@ -3,12 +3,13 @@ from datetime import datetime, timedelta
 import re
 
 
-def convertir_a_tabla(planificacion):
+def convertir_a_tabla(planificacion, fecha_inicio_str=None):
     """
     Convierte una planificación de texto a formato tabular (DataFrame)
 
     Args:
         planificacion (str): Texto de la planificación
+        fecha_inicio_str (str, optional): Fecha de inicio en formato 'YYYY-MM-DD'
 
     Returns:
         pd.DataFrame: DataFrame con las columnas Fecha, Día, Turno, Trabajadores
@@ -19,8 +20,14 @@ def convertir_a_tabla(planificacion):
 
     turnos_data = []
 
-    # Obtener la fecha real de hoy
-    hoy = datetime.now()
+    # Si se proporciona una fecha de inicio, usarla; de lo contrario, usar la fecha actual
+    fecha_inicio = None
+    if fecha_inicio_str:
+        try:
+            fecha_inicio = datetime.strptime(fecha_inicio_str, '%Y-%m-%d')
+            print(f"📅 Usando fecha de inicio proporcionada: {fecha_inicio.strftime('%d/%m/%Y')}")
+        except ValueError:
+            print(f"⚠ Formato de fecha inválido: {fecha_inicio_str}. Se usará detección automática.")
 
     # Diccionario de mapeo de días de la semana
     dia_a_numero = {
@@ -31,7 +38,6 @@ def convertir_a_tabla(planificacion):
     lineas = planificacion.split('\n')
     dia_actual = None
     dia_nombre = None
-    fecha_inicio = None
 
     print(f"📋 Procesando {len(lineas)} líneas de planificación...")
 
@@ -40,31 +46,29 @@ def convertir_a_tabla(planificacion):
         if not linea:
             continue
 
-        # Capturar "Día N (Nombre del día):"
         dia_match = re.search(r'Día\s+(\d+)\s*\(([^)]+)\)', linea)
         if dia_match:
             dia_num = int(dia_match.group(1))
             dia_nombre = dia_match.group(2).strip()
             print(f"✅ Encontrado: Día {dia_num} - {dia_nombre}")
 
-            if dia_nombre.capitalize() in dia_a_numero:
-                dia_actual = dia_a_numero[dia_nombre.capitalize()]
-
-                # Calcular la fecha del "Día 1" según el día de la semana que OpenAI ha generado
-                if dia_num == 1:
+            # Si no tenemos fecha de inicio y es el primer día, intentar determinarla
+            if fecha_inicio is None and dia_num == 1:
+                if dia_nombre.capitalize() in dia_a_numero:
+                    dia_actual = dia_a_numero[dia_nombre.capitalize()]
+                    hoy = datetime.now()
                     diferencia_dias = (dia_actual - hoy.weekday()) % 7
                     fecha_inicio = hoy + timedelta(days=diferencia_dias)
-                    print(f"📅 Fecha inicial ajustada a: {fecha_inicio.strftime('%d/%m/%Y')} ({dia_nombre})")
+                    print(
+                        f"📅 Fecha inicial determinada automáticamente: {fecha_inicio.strftime('%d/%m/%Y')} ({dia_nombre})")
 
             continue
 
-        # Capturar turnos con formato "Turno X (HH:MM-HH:MM): Trabajador1, Trabajador2..."
         turno_match = re.search(r'-?\s*Turno\s+([\w\s]+)\s*\((\d{2}:\d{2}-\d{2}:\d{2})\):\s*(.+)', linea)
         if turno_match and fecha_inicio:
             tipo_turno = f"{turno_match.group(1).strip()} ({turno_match.group(2).strip()})"
             trabajadores = turno_match.group(3).strip()
 
-            # Calcular la fecha correcta para este turno sumando los días correspondientes
             fecha_turno = fecha_inicio + timedelta(days=(dia_num - 1))
 
             print(
