@@ -6,7 +6,6 @@ def generar_html_con_toggle(df_incendio, df_no_incendio, hora_actual=None):
     """
     Genera un HTML con ambas planificaciones y un botón para alternar entre ellas.
     Añade indicadores de tiempo restante solo para los trabajadores del turno actual de hoy.
-    Versión modificada que elimina los botones de generación cruzada.
 
     Args:
         df_incendio: DataFrame con la planificación en caso de incendio
@@ -194,6 +193,12 @@ def generar_html_con_toggle(df_incendio, df_no_incendio, hora_actual=None):
         }
         .btn-no-incendio:hover {
             background-color: #449d44;
+        }
+        .btn-ambas {
+            background-color: #337ab7;
+        }
+        .btn-ambas:hover {
+            background-color: #286090;
         }
         .planificacion {
             display: none;
@@ -443,6 +448,12 @@ def generar_html_con_toggle(df_incendio, df_no_incendio, hora_actual=None):
         <div id="botonesPlan">
     """
 
+    # Botón para regenerar ambas planificaciones SOLO cuando se tienen ambas planificaciones
+    if tiene_incendio and tiene_no_incendio:
+        html += """
+            <button id="regenerarAmbasBtn" class="toggle-btn btn-ambas">Rehacer Ambas Planificaciones</button>
+        """
+
     # Solo mostramos el botón de regenerar planificación de incendio si estamos en modo incendio
     if tiene_incendio:
         html += """
@@ -497,8 +508,16 @@ def generar_html_con_toggle(df_incendio, df_no_incendio, hora_actual=None):
     function generarPlanificacion(tipo) {
         // Mostrar mensaje de procesamiento
         const mensajeEstado = document.getElementById('mensajeEstado');
-        mensajeEstado.innerHTML = '<div class="mensaje-estado mensaje-info">Generando nueva planificación para caso de ' + 
-                                  (tipo === 'incendio' ? 'incendio' : 'no incendio') + ', por favor espere...</div>';
+
+        let mensajeTexto = '';
+        if (tipo === 'ambas') {
+            mensajeTexto = 'Generando ambas planificaciones, por favor espere...';
+        } else {
+            mensajeTexto = 'Generando nueva planificación para caso de ' + 
+                          (tipo === 'incendio' ? 'incendio' : 'no incendio') + ', por favor espere...';
+        }
+
+        mensajeEstado.innerHTML = '<div class="mensaje-estado mensaje-info">' + mensajeTexto + '</div>';
 
         // Deshabilitar todos los botones mientras se procesa
         document.querySelectorAll('button').forEach(button => {
@@ -539,9 +558,16 @@ def generar_html_con_toggle(df_incendio, df_no_incendio, hora_actual=None):
             button.disabled = false;
         });
     }
-
-    // Asignar eventos a los botones existentes
     """
+
+    # Agregar listener solo para el botón de "regenerarAmbasBtn" si existe
+    if tiene_incendio and tiene_no_incendio:
+        html += """
+    // Botón para regenerar ambas planificaciones
+    document.getElementById('regenerarAmbasBtn').addEventListener('click', function() {
+        generarPlanificacion('ambas');
+    });
+        """
 
     # Agregar listeners solo para los botones que existen
     if tiene_incendio:
