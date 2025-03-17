@@ -1,6 +1,7 @@
 from flask import jsonify, request
 from datetime import datetime
-from trabajadores.modelo import leer_datos, guardar_datos, determinar_estado
+from trabajadores.modelo import guardar_datos, determinar_estado
+from procesamiento.leer_datos import leer_datos_json
 
 
 def configurar_rutas_trabajadores(app):
@@ -10,7 +11,8 @@ def configurar_rutas_trabajadores(app):
 
     @app.route('/api/trabajadores', methods=['GET'])
     def obtener_trabajadores():
-        trabajadores = leer_datos()
+        fichero_json = 'trabajadores/disponibilidades.json'
+        trabajadores = leer_datos_json(fichero_json)
         return jsonify({
             "status": "ok",
             "total": len(trabajadores),
@@ -19,7 +21,8 @@ def configurar_rutas_trabajadores(app):
 
     @app.route('/api/trabajadores/<id>', methods=['GET'])
     def obtener_trabajador(id):
-        trabajadores = leer_datos()
+        fichero_json = 'trabajadores/disponibilidades.json'
+        trabajadores = leer_datos_json(fichero_json)
         trabajador = next((t for t in trabajadores if str(t["id"]) == str(id)), None)
         if not trabajador:
             return jsonify({"status": "error", "mensaje": "Trabajador no encontrado"}), 404
@@ -36,8 +39,8 @@ def configurar_rutas_trabajadores(app):
                     "status": "error",
                     "mensaje": "Faltan campos obligatorios (id, nombre, apellidos)"
                 }), 400
-
-            trabajadores = leer_datos()
+            fichero_json = 'trabajadores/disponibilidades.json'
+            trabajadores = leer_datos_json(fichero_json)
 
             # Validar que el ID no exista
             if any(str(t["id"]) == str(datos["id"]) for t in trabajadores):
@@ -92,7 +95,8 @@ def configurar_rutas_trabajadores(app):
     def actualizar_trabajador(id):
         try:
             datos = request.get_json()
-            trabajadores = leer_datos()
+            fichero_json = 'trabajadores/disponibilidades.json'
+            trabajadores = leer_datos_json(fichero_json)
             index = next((i for i, t in enumerate(trabajadores) if str(t["id"]) == str(id)), -1)
 
             if index == -1:

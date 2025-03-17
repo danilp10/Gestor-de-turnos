@@ -241,7 +241,7 @@
     "apellidos": "Hernández",
     "estado": "activo",
     "disponibilidad": [
-      "miércoles",
+      "martes",
       "jueves",
       "viernes",
       "sábado",
@@ -251,10 +251,10 @@
       "vacaciones": null,
       "reincorporacion": null
     },
-    "timestamp": "2025-03-05T11:06:39.443Z",
+    "timestamp": "2025-03-17T09:10:14.327181",
     "diasNoDisponibles": [
       "lunes",
-      "martes"
+      "miércoles"
     ],
     "personalCabildo": true
   },

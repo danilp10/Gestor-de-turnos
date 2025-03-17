@@ -1,19 +1,15 @@
 import json
 import os
 from datetime import datetime
+from procesamiento.leer_datos import leer_datos_json
 
-# Archivo de datos
 DATA_FILE = "trabajadores/disponibilidades.json"
 
-
+"""
 def leer_datos():
-    """
-    Lee los datos de los trabajadores desde el archivo JSON.
-    Si el archivo no existe, lo crea con un array vacío.
-    """
+    
     try:
         if not os.path.exists(DATA_FILE):
-            # Si el archivo no existe, crearlo con un array vacío
             with open(DATA_FILE, "w", encoding="utf-8") as f:
                 json.dump([], f)
             return []
@@ -22,6 +18,7 @@ def leer_datos():
     except Exception as e:
         print(f"Error al leer datos: {e}")
         return []
+"""
 
 
 def guardar_datos(datos):
@@ -38,6 +35,7 @@ def guardar_datos(datos):
     except Exception as e:
         print(f"Error al guardar datos: {e}")
         return False
+
 
 def determinar_estado(reincorporacion, vacaciones):
     """
@@ -57,11 +55,13 @@ def determinar_estado(reincorporacion, vacaciones):
     reincorporacion_date = datetime.strptime(reincorporacion, "%Y-%m-%d").date()
     return "baja" if reincorporacion_date > fecha_actual else "activo"
 
+
 def actualizar_estados_iniciales():
     """
     Actualiza los estados de los trabajadores en función de la fecha actual.
     """
-    trabajadores = leer_datos()
+    fichero_json = 'trabajadores/disponibilidades.json'
+    trabajadores = leer_datos_json(fichero_json)
     fecha_actual = datetime.today().date()
 
     cambios = False
