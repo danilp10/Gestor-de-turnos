@@ -111,7 +111,6 @@ def generar_planificacion_trabajos_openai(datos_trabajadores, token_openai, arch
     for trabajador in datos_trabajadores:
         trabajador_norm = trabajador.copy()
 
-        # Normalize availability to a consistent format
         if isinstance(trabajador['disponibilidad'], list):
             disp_obj = {}
             for dia in ["lunes", "martes", "miércoles", "jueves", "viernes", "sábado", "domingo"]:
@@ -280,6 +279,8 @@ def generar_planificacion_trabajos_openai(datos_trabajadores, token_openai, arch
         prompt += f"Disponibilidad: {json.dumps(trabajador['disponibilidad'], ensure_ascii=False)}\n"
         prompt += f"Días No Disponibles: {json.dumps(trabajador['diasNoDisponibles'], ensure_ascii=False)}\n"
         prompt += f"Excepciones: {json.dumps(trabajador.get('excepciones', {}), ensure_ascii=False)}\n\n"
+
+    print(prompt)
 
     # Generar la planificación
     response = client.chat.completions.create(

@@ -87,6 +87,12 @@
         .btn-no-incendio:hover {
             background-color: #449d44;
         }
+        .btn-ambas {
+            background-color: #337ab7;
+        }
+        .btn-ambas:hover {
+            background-color: #286090;
+        }
         .planificacion {
             display: none;
         }
@@ -181,20 +187,36 @@
         .btn-generar:hover {
             background-color: #46b8da;
         }
+        .spinner {
+            display: none; /* Se cambia a inline-block cuando se activa */
+            width: 16px;
+            height: 16px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top: 3px solid #fff;
+            animation: spin 1s linear infinite;
+            vertical-align: middle;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .button-text {
+            margin-right: 20px;
+        }
     </style>
     </head>
     <body>
     <div class="container">
         <h1>Planificación Semanal de Turnos</h1>
     
-        <div class="toggle-container">
-            <button id="toggleBtn" class="toggle-btn">Cambiar a Planificación Sin Incendio</button>
-        </div>
-
-        <div id="statusIndicator" class="status-indicator">
-            SITUACIÓN ACTUAL: INCENDIO
-        </div>
-        
+            <div class="status-indicator">
+                SITUACIÓN ACTUAL: INCENDIO
+                <p style="font-size: 14px; color: #666;">(Solo se ha generado la planificación para caso de incendio)</p>
+            </div>
+            
     <div class="leyenda">
         <h3>Leyenda de Tiempo Restante (solo para trabajadores del turno actual)</h3>
         <div class="leyenda-item">
@@ -228,116 +250,144 @@
                 </thead>
                 <tbody>
     
+                        <tr class="turno-diurno fecha-actual">
+                            <td>17/03/2025</td>
+                            <td>Lunes</td>
+                            <td>Diurno (08:00-20:00)</td>
+                            <td>Pepe Mel <span class='tiempo-indicador indicador-verde' title='10.6 horas restantes'></span>, Omenuke Mfulu <span class='tiempo-indicador indicador-verde' title='10.6 horas restantes'></span>, Pedro Gónzalez <span class='tiempo-indicador indicador-verde' title='10.6 horas restantes'></span>, Sergio López <span class='tiempo-indicador indicador-verde' title='10.6 horas restantes'></span></td>
+                        </tr>
+            
+                        <tr class="turno-nocturno fecha-actual">
+                            <td>17/03/2025</td>
+                            <td>Lunes</td>
+                            <td>Nocturno (20:00-08:00)</td>
+                            <td>Alberto Moleiro, Juanma Rodríguez, Antonio Gil, Alberto Melián</td>
+                        </tr>
+            
+                        <tr class="turno-diurno">
+                            <td>18/03/2025</td>
+                            <td>Martes</td>
+                            <td>Diurno (08:00-20:00)</td>
+                            <td>Pepe Mel, Sergio Ramos, Sergio Santana, Juan Mata</td>
+                        </tr>
+            
+                        <tr class="turno-nocturno">
+                            <td>18/03/2025</td>
+                            <td>Martes</td>
+                            <td>Nocturno (20:00-08:00)</td>
+                            <td>Alberto Moleiro, Juanma Rodríguez, Pablo Maffeo, Andrés Jímenez</td>
+                        </tr>
+            
+                        <tr class="turno-diurno">
+                            <td>19/03/2025</td>
+                            <td>Miércoles</td>
+                            <td>Diurno (08:00-20:00)</td>
+                            <td>Sergio Ramos, Sergio Santana, Fernando Torres, Felipe Hernández</td>
+                        </tr>
+            
+                        <tr class="turno-nocturno">
+                            <td>19/03/2025</td>
+                            <td>Miércoles</td>
+                            <td>Nocturno (20:00-08:00)</td>
+                            <td>Pepe Bueno, Raúl Asencio, Daniel Carvajal, Federico Valverde</td>
+                        </tr>
+            
                         <tr class="turno-diurno">
                             <td>20/03/2025</td>
                             <td>Jueves</td>
                             <td>Diurno (08:00-20:00)</td>
-                            <td>Pepe Mel, Omenuke Mfulu, Fernando Torres, Alberto Moleiro</td>
+                            <td>Omenuke Mfulu, Fernando Torres, Felipe Hernández, David García</td>
                         </tr>
             
                         <tr class="turno-nocturno">
                             <td>20/03/2025</td>
                             <td>Jueves</td>
                             <td>Nocturno (20:00-08:00)</td>
-                            <td>Sergio Ramos, Sergio Santana, Pedro Gónzalez, Felipe Hernández</td>
+                            <td>Pepe Bueno, Raúl Asencio, Kike García, Pablo Maffeo</td>
                         </tr>
             
                         <tr class="turno-diurno">
                             <td>21/03/2025</td>
                             <td>Viernes</td>
                             <td>Diurno (08:00-20:00)</td>
-                            <td>Pepe Mel, Omenuke Mfulu, Fernando Torres, Alberto Moleiro</td>
+                            <td>Pedro Gónzalez, Sergio López, David García, Kike García</td>
                         </tr>
             
                         <tr class="turno-nocturno">
                             <td>21/03/2025</td>
                             <td>Viernes</td>
                             <td>Nocturno (20:00-08:00)</td>
-                            <td>Sergio Ramos, Sergio Santana, Pedro Gónzalez, Felipe Hernández</td>
+                            <td>Antonio Gil, Alberto Melián, Andrés Jímenez, Daniel Carvajal</td>
                         </tr>
             
                         <tr class="turno-diurno">
                             <td>22/03/2025</td>
                             <td>Sábado</td>
                             <td>Diurno (08:00-20:00)</td>
-                            <td>Jaime Mata, Sergio López, David García, Federico Valverde</td>
+                            <td>Jaime Mata, Sergio López, Alberto Moleiro, Juanma Rodríguez</td>
                         </tr>
             
                         <tr class="turno-nocturno">
                             <td>22/03/2025</td>
                             <td>Sábado</td>
                             <td>Nocturno (20:00-08:00)</td>
-                            <td>Juan Mata, Pepe Bueno, Antonio Gil, Raúl Asencio</td>
+                            <td>Antonio Gil, Federico Valverde, Pepe Mel, Omenuke Mfulu</td>
                         </tr>
             
                         <tr class="turno-diurno">
                             <td>23/03/2025</td>
                             <td>Domingo</td>
                             <td>Diurno (08:00-20:00)</td>
-                            <td>Jaime Mata, Sergio López, David García, Federico Valverde</td>
+                            <td>Jaime Mata, Pedro Gónzalez, Alberto Moleiro, Juanma Rodríguez</td>
                         </tr>
             
                         <tr class="turno-nocturno">
                             <td>23/03/2025</td>
                             <td>Domingo</td>
                             <td>Nocturno (20:00-08:00)</td>
-                            <td>Juan Mata, Pepe Bueno, Antonio Gil, Raúl Asencio</td>
+                            <td>Sergio Ramos, Sergio Santana, Pepe Mel, Omenuke Mfulu</td>
                         </tr>
             
                         <tr class="turno-diurno">
                             <td>24/03/2025</td>
                             <td>Lunes</td>
                             <td>Diurno (08:00-20:00)</td>
-                            <td>Pepe Mel, Omenuke Mfulu, Fernando Torres, Alberto Moleiro</td>
+                            <td>Fernando Torres, Felipe Hernández, Pepe Bueno, Raúl Asencio</td>
                         </tr>
             
                         <tr class="turno-nocturno">
                             <td>24/03/2025</td>
                             <td>Lunes</td>
                             <td>Nocturno (20:00-08:00)</td>
-                            <td>Sergio Ramos, Sergio Santana, Pedro Gónzalez, Felipe Hernández</td>
+                            <td>Sergio Ramos, Sergio Santana, Juan Mata, David García</td>
                         </tr>
             
                         <tr class="turno-diurno">
                             <td>25/03/2025</td>
                             <td>Martes</td>
                             <td>Diurno (08:00-20:00)</td>
-                            <td>Pepe Mel, Omenuke Mfulu, Fernando Torres, Alberto Moleiro</td>
+                            <td>Pedro Gónzalez, Kike García, Pepe Bueno, Raúl Asencio</td>
                         </tr>
             
                         <tr class="turno-nocturno">
                             <td>25/03/2025</td>
                             <td>Martes</td>
                             <td>Nocturno (20:00-08:00)</td>
-                            <td>Sergio Ramos, Sergio Santana, Pedro Gónzalez, Felipe Hernández</td>
+                            <td>Alberto Melián, Andrés Jímenez, Juan Mata, David García</td>
                         </tr>
             
                         <tr class="turno-diurno">
                             <td>26/03/2025</td>
                             <td>Miércoles</td>
                             <td>Diurno (08:00-20:00)</td>
-                            <td>Jaime Mata, Sergio López, David García, Federico Valverde</td>
+                            <td>Jaime Mata, Alberto Moleiro, Kike García, Daniel Carvajal</td>
                         </tr>
             
                         <tr class="turno-nocturno">
                             <td>26/03/2025</td>
                             <td>Miércoles</td>
                             <td>Nocturno (20:00-08:00)</td>
-                            <td>Juan Mata, Pepe Bueno, Antonio Gil, Raúl Asencio</td>
-                        </tr>
-            
-                        <tr class="turno-diurno">
-                            <td>27/03/2025</td>
-                            <td>Jueves</td>
-                            <td>Diurno (08:00-20:00)</td>
-                            <td>Jaime Mata, Sergio López, David García, Federico Valverde</td>
-                        </tr>
-            
-                        <tr class="turno-nocturno">
-                            <td>27/03/2025</td>
-                            <td>Jueves</td>
-                            <td>Nocturno (20:00-08:00)</td>
-                            <td>Juan Mata, Pepe Bueno, Antonio Gil, Raúl Asencio</td>
+                            <td>Fernando Torres, Felipe Hernández, Pablo Maffeo, Federico Valverde</td>
                         </tr>
             
                 </tbody>
@@ -357,111 +407,6 @@
                 </thead>
                 <tbody>
     
-                        <tr class="turno-refuerzo1">
-                            <td>28/03/2025</td>
-                            <td>Viernes</td>
-                            <td>Retenes de refuerzo 1 (21:30-07:30)</td>
-                            <td>Juan Mata, Sergio López, Pepe Bueno</td>
-                        </tr>
-            
-                        <tr class="turno-refuerzo2">
-                            <td>28/03/2025</td>
-                            <td>Viernes</td>
-                            <td>Retenes de refuerzo 2 (07:30-17:30)</td>
-                            <td>Antonio Gil, Raúl Asencio</td>
-                        </tr>
-            
-                        <tr class="turno-cabildo">
-                            <td>28/03/2025</td>
-                            <td>Viernes</td>
-                            <td>Retenes del Cabildo (12:30-21:30)</td>
-                            <td>Pepe Mel, Alberto Moleiro</td>
-                        </tr>
-            
-                        <tr class="turno-refuerzo1">
-                            <td>29/03/2025</td>
-                            <td>Sábado</td>
-                            <td>Retenes de refuerzo 1 (21:30-07:30)</td>
-                            <td>Kike García, Alberto Melián, Pablo Maffeo</td>
-                        </tr>
-            
-                        <tr class="turno-refuerzo2">
-                            <td>29/03/2025</td>
-                            <td>Sábado</td>
-                            <td>Retenes de refuerzo 2 (07:30-17:30)</td>
-                            <td>Andrés Jímenez, Daniel Carvajal</td>
-                        </tr>
-            
-                        <tr class="turno-cabildo">
-                            <td>29/03/2025</td>
-                            <td>Sábado</td>
-                            <td>Retenes del Cabildo (12:30-21:30)</td>
-                            <td>Jaime Mata, Sergio Santana</td>
-                        </tr>
-            
-                        <tr class="turno-refuerzo1">
-                            <td>30/03/2025</td>
-                            <td>Domingo</td>
-                            <td>Retenes de refuerzo 1 (21:30-07:30)</td>
-                            <td>Juan Mata, Sergio López, Pepe Bueno</td>
-                        </tr>
-            
-                        <tr class="turno-refuerzo2">
-                            <td>30/03/2025</td>
-                            <td>Domingo</td>
-                            <td>Retenes de refuerzo 2 (07:30-17:30)</td>
-                            <td>Antonio Gil, Raúl Asencio</td>
-                        </tr>
-            
-                        <tr class="turno-cabildo">
-                            <td>30/03/2025</td>
-                            <td>Domingo</td>
-                            <td>Retenes del Cabildo (12:30-21:30)</td>
-                            <td>Omenuke Mfulu, Fernando Torres</td>
-                        </tr>
-            
-                        <tr class="turno-refuerzo1">
-                            <td>31/03/2025</td>
-                            <td>Lunes</td>
-                            <td>Retenes de refuerzo 1 (21:30-07:30)</td>
-                            <td>Kike García, Alberto Melián, Pablo Maffeo</td>
-                        </tr>
-            
-                        <tr class="turno-refuerzo2">
-                            <td>31/03/2025</td>
-                            <td>Lunes</td>
-                            <td>Retenes de refuerzo 2 (07:30-17:30)</td>
-                            <td>Andrés Jímenez, Daniel Carvajal</td>
-                        </tr>
-            
-                        <tr class="turno-cabildo">
-                            <td>31/03/2025</td>
-                            <td>Lunes</td>
-                            <td>Retenes del Cabildo (12:30-21:30)</td>
-                            <td>Pepe Mel, Alberto Moleiro</td>
-                        </tr>
-            
-                        <tr class="turno-refuerzo1">
-                            <td>01/04/2025</td>
-                            <td>Martes</td>
-                            <td>Retenes de refuerzo 1 (21:30-07:30)</td>
-                            <td>Juan Mata, Sergio López, Pepe Bueno</td>
-                        </tr>
-            
-                        <tr class="turno-refuerzo2">
-                            <td>01/04/2025</td>
-                            <td>Martes</td>
-                            <td>Retenes de refuerzo 2 (07:30-17:30)</td>
-                            <td>Antonio Gil, Raúl Asencio</td>
-                        </tr>
-            
-                        <tr class="turno-cabildo">
-                            <td>01/04/2025</td>
-                            <td>Martes</td>
-                            <td>Retenes del Cabildo (12:30-21:30)</td>
-                            <td>Sergio Ramos, Sergio Santana</td>
-                        </tr>
-            
                 </tbody>
             </table>
         </div>
@@ -469,89 +414,103 @@
     <div class="regenerar-container">
         <div id="botonesPlan">
     
-            <button id="regenerarIncendioBtn" class="toggle-btn btn-incendio">Rehacer Plan Incendio</button>
-        
-            <button id="regenerarNoIncendioBtn" class="toggle-btn btn-no-incendio">Rehacer Plan No Incendio</button>
+            <button id="regenerarIncendioBtn" class="toggle-btn btn-incendio">
+                <span class="button-text">Rehacer Plan Incendio</span>
+                <span id="spinnerIncendio" class="spinner"></span>
+            </button>
         
         </div>
         <div id="mensajeEstado"></div>
     </div>
     
-        <script>
-            const toggleBtn = document.getElementById('toggleBtn');
-            const planIncendio = document.getElementById('planIncendio');
-            const planNoIncendio = document.getElementById('planNoIncendio');
-            const statusIndicator = document.getElementById('statusIndicator');
-
-            let mostrandoIncendio = true;
-
-            toggleBtn.addEventListener('click', function() {
-                if (mostrandoIncendio) {
-                    planIncendio.classList.remove('active');
-                    planNoIncendio.classList.add('active');
-                    toggleBtn.textContent = 'Cambiar a Planificación Con Incendio';
-                    statusIndicator.textContent = 'SITUACIÓN ACTUAL: NO INCENDIO';
-                    statusIndicator.classList.add('no-incendio');
-                } else {
-                    planNoIncendio.classList.remove('active');
-                    planIncendio.classList.add('active');
-                    toggleBtn.textContent = 'Cambiar a Planificación Sin Incendio';
-                    statusIndicator.textContent = 'SITUACIÓN ACTUAL: INCENDIO';
-                    statusIndicator.classList.remove('no-incendio');
-                }
-                mostrandoIncendio = !mostrandoIncendio;
-            });
-        </script>
-        
     <script>
-    // Función para realizar la generación
-    function generarPlanificacion(tipo) {
-        // Mostrar mensaje de procesamiento
-        const mensajeEstado = document.getElementById('mensajeEstado');
-        mensajeEstado.innerHTML = '<div class="mensaje-estado mensaje-info">Generando nueva planificación para caso de ' + 
-                                  (tipo === 'incendio' ? 'incendio' : 'no incendio') + ', por favor espere...</div>';
-
-        // Deshabilitar todos los botones mientras se procesa
-        document.querySelectorAll('button').forEach(button => {
-            button.disabled = true;
-        });
-
-        // Realizar la petición AJAX a la ruta /generar
-        fetch('/generar', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ tipoPlanificacion: tipo })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                mensajeEstado.innerHTML = '<div class="mensaje-estado mensaje-exito">¡Planificación regenerada correctamente! Recargando página...</div>';
-                // Esperar un momento y recargar la página para mostrar la nueva planificación
-                setTimeout(() => {
-                    window.location.reload();
-                }, 1500);
-            } else {
-                mensajeEstado.innerHTML = '<div class="mensaje-estado mensaje-error">Error: ' + (data.error || 'Error desconocido') + '</div>';
-                habilitarBotones();
+        function mostrarSpinner(tipo) {
+            const tipoCapitalizado = tipo.charAt(0).toUpperCase() + tipo.slice(1);
+            const spinner = document.getElementById('spinner' + tipoCapitalizado);
+            if (spinner) {
+                spinner.style.display = 'inline-block'; // Asegurar que sea visible
             }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            mensajeEstado.innerHTML = '<div class="mensaje-estado mensaje-error">Error en la comunicación con el servidor. Por favor, intente nuevamente.</div>';
-            habilitarBotones();
-        });
-    }
-
-    // Función para habilitar los botones
-    function habilitarBotones() {
-        document.querySelectorAll('button').forEach(button => {
-            button.disabled = false;
-        });
-    }
-
-    // Asignar eventos a los botones existentes
+        }
+        
+        // Modifica la función ocultarSpinners para ocultar todos los spinners
+        function ocultarSpinners() {
+            document.querySelectorAll('.spinner').forEach(spinner => {
+                spinner.style.display = 'none';
+            });
+        }
+        
+        // Modifica la función habilitarBotones para habilitar todos los botones
+        function habilitarBotones() {
+            document.querySelectorAll('button').forEach(button => {
+                button.disabled = false;
+            });
+        }
+        
+        // Modifica la función generarPlanificacion para controlar correctamente los spinners
+        function generarPlanificacion(tipo) {
+            const mensajeEstado = document.getElementById('mensajeEstado');
+            
+            // Mostrar spinner
+            mostrarSpinner(tipo);
+            
+            // Iniciar contador de tiempo
+            let segundos = 0;
+            const contadorId = setInterval(() => {
+                segundos++;
+                const tiempoTexto = document.getElementById('tiempoTexto');
+                if (tiempoTexto) {
+                    tiempoTexto.textContent = `Tiempo transcurrido: ${segundos} segundos`;
+                }
+            }, 1000);
+        
+            let mensajeTexto = '';
+            if (tipo === 'ambas') {
+                mensajeTexto = 'Generando ambas planificaciones, por favor espere...';
+            } else {
+                mensajeTexto = 'Generando nueva planificación para caso de ' + 
+                              (tipo === 'incendio' ? 'incendio' : 'no incendio') + ', por favor espere...';
+            }
+        
+            mensajeEstado.innerHTML = '<div class="mensaje-estado mensaje-info">' + mensajeTexto + 
+                                     '<div id="tiempoTexto">Tiempo transcurrido: 0 segundos</div></div>';
+        
+            document.querySelectorAll('button').forEach(button => {
+                button.disabled = true;
+            });
+        
+            // Realizar la petición AJAX a la ruta /generar
+            fetch('/generar', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ tipoPlanificacion: tipo })
+            })
+            .then(response => response.json())
+            .then(data => {
+                clearInterval(contadorId); // Detener contador
+                ocultarSpinners(); // Ocultar spinners
+                
+                if (data.success) {
+                    mensajeEstado.innerHTML = '<div class="mensaje-estado mensaje-exito">¡Planificación regenerada correctamente! Recargando página...</div>';
+                    // Esperar un momento y recargar la página para mostrar la nueva planificación
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1500);
+                } else {
+                    mensajeEstado.innerHTML = '<div class="mensaje-estado mensaje-error">Error: ' + (data.error || 'Error desconocido') + '</div>';
+                    habilitarBotones();
+                }
+            })
+            .catch(error => {
+                clearInterval(contadorId); // Detener contador
+                ocultarSpinners(); // Ocultar spinners
+                
+                console.error('Error:', error);
+                mensajeEstado.innerHTML = '<div class="mensaje-estado mensaje-error">Error en la comunicación con el servidor. Por favor, intente nuevamente.</div>';
+                habilitarBotones();
+            });
+        }
     
     if (document.getElementById('regenerarIncendioBtn')) {
         document.getElementById('regenerarIncendioBtn').addEventListener('click', function() {
@@ -559,12 +518,14 @@
         });
     }
         
-    if (document.getElementById('regenerarNoIncendioBtn')) {
-        document.getElementById('regenerarNoIncendioBtn').addEventListener('click', function() {
-            generarPlanificacion('noIncendio');
+    window.addEventListener('pageshow', function(event) {
+            // This ensures spinners are hidden when using back/forward navigation
+            if (event.persisted) {
+                ocultarSpinners();
+                habilitarBotones();
+            }
         });
-    }
-        
+    
     </script>
     
     </div>

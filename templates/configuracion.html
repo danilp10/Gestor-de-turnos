@@ -104,6 +104,54 @@
         #status-message {
             margin-bottom: 20px;
         }
+       .button-with-spinner {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 150px;
+            padding: 10px 15px;
+        }
+
+        .button-with-spinner .spinner {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top: 3px solid #fff;
+            animation: spin 1s linear infinite;
+            display: none;
+        }
+
+        .button-with-spinner.loading .spinner {
+            display: inline-block;
+        }
+
+        .button-text {
+            position: relative;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .button-with-spinner .spinner {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top: 3px solid #fff;
+            animation: spin 1s linear infinite;
+            display: none;
+        }
+
+        /* Estilo para el contador de tiempo */
+        #tiempo-contador {
+            margin-top: 10px;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
@@ -156,7 +204,11 @@
 
     <div id="mensaje" class="hidden"></div>
 
-    <button id="generar-btn" class="hidden">Generar Planificación</button>
+    <button id="generar-btn" class="button-with-spinner hidden">
+        <span class="spinner"></span>
+        <span class="button-text">Generar Planificación</span>
+    </button>
+    <div id="tiempo-contador" class="hidden info">Tiempo transcurrido: 0 segundos</div>
 
     <script>
         // Función para mostrar mensajes de estado
@@ -373,7 +425,6 @@
                 };
             }
 
-            // Añadir configuración de no incendio si es necesario
             if (tipoPlanificacion === 'ambos' || tipoPlanificacion === 'noIncendio') {
                 const cantidadTurnos = parseInt(document.getElementById('no-incendio-retenes-turnos').value) || 0;
                 let retenes = [];
@@ -396,7 +447,6 @@
                 };
             }
 
-            // Enviar configuración al servidor
             fetch('/configuracion', {
                 method: 'POST',
                 headers: {
@@ -413,23 +463,30 @@
                 return response.json();
             })
             .then(data => {
-                // Mostrar mensaje de éxito
                 mostrarMensaje('Configuración guardada correctamente', 'success');
 
-                // Mostrar el botón de generar planificación
                 document.getElementById('generar-btn').classList.remove('hidden');
             })
             .catch(error => {
-                // Mostrar mensaje de error
                 mostrarMensaje(`Error: ${error.message}`, 'error');
             });
         });
 
-        // Manejar clic en el botón Generar Planificación
         document.getElementById('generar-btn').addEventListener('click', function() {
             mostrarMensaje('Generando planificación, por favor espere...', 'info');
+            toggleButtonSpinner('generar-btn', true);
 
-            // Llamar al endpoint para generar la planificación
+            // Iniciar contador de tiempo
+            const tiempoContador = document.getElementById('tiempo-contador');
+            tiempoContador.textContent = 'Tiempo transcurrido: 0 segundos';
+            tiempoContador.classList.remove('hidden');
+
+            let segundos = 0;
+            const contadorId = setInterval(() => {
+                segundos++;
+                tiempoContador.textContent = `Tiempo transcurrido: ${segundos} segundos`;
+            }, 1000);
+
             fetch('/generar', {
                 method: 'POST'
             })
@@ -442,19 +499,54 @@
                 return response.json();
             })
             .then(data => {
-                // Mostrar mensaje de éxito
+                // Detener contador
+                clearInterval(contadorId);
+                tiempoContador.classList.add('hidden');
+                toggleButtonSpinner('generar-btn', false);
+
                 mostrarMensaje('Planificación generada correctamente. Redirigiendo...', 'success');
 
-                // Redirigir a la página de la planificación
                 setTimeout(() => {
                     window.location.href = '/planificacion';
                 }, 1500);
             })
             .catch(error => {
-                // Mostrar mensaje de error
+                // Detener contador en caso de error
+                clearInterval(contadorId);
+                tiempoContador.classList.add('hidden');
+
                 mostrarMensaje(`Error al generar planificación: ${error.message}`, 'error');
+                toggleButtonSpinner('generar-btn', false);
             });
         });
+
+        // Función para mostrar/ocultar el spinner global
+        function toggleSpinner(show = true) {
+            const spinner = document.getElementById('spinner-global');
+            if (show) {
+                spinner.classList.remove('hidden');
+            } else {
+                spinner.classList.add('hidden');
+            }
+        }
+
+        function toggleButtonSpinner(buttonId, show = true) {
+            const button = document.getElementById(buttonId);
+            if (!button) return;
+
+            const spinner = button.querySelector('.spinner');
+            if (!spinner) return;
+
+            if (show) {
+                spinner.style.display = 'inline-block';
+                button.classList.add('loading');
+                button.classList.add('disabled');
+            } else {
+                spinner.style.display = 'none';
+                button.classList.remove('loading');
+                button.classList.remove('disabled');
+            }
+        }
     </script>
 </body>
 </html>

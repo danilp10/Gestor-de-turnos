@@ -294,6 +294,25 @@ def generar_html_con_toggle(df_incendio, df_no_incendio, hora_actual=None):
         .btn-generar:hover {
             background-color: #46b8da;
         }
+        .spinner {
+            display: none; /* Se cambia a inline-block cuando se activa */
+            width: 16px;
+            height: 16px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top: 3px solid #fff;
+            animation: spin 1s linear infinite;
+            vertical-align: middle;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .button-text {
+            margin-right: 20px;
+        }
     </style>
     </head>
     <body>
@@ -448,22 +467,28 @@ def generar_html_con_toggle(df_incendio, df_no_incendio, hora_actual=None):
         <div id="botonesPlan">
     """
 
-    # Botón para regenerar ambas planificaciones SOLO cuando se tienen ambas planificaciones
     if tiene_incendio and tiene_no_incendio:
         html += """
-            <button id="regenerarAmbasBtn" class="toggle-btn btn-ambas">Rehacer Ambas Planificaciones</button>
+            <button id="regenerarAmbasBtn" class="toggle-btn btn-ambas">
+                <span class="button-text">Rehacer Ambas Planificaciones</span>
+                <span id="spinnerAmbas" class="spinner"></span>
+            </button>
         """
 
-    # Solo mostramos el botón de regenerar planificación de incendio si estamos en modo incendio
     if tiene_incendio:
         html += """
-            <button id="regenerarIncendioBtn" class="toggle-btn btn-incendio">Rehacer Plan Incendio</button>
+            <button id="regenerarIncendioBtn" class="toggle-btn btn-incendio">
+                <span class="button-text">Rehacer Plan Incendio</span>
+                <span id="spinnerIncendio" class="spinner"></span>
+            </button>
         """
 
-    # Solo mostramos el botón de regenerar planificación de no incendio si estamos en modo no incendio
     if tiene_no_incendio:
         html += """
-            <button id="regenerarNoIncendioBtn" class="toggle-btn btn-no-incendio">Rehacer Plan No Incendio</button>
+            <button id="regenerarNoIncendioBtn" class="toggle-btn btn-no-incendio">
+                <span class="button-text">Rehacer Plan No Incendio</span>
+                <span id="spinnerNoIncendio" class="spinner"></span>
+            </button>
         """
 
     html += """
@@ -501,75 +526,104 @@ def generar_html_con_toggle(df_incendio, df_no_incendio, hora_actual=None):
         </script>
         """
 
-    # Script para los botones de rehacer planificación específicos
     html += """
     <script>
-    // Función para realizar la generación
-    function generarPlanificacion(tipo) {
-        // Mostrar mensaje de procesamiento
-        const mensajeEstado = document.getElementById('mensajeEstado');
-
-        let mensajeTexto = '';
-        if (tipo === 'ambas') {
-            mensajeTexto = 'Generando ambas planificaciones, por favor espere...';
-        } else {
-            mensajeTexto = 'Generando nueva planificación para caso de ' + 
-                          (tipo === 'incendio' ? 'incendio' : 'no incendio') + ', por favor espere...';
-        }
-
-        mensajeEstado.innerHTML = '<div class="mensaje-estado mensaje-info">' + mensajeTexto + '</div>';
-
-        // Deshabilitar todos los botones mientras se procesa
-        document.querySelectorAll('button').forEach(button => {
-            button.disabled = true;
-        });
-
-        // Realizar la petición AJAX a la ruta /generar
-        fetch('/generar', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ tipoPlanificacion: tipo })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                mensajeEstado.innerHTML = '<div class="mensaje-estado mensaje-exito">¡Planificación regenerada correctamente! Recargando página...</div>';
-                // Esperar un momento y recargar la página para mostrar la nueva planificación
-                setTimeout(() => {
-                    window.location.reload();
-                }, 1500);
-            } else {
-                mensajeEstado.innerHTML = '<div class="mensaje-estado mensaje-error">Error: ' + (data.error || 'Error desconocido') + '</div>';
-                habilitarBotones();
+        function mostrarSpinner(tipo) {
+            const tipoCapitalizado = tipo.charAt(0).toUpperCase() + tipo.slice(1);
+            const spinner = document.getElementById('spinner' + tipoCapitalizado);
+            if (spinner) {
+                spinner.style.display = 'inline-block'; // Asegurar que sea visible
             }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            mensajeEstado.innerHTML = '<div class="mensaje-estado mensaje-error">Error en la comunicación con el servidor. Por favor, intente nuevamente.</div>';
-            habilitarBotones();
-        });
-    }
-
-    // Función para habilitar los botones
-    function habilitarBotones() {
-        document.querySelectorAll('button').forEach(button => {
-            button.disabled = false;
-        });
-    }
+        }
+        
+        // Modifica la función ocultarSpinners para ocultar todos los spinners
+        function ocultarSpinners() {
+            document.querySelectorAll('.spinner').forEach(spinner => {
+                spinner.style.display = 'none';
+            });
+        }
+        
+        // Modifica la función habilitarBotones para habilitar todos los botones
+        function habilitarBotones() {
+            document.querySelectorAll('button').forEach(button => {
+                button.disabled = false;
+            });
+        }
+        
+        // Modifica la función generarPlanificacion para controlar correctamente los spinners
+        function generarPlanificacion(tipo) {
+            const mensajeEstado = document.getElementById('mensajeEstado');
+            
+            // Mostrar spinner
+            mostrarSpinner(tipo);
+            
+            // Iniciar contador de tiempo
+            let segundos = 0;
+            const contadorId = setInterval(() => {
+                segundos++;
+                const tiempoTexto = document.getElementById('tiempoTexto');
+                if (tiempoTexto) {
+                    tiempoTexto.textContent = `Tiempo transcurrido: ${segundos} segundos`;
+                }
+            }, 1000);
+        
+            let mensajeTexto = '';
+            if (tipo === 'ambas') {
+                mensajeTexto = 'Generando ambas planificaciones, por favor espere...';
+            } else {
+                mensajeTexto = 'Generando nueva planificación para caso de ' + 
+                              (tipo === 'incendio' ? 'incendio' : 'no incendio') + ', por favor espere...';
+            }
+        
+            mensajeEstado.innerHTML = '<div class="mensaje-estado mensaje-info">' + mensajeTexto + 
+                                     '<div id="tiempoTexto">Tiempo transcurrido: 0 segundos</div></div>';
+        
+            document.querySelectorAll('button').forEach(button => {
+                button.disabled = true;
+            });
+        
+            // Realizar la petición AJAX a la ruta /generar
+            fetch('/generar', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ tipoPlanificacion: tipo })
+            })
+            .then(response => response.json())
+            .then(data => {
+                clearInterval(contadorId); // Detener contador
+                ocultarSpinners(); // Ocultar spinners
+                
+                if (data.success) {
+                    mensajeEstado.innerHTML = '<div class="mensaje-estado mensaje-exito">¡Planificación regenerada correctamente! Recargando página...</div>';
+                    // Esperar un momento y recargar la página para mostrar la nueva planificación
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1500);
+                } else {
+                    mensajeEstado.innerHTML = '<div class="mensaje-estado mensaje-error">Error: ' + (data.error || 'Error desconocido') + '</div>';
+                    habilitarBotones();
+                }
+            })
+            .catch(error => {
+                clearInterval(contadorId); // Detener contador
+                ocultarSpinners(); // Ocultar spinners
+                
+                console.error('Error:', error);
+                mensajeEstado.innerHTML = '<div class="mensaje-estado mensaje-error">Error en la comunicación con el servidor. Por favor, intente nuevamente.</div>';
+                habilitarBotones();
+            });
+        }
     """
 
-    # Agregar listener solo para el botón de "regenerarAmbasBtn" si existe
     if tiene_incendio and tiene_no_incendio:
         html += """
-    // Botón para regenerar ambas planificaciones
     document.getElementById('regenerarAmbasBtn').addEventListener('click', function() {
         generarPlanificacion('ambas');
     });
         """
 
-    # Agregar listeners solo para los botones que existen
     if tiene_incendio:
         html += """
     if (document.getElementById('regenerarIncendioBtn')) {
@@ -587,6 +641,15 @@ def generar_html_con_toggle(df_incendio, df_no_incendio, hora_actual=None):
         });
     }
         """
+    html += """
+    window.addEventListener('pageshow', function(event) {
+            // This ensures spinners are hidden when using back/forward navigation
+            if (event.persisted) {
+                ocultarSpinners();
+                habilitarBotones();
+            }
+        });
+    """
 
     html += """
     </script>
