@@ -188,7 +188,7 @@
             background-color: #46b8da;
         }
         .spinner {
-            display: none; /* Se cambia a inline-block cuando se activa */
+            display: none;
             width: 16px;
             height: 16px;
             border: 3px solid rgba(255,255,255,0.3);
@@ -206,17 +206,30 @@
         .button-text {
             margin-right: 20px;
         }
+        .prompt-container {
+            margin: 0; /* Elimina márgenes */
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+            width: 100%; /* Asegura que ocupe todo el ancho de la pantalla */
+            box-sizing: border-box; /* Asegura que el padding no se agregue al ancho total */
+        }
+
     </style>
     </head>
     <body>
     <div class="container">
         <h1>Planificación Semanal de Turnos</h1>
     
-            <div class="status-indicator">
-                SITUACIÓN ACTUAL: INCENDIO
-                <p style="font-size: 14px; color: #666;">(Solo se ha generado la planificación para caso de incendio)</p>
-            </div>
-            
+        <div class="toggle-container">
+            <button id="toggleBtn" class="toggle-btn">Cambiar a Planificación Sin Incendio</button>
+        </div>
+
+        <div id="statusIndicator" class="status-indicator">
+            SITUACIÓN ACTUAL: INCENDIO
+        </div>
+        
     <div class="leyenda">
         <h3>Leyenda de Tiempo Restante (solo para trabajadores del turno actual)</h3>
         <div class="leyenda-item">
@@ -251,143 +264,171 @@
                 <tbody>
     
                         <tr class="turno-diurno fecha-actual">
-                            <td>17/03/2025</td>
+                            <td>24/03/2025</td>
                             <td>Lunes</td>
                             <td>Diurno (08:00-20:00)</td>
-                            <td>Pepe Mel <span class='tiempo-indicador indicador-verde' title='10.6 horas restantes'></span>, Omenuke Mfulu <span class='tiempo-indicador indicador-verde' title='10.6 horas restantes'></span>, Pedro Gónzalez <span class='tiempo-indicador indicador-verde' title='10.6 horas restantes'></span>, Sergio López <span class='tiempo-indicador indicador-verde' title='10.6 horas restantes'></span></td>
+                            <td>Pepe Mel <span class='tiempo-indicador indicador-amarillo' title='7.9 horas restantes'></span>, Omenuke Mfulu <span class='tiempo-indicador indicador-amarillo' title='7.9 horas restantes'></span>, Fernando Torres <span class='tiempo-indicador indicador-amarillo' title='7.9 horas restantes'></span>, Pedro Gónzalez <span class='tiempo-indicador indicador-amarillo' title='7.9 horas restantes'></span></td>
                         </tr>
             
                         <tr class="turno-nocturno fecha-actual">
-                            <td>17/03/2025</td>
-                            <td>Lunes</td>
-                            <td>Nocturno (20:00-08:00)</td>
-                            <td>Alberto Moleiro, Juanma Rodríguez, Antonio Gil, Alberto Melián</td>
-                        </tr>
-            
-                        <tr class="turno-diurno">
-                            <td>18/03/2025</td>
-                            <td>Martes</td>
-                            <td>Diurno (08:00-20:00)</td>
-                            <td>Pepe Mel, Sergio Ramos, Sergio Santana, Juan Mata</td>
-                        </tr>
-            
-                        <tr class="turno-nocturno">
-                            <td>18/03/2025</td>
-                            <td>Martes</td>
-                            <td>Nocturno (20:00-08:00)</td>
-                            <td>Alberto Moleiro, Juanma Rodríguez, Pablo Maffeo, Andrés Jímenez</td>
-                        </tr>
-            
-                        <tr class="turno-diurno">
-                            <td>19/03/2025</td>
-                            <td>Miércoles</td>
-                            <td>Diurno (08:00-20:00)</td>
-                            <td>Sergio Ramos, Sergio Santana, Fernando Torres, Felipe Hernández</td>
-                        </tr>
-            
-                        <tr class="turno-nocturno">
-                            <td>19/03/2025</td>
-                            <td>Miércoles</td>
-                            <td>Nocturno (20:00-08:00)</td>
-                            <td>Pepe Bueno, Raúl Asencio, Daniel Carvajal, Federico Valverde</td>
-                        </tr>
-            
-                        <tr class="turno-diurno">
-                            <td>20/03/2025</td>
-                            <td>Jueves</td>
-                            <td>Diurno (08:00-20:00)</td>
-                            <td>Omenuke Mfulu, Fernando Torres, Felipe Hernández, David García</td>
-                        </tr>
-            
-                        <tr class="turno-nocturno">
-                            <td>20/03/2025</td>
-                            <td>Jueves</td>
-                            <td>Nocturno (20:00-08:00)</td>
-                            <td>Pepe Bueno, Raúl Asencio, Kike García, Pablo Maffeo</td>
-                        </tr>
-            
-                        <tr class="turno-diurno">
-                            <td>21/03/2025</td>
-                            <td>Viernes</td>
-                            <td>Diurno (08:00-20:00)</td>
-                            <td>Pedro Gónzalez, Sergio López, David García, Kike García</td>
-                        </tr>
-            
-                        <tr class="turno-nocturno">
-                            <td>21/03/2025</td>
-                            <td>Viernes</td>
-                            <td>Nocturno (20:00-08:00)</td>
-                            <td>Antonio Gil, Alberto Melián, Andrés Jímenez, Daniel Carvajal</td>
-                        </tr>
-            
-                        <tr class="turno-diurno">
-                            <td>22/03/2025</td>
-                            <td>Sábado</td>
-                            <td>Diurno (08:00-20:00)</td>
-                            <td>Jaime Mata, Sergio López, Alberto Moleiro, Juanma Rodríguez</td>
-                        </tr>
-            
-                        <tr class="turno-nocturno">
-                            <td>22/03/2025</td>
-                            <td>Sábado</td>
-                            <td>Nocturno (20:00-08:00)</td>
-                            <td>Antonio Gil, Federico Valverde, Pepe Mel, Omenuke Mfulu</td>
-                        </tr>
-            
-                        <tr class="turno-diurno">
-                            <td>23/03/2025</td>
-                            <td>Domingo</td>
-                            <td>Diurno (08:00-20:00)</td>
-                            <td>Jaime Mata, Pedro Gónzalez, Alberto Moleiro, Juanma Rodríguez</td>
-                        </tr>
-            
-                        <tr class="turno-nocturno">
-                            <td>23/03/2025</td>
-                            <td>Domingo</td>
-                            <td>Nocturno (20:00-08:00)</td>
-                            <td>Sergio Ramos, Sergio Santana, Pepe Mel, Omenuke Mfulu</td>
-                        </tr>
-            
-                        <tr class="turno-diurno">
-                            <td>24/03/2025</td>
-                            <td>Lunes</td>
-                            <td>Diurno (08:00-20:00)</td>
-                            <td>Fernando Torres, Felipe Hernández, Pepe Bueno, Raúl Asencio</td>
-                        </tr>
-            
-                        <tr class="turno-nocturno">
                             <td>24/03/2025</td>
                             <td>Lunes</td>
                             <td>Nocturno (20:00-08:00)</td>
-                            <td>Sergio Ramos, Sergio Santana, Juan Mata, David García</td>
+                            <td>Juan Mata, Sergio López, Juanma Rodríguez, Alberto Melián</td>
                         </tr>
             
                         <tr class="turno-diurno">
                             <td>25/03/2025</td>
                             <td>Martes</td>
                             <td>Diurno (08:00-20:00)</td>
-                            <td>Pedro Gónzalez, Kike García, Pepe Bueno, Raúl Asencio</td>
+                            <td>Juan Mata, Sergio López, Juanma Rodríguez, Alberto Melián</td>
                         </tr>
             
                         <tr class="turno-nocturno">
                             <td>25/03/2025</td>
                             <td>Martes</td>
                             <td>Nocturno (20:00-08:00)</td>
-                            <td>Alberto Melián, Andrés Jímenez, Juan Mata, David García</td>
+                            <td>Sergio Ramos, Sergio Santana, Pepe Bueno, Andrés Jímenez</td>
                         </tr>
             
                         <tr class="turno-diurno">
                             <td>26/03/2025</td>
                             <td>Miércoles</td>
                             <td>Diurno (08:00-20:00)</td>
-                            <td>Jaime Mata, Alberto Moleiro, Kike García, Daniel Carvajal</td>
+                            <td>Sergio Ramos, Sergio Santana, Pepe Bueno, Andrés Jímenez</td>
                         </tr>
             
                         <tr class="turno-nocturno">
                             <td>26/03/2025</td>
                             <td>Miércoles</td>
                             <td>Nocturno (20:00-08:00)</td>
-                            <td>Fernando Torres, Felipe Hernández, Pablo Maffeo, Federico Valverde</td>
+                            <td>Jaime Mata, Omenuke Mfulu, Raúl Asencio, Daniel Carvajal</td>
+                        </tr>
+            
+                        <tr class="turno-diurno">
+                            <td>27/03/2025</td>
+                            <td>Jueves</td>
+                            <td>Diurno (08:00-20:00)</td>
+                            <td>Jaime Mata, Omenuke Mfulu, Raúl Asencio, Daniel Carvajal</td>
+                        </tr>
+            
+                        <tr class="turno-nocturno">
+                            <td>27/03/2025</td>
+                            <td>Jueves</td>
+                            <td>Nocturno (20:00-08:00)</td>
+                            <td>Pepe Mel, Fernando Torres, Alberto Moleiro, Federico Valverde</td>
+                        </tr>
+            
+                        <tr class="turno-diurno">
+                            <td>28/03/2025</td>
+                            <td>Viernes</td>
+                            <td>Diurno (08:00-20:00)</td>
+                            <td>Pepe Mel, Fernando Torres, Alberto Moleiro, Federico Valverde</td>
+                        </tr>
+            
+                        <tr class="turno-nocturno">
+                            <td>28/03/2025</td>
+                            <td>Viernes</td>
+                            <td>Nocturno (20:00-08:00)</td>
+                            <td>Sergio Ramos, Sergio Santana, Juan Mata, Pablo Maffeo</td>
+                        </tr>
+            
+                        <tr class="turno-diurno">
+                            <td>29/03/2025</td>
+                            <td>Sábado</td>
+                            <td>Diurno (08:00-20:00)</td>
+                            <td>Sergio Ramos, Sergio Santana, Juan Mata, Pablo Maffeo</td>
+                        </tr>
+            
+                        <tr class="turno-nocturno">
+                            <td>29/03/2025</td>
+                            <td>Sábado</td>
+                            <td>Nocturno (20:00-08:00)</td>
+                            <td>Jaime Mata, Omenuke Mfulu, Pepe Bueno, Kike García</td>
+                        </tr>
+            
+                        <tr class="turno-diurno">
+                            <td>30/03/2025</td>
+                            <td>Domingo</td>
+                            <td>Diurno (08:00-20:00)</td>
+                            <td>Jaime Mata, Omenuke Mfulu, Pepe Bueno, Kike García</td>
+                        </tr>
+            
+                        <tr class="turno-nocturno">
+                            <td>30/03/2025</td>
+                            <td>Domingo</td>
+                            <td>Nocturno (20:00-08:00)</td>
+                            <td>Pepe Mel, Fernando Torres, Pedro Gónzalez, Daniel Carvajal</td>
+                        </tr>
+            
+                        <tr class="turno-diurno">
+                            <td>31/03/2025</td>
+                            <td>Lunes</td>
+                            <td>Diurno (08:00-20:00)</td>
+                            <td>Pepe Mel, Fernando Torres, Pedro Gónzalez, Daniel Carvajal</td>
+                        </tr>
+            
+                        <tr class="turno-nocturno">
+                            <td>31/03/2025</td>
+                            <td>Lunes</td>
+                            <td>Nocturno (20:00-08:00)</td>
+                            <td>Sergio López, Juanma Rodríguez, Alberto Melián, Andrés Jímenez</td>
+                        </tr>
+            
+                        <tr class="turno-diurno">
+                            <td>01/04/2025</td>
+                            <td>Martes</td>
+                            <td>Diurno (08:00-20:00)</td>
+                            <td>Sergio López, Juanma Rodríguez, Alberto Melián, Andrés Jímenez</td>
+                        </tr>
+            
+                        <tr class="turno-nocturno">
+                            <td>01/04/2025</td>
+                            <td>Martes</td>
+                            <td>Nocturno (20:00-08:00)</td>
+                            <td>Sergio Ramos, Sergio Santana, Raúl Asencio, Federico Valverde</td>
+                        </tr>
+            
+                        <tr class="turno-diurno">
+                            <td>02/04/2025</td>
+                            <td>Miércoles</td>
+                            <td>Diurno (08:00-20:00)</td>
+                            <td>Sergio Ramos, Sergio Santana, Raúl Asencio, Federico Valverde</td>
+                        </tr>
+            
+                        <tr class="turno-nocturno">
+                            <td>02/04/2025</td>
+                            <td>Miércoles</td>
+                            <td>Nocturno (20:00-08:00)</td>
+                            <td>Jaime Mata, Omenuke Mfulu, Juan Mata, Pablo Maffeo</td>
+                        </tr>
+            
+                        <tr class="turno-diurno">
+                            <td>03/04/2025</td>
+                            <td>Jueves</td>
+                            <td>Diurno (08:00-20:00)</td>
+                            <td>Jaime Mata, Omenuke Mfulu, Juan Mata, Pablo Maffeo</td>
+                        </tr>
+            
+                        <tr class="turno-nocturno">
+                            <td>03/04/2025</td>
+                            <td>Jueves</td>
+                            <td>Nocturno (20:00-08:00)</td>
+                            <td>Pepe Mel, Fernando Torres, Pepe Bueno, Kike García</td>
+                        </tr>
+            
+                        <tr class="turno-diurno">
+                            <td>04/04/2025</td>
+                            <td>Viernes</td>
+                            <td>Diurno (08:00-20:00)</td>
+                            <td>Pepe Mel, Fernando Torres, Pepe Bueno, Kike García</td>
+                        </tr>
+            
+                        <tr class="turno-nocturno">
+                            <td>04/04/2025</td>
+                            <td>Viernes</td>
+                            <td>Nocturno (20:00-08:00)</td>
+                            <td>Sergio Ramos, Sergio Santana, Pedro Gónzalez, Daniel Carvajal</td>
                         </tr>
             
                 </tbody>
@@ -407,6 +448,174 @@
                 </thead>
                 <tbody>
     
+                        <tr class="turno-refuerzo1 fecha-actual">
+                            <td>24/03/2025</td>
+                            <td>Lunes</td>
+                            <td>Retenes de refuerzo 1 (21:30-17:30)</td>
+                            <td>Juan Mata, Sergio López, Juanma Rodríguez, Alberto Melián</td>
+                        </tr>
+            
+                        <tr class="turno-cabildo fecha-actual">
+                            <td>24/03/2025</td>
+                            <td>Lunes</td>
+                            <td>Retenes del Cabildo (12:30-21:30)</td>
+                            <td>Pepe Mel, Omenuke Mfulu, Fernando Torres, Pedro Gónzalez</td>
+                        </tr>
+            
+                        <tr class="turno-refuerzo1">
+                            <td>25/03/2025</td>
+                            <td>Martes</td>
+                            <td>Retenes de refuerzo 1 (21:30-17:30)</td>
+                            <td>Sergio Ramos, Sergio Santana, Pepe Bueno, Andrés Jímenez</td>
+                        </tr>
+            
+                        <tr class="turno-cabildo">
+                            <td>25/03/2025</td>
+                            <td>Martes</td>
+                            <td>Retenes del Cabildo (12:30-21:30)</td>
+                            <td>Alberto Moleiro, David García, Federico Valverde, Daniel Carvajal</td>
+                        </tr>
+            
+                        <tr class="turno-refuerzo1">
+                            <td>26/03/2025</td>
+                            <td>Miércoles</td>
+                            <td>Retenes de refuerzo 1 (21:30-17:30)</td>
+                            <td>Jaime Mata, Omenuke Mfulu, Raúl Asencio, Daniel Carvajal</td>
+                        </tr>
+            
+                        <tr class="turno-cabildo">
+                            <td>26/03/2025</td>
+                            <td>Miércoles</td>
+                            <td>Retenes del Cabildo (12:30-21:30)</td>
+                            <td>Pepe Mel, Fernando Torres, Alberto Moleiro, Federico Valverde</td>
+                        </tr>
+            
+                        <tr class="turno-refuerzo1">
+                            <td>27/03/2025</td>
+                            <td>Jueves</td>
+                            <td>Retenes de refuerzo 1 (21:30-17:30)</td>
+                            <td>Sergio Ramos, Sergio Santana, Juan Mata, Pablo Maffeo</td>
+                        </tr>
+            
+                        <tr class="turno-cabildo">
+                            <td>27/03/2025</td>
+                            <td>Jueves</td>
+                            <td>Retenes del Cabildo (12:30-21:30)</td>
+                            <td>Jaime Mata, Omenuke Mfulu, Pepe Bueno, Kike García</td>
+                        </tr>
+            
+                        <tr class="turno-refuerzo1">
+                            <td>28/03/2025</td>
+                            <td>Viernes</td>
+                            <td>Retenes de refuerzo 1 (21:30-17:30)</td>
+                            <td>Pepe Mel, Fernando Torres, Pepe Bueno, Kike García</td>
+                        </tr>
+            
+                        <tr class="turno-cabildo">
+                            <td>28/03/2025</td>
+                            <td>Viernes</td>
+                            <td>Retenes del Cabildo (12:30-21:30)</td>
+                            <td>Sergio Ramos, Sergio Santana, Pedro Gónzalez, Daniel Carvajal</td>
+                        </tr>
+            
+                        <tr class="turno-refuerzo1">
+                            <td>29/03/2025</td>
+                            <td>Sábado</td>
+                            <td>Retenes de refuerzo 1 (21:30-17:30)</td>
+                            <td>Jaime Mata, Omenuke Mfulu, Juan Mata, Pablo Maffeo</td>
+                        </tr>
+            
+                        <tr class="turno-cabildo">
+                            <td>29/03/2025</td>
+                            <td>Sábado</td>
+                            <td>Retenes del Cabildo (12:30-21:30)</td>
+                            <td>Pepe Mel, Fernando Torres, Pepe Bueno, Kike García</td>
+                        </tr>
+            
+                        <tr class="turno-refuerzo1">
+                            <td>30/03/2025</td>
+                            <td>Domingo</td>
+                            <td>Retenes de refuerzo 1 (21:30-17:30)</td>
+                            <td>Sergio Ramos, Sergio Santana, Pedro Gónzalez, Daniel Carvajal</td>
+                        </tr>
+            
+                        <tr class="turno-cabildo">
+                            <td>30/03/2025</td>
+                            <td>Domingo</td>
+                            <td>Retenes del Cabildo (12:30-21:30)</td>
+                            <td>Jaime Mata, Omenuke Mfulu, Juan Mata, Pablo Maffeo</td>
+                        </tr>
+            
+                        <tr class="turno-refuerzo1">
+                            <td>31/03/2025</td>
+                            <td>Lunes</td>
+                            <td>Retenes de refuerzo 1 (21:30-17:30)</td>
+                            <td>Pepe Mel, Fernando Torres, Pepe Bueno, Kike García</td>
+                        </tr>
+            
+                        <tr class="turno-cabildo">
+                            <td>31/03/2025</td>
+                            <td>Lunes</td>
+                            <td>Retenes del Cabildo (12:30-21:30)</td>
+                            <td>Sergio Ramos, Sergio Santana, Pedro Gónzalez, Daniel Carvajal</td>
+                        </tr>
+            
+                        <tr class="turno-refuerzo1">
+                            <td>01/04/2025</td>
+                            <td>Martes</td>
+                            <td>Retenes de refuerzo 1 (21:30-17:30)</td>
+                            <td>Jaime Mata, Omenuke Mfulu, Juan Mata, Pablo Maffeo</td>
+                        </tr>
+            
+                        <tr class="turno-cabildo">
+                            <td>01/04/2025</td>
+                            <td>Martes</td>
+                            <td>Retenes del Cabildo (12:30-21:30)</td>
+                            <td>Pepe Mel, Fernando Torres, Pepe Bueno, Kike García</td>
+                        </tr>
+            
+                        <tr class="turno-refuerzo1">
+                            <td>02/04/2025</td>
+                            <td>Miércoles</td>
+                            <td>Retenes de refuerzo 1 (21:30-17:30)</td>
+                            <td>Sergio Ramos, Sergio Santana, Pedro Gónzalez, Daniel Carvajal</td>
+                        </tr>
+            
+                        <tr class="turno-cabildo">
+                            <td>02/04/2025</td>
+                            <td>Miércoles</td>
+                            <td>Retenes del Cabildo (12:30-21:30)</td>
+                            <td>Jaime Mata, Omenuke Mfulu, Juan Mata, Pablo Maffeo</td>
+                        </tr>
+            
+                        <tr class="turno-refuerzo1">
+                            <td>03/04/2025</td>
+                            <td>Jueves</td>
+                            <td>Retenes de refuerzo 1 (21:30-17:30)</td>
+                            <td>Pepe Mel, Fernando Torres, Pepe Bueno, Kike García</td>
+                        </tr>
+            
+                        <tr class="turno-cabildo">
+                            <td>03/04/2025</td>
+                            <td>Jueves</td>
+                            <td>Retenes del Cabildo (12:30-21:30)</td>
+                            <td>Sergio Ramos, Sergio Santana, Pedro Gónzalez, Daniel Carvajal</td>
+                        </tr>
+            
+                        <tr class="turno-refuerzo1">
+                            <td>04/04/2025</td>
+                            <td>Viernes</td>
+                            <td>Retenes de refuerzo 1 (21:30-17:30)</td>
+                            <td>Jaime Mata, Omenuke Mfulu, Juan Mata, Pablo Maffeo</td>
+                        </tr>
+            
+                        <tr class="turno-cabildo">
+                            <td>04/04/2025</td>
+                            <td>Viernes</td>
+                            <td>Retenes del Cabildo (12:30-21:30)</td>
+                            <td>Pepe Mel, Fernando Torres, Pepe Bueno, Kike García</td>
+                        </tr>
+            
                 </tbody>
             </table>
         </div>
@@ -414,21 +623,316 @@
     <div class="regenerar-container">
         <div id="botonesPlan">
     
+            <button id="regenerarAmbasBtn" class="toggle-btn btn-ambas">
+                <span class="button-text">Rehacer Ambas Planificaciones</span>
+                <span id="spinnerAmbas" class="spinner"></span>
+            </button>
+        
             <button id="regenerarIncendioBtn" class="toggle-btn btn-incendio">
                 <span class="button-text">Rehacer Plan Incendio</span>
                 <span id="spinnerIncendio" class="spinner"></span>
+            </button>
+        
+            <button id="regenerarNoIncendioBtn" class="toggle-btn btn-no-incendio">
+                <span class="button-text">Rehacer Plan No Incendio</span>
+                <span id="spinnerNoIncendio" class="spinner"></span>
             </button>
         
         </div>
         <div id="mensajeEstado"></div>
     </div>
     
+        <div class="prompt-container">
+            <pre>Eres un asistente especializado en planificación de turnos y horarios. Debes crear una planificación justa que respete todas las restricciones.
+ No incluyas comentarios, advertencias o recomendaciones adicionales.
+
+Genera una planificación detallada de turnos para los retenes contra incendios para los próximos 12 días a partir de la fecha 2025-03-24. 
+ Los días a planificar son: Día 1 (Lunes) (2025-03-24), Día 2 (Martes) (2025-03-25), Día 3 (Miércoles) (2025-03-26), Día 4 (Jueves) (2025-03-27), Día 5 (Viernes) (2025-03-28), Día 6 (Sábado) (2025-03-29), Día 7 (Domingo) (2025-03-30), Día 8 (Lunes) (2025-03-31), Día 9 (Martes) (2025-04-01), Día 10 (Miércoles) (2025-04-02), Día 11 (Jueves) (2025-04-03), Día 12 (Viernes) (2025-04-04).
+
+1. **Período de Planificación:**
+- La planificación para caso de incendio debe abarcar exactamente los próximos 12 días a partir de la fecha 2025-03-24 00:00:00.
+
+2. **Retenes Disponibles y Disponibilidad:**
+- En caso de incendio, el turno diurno debe contar con 4 personas trabajando y en el turno nocturno debe contar con 4; el resto descansan.
+- Excluye de la planificación a los trabajadores que se encuentren en estado de baja o de vacaciones.
+- Considera que hay 11 retenes del Cabildo y 11 retenes de refuerzo QUE DEBEN SER UTILIZADOS EN SU TOTALIDAD A LO LARGO DE LA PLANIFICACIÓN.
+
+3. **Reglas de Rotación y Descansos OBLIGATORIOS:**
+- **Patrón de turnos permitido en caso de incendio:** Noche, Noche, Descanso, Mañana, Mañana, Descanso, Noche, Noche, Descanso...
+- **Ningún trabajador puede trabajar más de 2 días seguidos.**
+- **Después de trabajar 2 días consecutivos, el siguiente día es obligatoriamente de descanso.**
+- **Está absolutamente prohibido que un trabajador trabaje 3 o más días seguidos.**
+- **No puede haber un cambio directo de nocturno a diurno sin un día de descanso obligatorio en medio.**
+- **Cada trabajador debe seguir el patrón de turnos de forma estricta, asegurando que después de dos días seguidos haya un día de descanso obligatorio.**
+- **No se puede asignar a un trabajador a dos turnos el mismo día.**
+- **Distribuye de forma equitativa los turnos entre los trabajadores y trata de utilizar a todos los trabajadores que estén disponibles.**
+- **Asegúrate de que todos los trabajadores tengan días de descanso equilibrados, evitando sobrecargar a unos y subutilizar a otros.**
+
+4. **Distribución Equitativa:**
+- La carga de trabajo debe distribuirse de manera balanceada para todos los trabajadores.
+- Ningún trabajador debe estar sobrecargado ni subutilizado.
+- Evita que los mismos trabajadores sean asignados repetidamente a los mismos turnos todos los días.
+- Distribuye los turnos de manera que todos los trabajadores acumulen una cantidad similar de horas de trabajo en la semana.
+
+5. **Formato de Respuesta en caso de Incendio:**
+- Inicia con el texto 'PLANIFICACIÓN EN CASO DE INCENDIO:'
+- Usa EXACTAMENTE el siguiente formato para cada día:
+  **Día N (Nombre del día)(Fecha):**
+  - Turno Diurno (08:00-20:00): (Lista de 4 nombres)
+  - Turno Nocturno (20:00-08:00): (Lista de 4 nombres)
+- Los nombres deben estar separados por comas y en una sola línea por turno.
+- Se deben respetar las reglas de rotación y descanso sin excepciones.
+
+Genera una planificación detallada de turnos para los retenes en caso de no incendio para los próximos 12 días a partir de la fecha 2025-03-24. 
+ Los días a planificar son: Día 1 (Lunes) (2025-03-24), Día 2 (Martes) (2025-03-25), Día 3 (Miércoles) (2025-03-26), Día 4 (Jueves) (2025-03-27), Día 5 (Viernes) (2025-03-28), Día 6 (Sábado) (2025-03-29), Día 7 (Domingo) (2025-03-30), Día 8 (Lunes) (2025-03-31), Día 9 (Martes) (2025-04-01), Día 10 (Miércoles) (2025-04-02), Día 11 (Jueves) (2025-04-03), Día 12 (Viernes) (2025-04-04).
+
+1. **Período de Planificación:**
+- La planificación para caso de no incendio debe abarcar exactamente los próximos 12 días a partir de la fecha 2025-03-24 00:00:00.
+
+2. **Turnos en No Incendio:**
+- **Turno personal del Cabildo:** De 12:30 a 21:30.
+- **Turno personal de refuerzo:** El personal de refuerzo se divide en 1 turnos entre las 21:30 hasta 17:30.
+- En caso de no incendio, los turnos de los retenes del Cabildo y los de los retenes de refuerzo son independientes.
+- De 12:30 a 17:30 coinciden los turnos de ambas cuadrillas.
+
+- **Un retén de refuerzo no puede trabajar dos turnos el mismo día obligatoriamente.**
+- Los retenes del Cabildo deben trabajar exclusivamente en los días en los que tengan disponibilidad.
+Si un trabajador del Cabildo no tiene disponibilidad en un día específico, no debe ser asignado.
+- Los retenes de refuerzo deben ser asignados únicamente en los días específicos en los que estén disponibles.
+- **Asegúrate de que se respeten las disponibilidades de cada trabajador, tanto del Cabildo como de refuerzo.**
+- **Distribuye los turnos de forma equitativa entre todos los trabajadores disponibles, teniendo en cuenta sus disponibilidades individuales.**
+- Los retenes que estén de baja o de vacaciones no podrán ser convocados para trabajar.
+- Los retenes del Cabildo que no tengan disponibilidad para ese día no pueden ser convocados para trabajar.
+- Los retenes de refuerzo que no tengan disponibilidad para ese día no pueden ser convocados para trabajar.
+
+- Los retenes **NO** deben ser asignados a un turno donde no estén disponibles según su lista de días disponibles.
+- **Distribuye los turnos de forma equitativa entre todos los trabajadores disponibles, teniendo en cuenta sus disponibilidades individuales.**
+- **Ningún trabajador debe estar asignado a ambos turnos en el mismo día.**
+
+3. **Formato y Detalle de la Respuesta en caso de No Incendio:**
+- Inicia esta sección con el texto 'PLANIFICACIÓN EN CASO DE NO INCENDIO:'
+- La respuesta debe incluir, para cada uno de los 12 días, los turnos de los retenes del Cabildo y los turnos de los retenes de refuerzo.
+- Usa EXACTAMENTE el siguiente formato para cada día:
+  **Día N (Nombre del día)(Fecha):**
+**Las horas de los turnos de los retenes refuerzo se dividiran de forma equitativa en función de la cantidad de turnos que haya 1 
+**La duración de los turnos de los retenes de refuerzo deben ser las mismas**.
+
+  - Turno Retenes de refuerzo 1 (21:30-17:30): (Lista de 4 nombres)
+  - Turno Retenes del Cabildo (12:30-21:30): (Lista de 4 nombres)
+- Los turnos de los retenes de refuerzo deben variar, un trabajador no puede tener más de un turno.
+- Los nombres de los trabajadores deben estar separados por comas en una sola línea por turno.
+- Si hay más de un Turno Retenes de refuerzo, un trabajador no puede ser asignado a más de un turno en un mismo día 
+- No se deben incluir recomendaciones sobre el uso de software de planificación ni ningún comentario extra; solo la planificación.
+
+Datos de disponibilidad del personal:
+
+Trabajador: Pepe Mel
+Estado: activo
+Pertenece al Cabildo: Sí
+Disponibilidad: ["lunes", "martes", "miércoles", "jueves", "viernes", "domingo"]
+Días No Disponibles: ["sábado"]
+Excepciones: {"vacaciones": {"inicio": "2025-06-19", "fin": "2025-06-29"}, "reincorporacion": null}
+
+Trabajador: Jaime Mata
+Estado: activo
+Pertenece al Cabildo: Sí
+Disponibilidad: ["miércoles", "jueves", "viernes", "sábado", "domingo"]
+Días No Disponibles: ["lunes", "martes"]
+Excepciones: {"vacaciones": {"inicio": "2025-03-01", "fin": "2025-03-10"}, "reincorporacion": null}
+
+Trabajador: Omenuke Mfulu
+Estado: activo
+Pertenece al Cabildo: Sí
+Disponibilidad: ["lunes", "miércoles", "jueves", "sábado", "domingo"]
+Días No Disponibles: ["martes", "viernes"]
+Excepciones: {"vacaciones": null, "reincorporacion": null}
+
+Trabajador: Sergio Ramos
+Estado: activo
+Pertenece al Cabildo: Sí
+Disponibilidad: ["martes", "miércoles", "jueves", "viernes", "domingo"]
+Días No Disponibles: ["lunes", "sábado"]
+Excepciones: {"vacaciones": null, "reincorporacion": null}
+
+Trabajador: Sergio Santana
+Estado: activo
+Pertenece al Cabildo: Sí
+Disponibilidad: ["martes", "miércoles", "jueves", "viernes", "sábado"]
+Días No Disponibles: ["lunes", "domingo"]
+Excepciones: {"vacaciones": null, "reincorporacion": null}
+
+Trabajador: Juan Mata
+Estado: activo
+Pertenece al Cabildo: No
+Disponibilidad: ["lunes", "martes", "miércoles", "jueves", "viernes"]
+Días No Disponibles: ["sábado", "domingo"]
+Excepciones: {"vacaciones": null, "reincorporacion": null}
+
+Trabajador: Fernando Torres
+Estado: activo
+Pertenece al Cabildo: Sí
+Disponibilidad: ["lunes", "miércoles", "jueves", "viernes", "domingo"]
+Días No Disponibles: ["martes", "sábado"]
+Excepciones: {"vacaciones": null, "reincorporacion": null}
+
+Trabajador: Pedro Gónzalez
+Estado: activo
+Pertenece al Cabildo: Sí
+Disponibilidad: ["lunes", "martes", "viernes", "sábado", "domingo", "jueves"]
+Días No Disponibles: ["miércoles"]
+Excepciones: {"vacaciones": null, "reincorporacion": null}
+
+Trabajador: Sergio López
+Estado: activo
+Pertenece al Cabildo: No
+Disponibilidad: ["lunes", "miércoles", "jueves", "sábado", "domingo"]
+Días No Disponibles: ["martes", "viernes"]
+Excepciones: {"vacaciones": null, "reincorporacion": null}
+
+Trabajador: Alberto Moleiro
+Estado: activo
+Pertenece al Cabildo: Sí
+Disponibilidad: ["lunes", "martes", "miércoles", "jueves", "viernes"]
+Días No Disponibles: ["sábado", "domingo"]
+Excepciones: {"vacaciones": null, "reincorporacion": null}
+
+Trabajador: Felipe Hernández
+Estado: activo
+Pertenece al Cabildo: Sí
+Disponibilidad: ["martes", "jueves", "viernes", "sábado", "domingo"]
+Días No Disponibles: ["lunes", "miércoles"]
+Excepciones: {"vacaciones": null, "reincorporacion": null}
+
+Trabajador: Juanma Rodríguez
+Estado: activo
+Pertenece al Cabildo: No
+Disponibilidad: ["lunes", "martes", "miércoles", "jueves", "viernes"]
+Días No Disponibles: ["sábado", "domingo"]
+Excepciones: {"vacaciones": null, "reincorporacion": null}
+
+Trabajador: Pepe Bueno
+Estado: activo
+Pertenece al Cabildo: No
+Disponibilidad: ["martes", "miércoles", "jueves", "viernes", "sábado"]
+Días No Disponibles: ["lunes", "domingo"]
+Excepciones: {"vacaciones": null, "reincorporacion": null}
+
+Trabajador: Antonio Gil
+Estado: activo
+Pertenece al Cabildo: No
+Disponibilidad: ["lunes", "martes", "miércoles", "viernes", "sábado", "domingo"]
+Días No Disponibles: ["jueves"]
+Excepciones: {"vacaciones": null, "reincorporacion": null}
+
+Trabajador: Raúl Asencio
+Estado: activo
+Pertenece al Cabildo: No
+Disponibilidad: ["martes", "miércoles", "viernes", "sábado", "domingo"]
+Días No Disponibles: ["lunes", "jueves"]
+Excepciones: {"vacaciones": null, "reincorporacion": null}
+
+Trabajador: David García
+Estado: activo
+Pertenece al Cabildo: Sí
+Disponibilidad: ["martes", "miércoles", "jueves", "viernes", "sábado"]
+Días No Disponibles: ["lunes", "domingo"]
+Excepciones: {"vacaciones": null, "reincorporacion": null}
+
+Trabajador: Kike García
+Estado: activo
+Pertenece al Cabildo: No
+Disponibilidad: ["lunes", "martes", "miércoles", "viernes", "domingo"]
+Días No Disponibles: ["jueves", "sábado"]
+Excepciones: {"vacaciones": null, "reincorporacion": null}
+
+Trabajador: Alberto Melián
+Estado: activo
+Pertenece al Cabildo: No
+Disponibilidad: ["lunes", "martes", "jueves", "viernes", "sábado", "domingo"]
+Días No Disponibles: ["miércoles"]
+Excepciones: {"vacaciones": null, "reincorporacion": null}
+
+Trabajador: Pablo Maffeo
+Estado: activo
+Pertenece al Cabildo: No
+Disponibilidad: ["lunes", "martes", "jueves", "viernes", "sábado", "domingo"]
+Días No Disponibles: ["miércoles"]
+Excepciones: {"vacaciones": null, "reincorporacion": null}
+
+Trabajador: Andrés Jímenez
+Estado: activo
+Pertenece al Cabildo: No
+Disponibilidad: ["martes", "miércoles", "jueves", "viernes", "sábado", "domingo"]
+Días No Disponibles: ["lunes"]
+Excepciones: {"vacaciones": null, "reincorporacion": null}
+
+Trabajador: Daniel Carvajal
+Estado: activo
+Pertenece al Cabildo: No
+Disponibilidad: ["lunes", "martes", "miércoles", "jueves", "sábado", "domingo"]
+Días No Disponibles: ["viernes"]
+Excepciones: {"vacaciones": null, "reincorporacion": null}
+
+Trabajador: Federico Valverde
+Estado: activo
+Pertenece al Cabildo: Sí
+Disponibilidad: ["lunes", "miércoles", "jueves", "sábado", "domingo"]
+Días No Disponibles: ["martes", "viernes"]
+Excepciones: {"vacaciones": null, "reincorporacion": null}
+
+Trabajador: Joaquín Estévez
+Estado: vacaciones
+Pertenece al Cabildo: Sí
+Disponibilidad: ["lunes", "martes", "jueves", "sábado", "domingo"]
+Días No Disponibles: ["miércoles", "viernes"]
+Excepciones: {"vacaciones": {"inicio": "2025-03-05", "fin": "2025-06-15"}, "reincorporacion": null}
+
+Trabajador: Marcos Guerra
+Estado: baja
+Pertenece al Cabildo: No
+Disponibilidad: ["lunes", "miércoles", "viernes", "sábado", "domingo"]
+Días No Disponibles: ["martes", "jueves"]
+Excepciones: {"vacaciones": null, "reincorporacion": "2025-06-10"}
+
+- ES OBLIGATORIO asignar a TODOS los 22 retenes disponibles al menos en algún turno.
+- ES CRÍTICO no asignar a ningún retén en un día que no esté en su lista de disponibilidad.
+- Ningún trabajador debe ser asignado más de 3-4 días para garantizar una distribución equitativa.
+- Antes de confirmar cualquier asignación, verifica explícitamente que el día de la semana está en la lista de disponibilidad del trabajador.
+</pre>
+        </div>
+        
+        <script>
+            const toggleBtn = document.getElementById('toggleBtn');
+            const planIncendio = document.getElementById('planIncendio');
+            const planNoIncendio = document.getElementById('planNoIncendio');
+            const statusIndicator = document.getElementById('statusIndicator');
+
+            let mostrandoIncendio = true;
+
+            toggleBtn.addEventListener('click', function() {
+                if (mostrandoIncendio) {
+                    planIncendio.classList.remove('active');
+                    planNoIncendio.classList.add('active');
+                    toggleBtn.textContent = 'Cambiar a Planificación Con Incendio';
+                    statusIndicator.textContent = 'SITUACIÓN ACTUAL: NO INCENDIO';
+                    statusIndicator.classList.add('no-incendio');
+                } else {
+                    planNoIncendio.classList.remove('active');
+                    planIncendio.classList.add('active');
+                    toggleBtn.textContent = 'Cambiar a Planificación Sin Incendio';
+                    statusIndicator.textContent = 'SITUACIÓN ACTUAL: INCENDIO';
+                    statusIndicator.classList.remove('no-incendio');
+                }
+                mostrandoIncendio = !mostrandoIncendio;
+            });
+        </script>
+        
     <script>
         function mostrarSpinner(tipo) {
             const tipoCapitalizado = tipo.charAt(0).toUpperCase() + tipo.slice(1);
             const spinner = document.getElementById('spinner' + tipoCapitalizado);
             if (spinner) {
-                spinner.style.display = 'inline-block'; // Asegurar que sea visible
+                spinner.style.display = 'inline-block';
             }
         }
         
@@ -439,14 +943,12 @@
             });
         }
         
-        // Modifica la función habilitarBotones para habilitar todos los botones
         function habilitarBotones() {
             document.querySelectorAll('button').forEach(button => {
                 button.disabled = false;
             });
         }
         
-        // Modifica la función generarPlanificacion para controlar correctamente los spinners
         function generarPlanificacion(tipo) {
             const mensajeEstado = document.getElementById('mensajeEstado');
             
@@ -478,13 +980,13 @@
                 button.disabled = true;
             });
         
-            // Realizar la petición AJAX a la ruta /generar
-            fetch('/generar', {
+            // Realizar la petición AJAX a la ruta /regenerar
+            fetch('/regenerar', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ tipoPlanificacion: tipo })
+                body: JSON.stringify({ tipoPlanificacion: tipo, rehacerConValidacion: true })
             })
             .then(response => response.json())
             .then(data => {
@@ -512,9 +1014,164 @@
             });
         }
     
+    document.getElementById('regenerarAmbasBtn').addEventListener('click', function() {
+        generarPlanificacion('ambas');
+    });
+        
     if (document.getElementById('regenerarIncendioBtn')) {
         document.getElementById('regenerarIncendioBtn').addEventListener('click', function() {
             generarPlanificacion('incendio');
+        });
+    }
+        
+    if (document.getElementById('regenerarNoIncendioBtn')) {
+        document.getElementById('regenerarNoIncendioBtn').addEventListener('click', function() {
+            generarPlanificacion('noIncendio');
+        });
+    }
+        
+    window.addEventListener('pageshow', function(event) {
+            // This ensures spinners are hidden when using back/forward navigation
+            if (event.persisted) {
+                ocultarSpinners();
+                habilitarBotones();
+            }
+        });
+    
+    </script>
+    
+    </div>
+    </body>
+    </html>
+    </pre>
+        </div>
+        
+        <script>
+            const toggleBtn = document.getElementById('toggleBtn');
+            const planIncendio = document.getElementById('planIncendio');
+            const planNoIncendio = document.getElementById('planNoIncendio');
+            const statusIndicator = document.getElementById('statusIndicator');
+
+            let mostrandoIncendio = true;
+
+            toggleBtn.addEventListener('click', function() {
+                if (mostrandoIncendio) {
+                    planIncendio.classList.remove('active');
+                    planNoIncendio.classList.add('active');
+                    toggleBtn.textContent = 'Cambiar a Planificación Con Incendio';
+                    statusIndicator.textContent = 'SITUACIÓN ACTUAL: NO INCENDIO';
+                    statusIndicator.classList.add('no-incendio');
+                } else {
+                    planNoIncendio.classList.remove('active');
+                    planIncendio.classList.add('active');
+                    toggleBtn.textContent = 'Cambiar a Planificación Sin Incendio';
+                    statusIndicator.textContent = 'SITUACIÓN ACTUAL: INCENDIO';
+                    statusIndicator.classList.remove('no-incendio');
+                }
+                mostrandoIncendio = !mostrandoIncendio;
+            });
+        </script>
+        
+    <script>
+        function mostrarSpinner(tipo) {
+            const tipoCapitalizado = tipo.charAt(0).toUpperCase() + tipo.slice(1);
+            const spinner = document.getElementById('spinner' + tipoCapitalizado);
+            if (spinner) {
+                spinner.style.display = 'inline-block';
+            }
+        }
+        
+        // Modifica la función ocultarSpinners para ocultar todos los spinners
+        function ocultarSpinners() {
+            document.querySelectorAll('.spinner').forEach(spinner => {
+                spinner.style.display = 'none';
+            });
+        }
+        
+        function habilitarBotones() {
+            document.querySelectorAll('button').forEach(button => {
+                button.disabled = false;
+            });
+        }
+        
+        function generarPlanificacion(tipo) {
+            const mensajeEstado = document.getElementById('mensajeEstado');
+            
+            // Mostrar spinner
+            mostrarSpinner(tipo);
+            
+            // Iniciar contador de tiempo
+            let segundos = 0;
+            const contadorId = setInterval(() => {
+                segundos++;
+                const tiempoTexto = document.getElementById('tiempoTexto');
+                if (tiempoTexto) {
+                    tiempoTexto.textContent = `Tiempo transcurrido: ${segundos} segundos`;
+                }
+            }, 1000);
+        
+            let mensajeTexto = '';
+            if (tipo === 'ambas') {
+                mensajeTexto = 'Generando ambas planificaciones, por favor espere...';
+            } else {
+                mensajeTexto = 'Generando nueva planificación para caso de ' + 
+                              (tipo === 'incendio' ? 'incendio' : 'no incendio') + ', por favor espere...';
+            }
+        
+            mensajeEstado.innerHTML = '<div class="mensaje-estado mensaje-info">' + mensajeTexto + 
+                                     '<div id="tiempoTexto">Tiempo transcurrido: 0 segundos</div></div>';
+        
+            document.querySelectorAll('button').forEach(button => {
+                button.disabled = true;
+            });
+        
+            // Realizar la petición AJAX a la ruta /regenerar
+            fetch('/regenerar', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ tipoPlanificacion: tipo, rehacerConValidacion: true })
+            })
+            .then(response => response.json())
+            .then(data => {
+                clearInterval(contadorId); // Detener contador
+                ocultarSpinners(); // Ocultar spinners
+                
+                if (data.success) {
+                    mensajeEstado.innerHTML = '<div class="mensaje-estado mensaje-exito">¡Planificación regenerada correctamente! Recargando página...</div>';
+                    // Esperar un momento y recargar la página para mostrar la nueva planificación
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1500);
+                } else {
+                    mensajeEstado.innerHTML = '<div class="mensaje-estado mensaje-error">Error: ' + (data.error || 'Error desconocido') + '</div>';
+                    habilitarBotones();
+                }
+            })
+            .catch(error => {
+                clearInterval(contadorId); // Detener contador
+                ocultarSpinners(); // Ocultar spinners
+                
+                console.error('Error:', error);
+                mensajeEstado.innerHTML = '<div class="mensaje-estado mensaje-error">Error en la comunicación con el servidor. Por favor, intente nuevamente.</div>';
+                habilitarBotones();
+            });
+        }
+    
+    document.getElementById('regenerarAmbasBtn').addEventListener('click', function() {
+        generarPlanificacion('ambas');
+    });
+        
+    if (document.getElementById('regenerarIncendioBtn')) {
+        document.getElementById('regenerarIncendioBtn').addEventListener('click', function() {
+            generarPlanificacion('incendio');
+        });
+    }
+        
+    if (document.getElementById('regenerarNoIncendioBtn')) {
+        document.getElementById('regenerarNoIncendioBtn').addEventListener('click', function() {
+            generarPlanificacion('noIncendio');
         });
     }
         

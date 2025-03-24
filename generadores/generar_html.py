@@ -2,15 +2,16 @@ import datetime
 from datetime import datetime as dt
 
 
-def generar_html_con_toggle(df_incendio, df_no_incendio, hora_actual=None):
+def generar_html_con_toggle(df_incendio, df_no_incendio, hora_actual=None, prompt=None):
     """
     Genera un HTML con ambas planificaciones y un botón para alternar entre ellas.
     Añade indicadores de tiempo restante solo para los trabajadores del turno actual de hoy.
 
     Args:
-        df_incendio: DataFrame con la planificación en caso de incendio
-        df_no_incendio: DataFrame con la planificación en caso de no incendio
-        hora_actual: Hora actual para calcular el tiempo restante (si es None, se usará la hora del sistema)
+        :param df_incendio: DataFrame con la planificación en caso de incendio
+        :param df_no_incendio: DataFrame con la planificación en caso de no incendio
+        :param hora_actual: Hora actual para calcular el tiempo restante (si es None, se usará la hora del sistema)
+        :param prompt:
     """
 
     fecha_actual = dt.now().date()
@@ -295,7 +296,7 @@ def generar_html_con_toggle(df_incendio, df_no_incendio, hora_actual=None):
             background-color: #46b8da;
         }
         .spinner {
-            display: none; /* Se cambia a inline-block cuando se activa */
+            display: none;
             width: 16px;
             height: 16px;
             border: 3px solid rgba(255,255,255,0.3);
@@ -313,6 +314,16 @@ def generar_html_con_toggle(df_incendio, df_no_incendio, hora_actual=None):
         .button-text {
             margin-right: 20px;
         }
+        .prompt-container {
+            margin: 0; /* Elimina márgenes */
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+            width: 100%; /* Asegura que ocupe todo el ancho de la pantalla */
+            box-sizing: border-box; /* Asegura que el padding no se agregue al ancho total */
+        }
+
     </style>
     </head>
     <body>
@@ -497,6 +508,17 @@ def generar_html_con_toggle(df_incendio, df_no_incendio, hora_actual=None):
     </div>
     """
 
+    if prompt is not None:
+        start_index = prompt.find("Eres un asistente")
+        if start_index != -1:
+            prompt = prompt[start_index:]
+
+        html += f"""
+        <div class="prompt-container">
+            <pre>{prompt}</pre>
+        </div>
+        """
+
     if tiene_incendio and tiene_no_incendio:
         html += """
         <script>
@@ -532,7 +554,7 @@ def generar_html_con_toggle(df_incendio, df_no_incendio, hora_actual=None):
             const tipoCapitalizado = tipo.charAt(0).toUpperCase() + tipo.slice(1);
             const spinner = document.getElementById('spinner' + tipoCapitalizado);
             if (spinner) {
-                spinner.style.display = 'inline-block'; // Asegurar que sea visible
+                spinner.style.display = 'inline-block';
             }
         }
         
@@ -543,14 +565,12 @@ def generar_html_con_toggle(df_incendio, df_no_incendio, hora_actual=None):
             });
         }
         
-        // Modifica la función habilitarBotones para habilitar todos los botones
         function habilitarBotones() {
             document.querySelectorAll('button').forEach(button => {
                 button.disabled = false;
             });
         }
         
-        // Modifica la función generarPlanificacion para controlar correctamente los spinners
         function generarPlanificacion(tipo) {
             const mensajeEstado = document.getElementById('mensajeEstado');
             
@@ -582,13 +602,13 @@ def generar_html_con_toggle(df_incendio, df_no_incendio, hora_actual=None):
                 button.disabled = true;
             });
         
-            // Realizar la petición AJAX a la ruta /generar
-            fetch('/generar', {
+            // Realizar la petición AJAX a la ruta /regenerar
+            fetch('/regenerar', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ tipoPlanificacion: tipo })
+                body: JSON.stringify({ tipoPlanificacion: tipo, rehacerConValidacion: true })
             })
             .then(response => response.json())
             .then(data => {

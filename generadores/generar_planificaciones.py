@@ -1,6 +1,7 @@
 import json
 from openai import OpenAI
 from datetime import datetime, timedelta
+import os
 
 
 def calcular_horarios_turnos(cantidad_turnos):
@@ -37,15 +38,16 @@ def generar_dias_semana(fecha_inicio, num_dias):
 
     for i in range(num_dias):
         dia_actual = fecha_inicio + timedelta(days=i)
-        nombre_dia = dia_actual.strftime("%A")  # Nombre del día en inglés
-        nombre_dia_es = traduccion.get(nombre_dia, nombre_dia)  # Traducir al español
+        nombre_dia = dia_actual.strftime("%A")
+        nombre_dia_es = traduccion.get(nombre_dia, nombre_dia)
 
-        dias_semana.append((dia_actual.strftime("%Y-%m-%d"), nombre_dia_es))  # Formato (Fecha, Día)
+        dias_semana.append((dia_actual.strftime("%Y-%m-%d"), nombre_dia_es))
 
     return dias_semana
 
 
-def generar_planificacion_trabajos_openai(datos_trabajadores, token_openai, archivo_configuracion):
+def generar_planificacion_trabajos_openai(datos_trabajadores, token_openai, archivo_configuracion,
+                                          resultados_validacion=None):
     try:
         with open(archivo_configuracion, 'r', encoding='utf-8') as f:
             config_planificacion = json.load(f)
@@ -61,15 +63,12 @@ def generar_planificacion_trabajos_openai(datos_trabajadores, token_openai, arch
     tipo_planificacion = config_planificacion.get('tipoPlanificacion', 'ambos')
     print(f"Generando planificación para: {tipo_planificacion}")
 
-    # Configurar según el tipo de planificación
     generar_incendio = tipo_planificacion in ['ambos', 'incendio']
     generar_no_incendio = tipo_planificacion in ['ambos', 'noIncendio']
 
-    # Cargar configuraciones relevantes
     incendio_config = config_planificacion.get('incendio', {}) if generar_incendio else {}
     no_incendio_config = config_planificacion.get('noIncendio', {}) if generar_no_incendio else {}
 
-    # Inicializar variables para evitar errores
     fecha_inicio_incendio = None
     fecha_inicio_no_incendio = None
     turno_diurno_incendio = 0
@@ -81,7 +80,6 @@ def generar_planificacion_trabajos_openai(datos_trabajadores, token_openai, arch
     dias_no_incendio_str = ""
     horarios_turnos = {}
 
-    # Preparar datos para los tipos de planificación solicitados
     if generar_incendio:
         fecha_inicio_incendio = datetime.strptime(
             incendio_config.get('fechaInicio', datetime.now().strftime('%Y-%m-%d')),
@@ -106,7 +104,6 @@ def generar_planificacion_trabajos_openai(datos_trabajadores, token_openai, arch
         dias_no_incendio_str = ", ".join(
             [f"Día {i + 1} ({dia[1]}) ({dia[0]})" for i, dia in enumerate(dias_no_incendio)])
 
-    # Normalizar datos de trabajadores
     trabajadores_normalizados = []
     for trabajador in datos_trabajadores:
         trabajador_norm = trabajador.copy()
@@ -122,12 +119,11 @@ def generar_planificacion_trabajos_openai(datos_trabajadores, token_openai, arch
 
         trabajadores_normalizados.append(trabajador_norm)
 
-    # Construir el prompt según el tipo de planificación
     prompt = ""
 
     # Encabezado común del prompt
     prompt += ("Eres un asistente especializado en planificación de turnos y horarios. "
-               "Debes crear una planificación justa que respete todas las restricciones. "
+               "Debes crear una planificación justa que respete todas las restricciones.\n "
                "No incluyas comentarios, advertencias o recomendaciones adicionales.\n\n")
 
     # Prompt para caso de incendio
@@ -139,7 +135,7 @@ def generar_planificacion_trabajos_openai(datos_trabajadores, token_openai, arch
         prompt += (
             f"Genera una planificación detallada de turnos para los retenes contra incendios para los próximos "
             f"{incendio_config.get('dias')} días a "
-            f"partir de la fecha {incendio_config.get('fechaInicio', 'actual')}. Los días a planificar son: "
+            f"partir de la fecha {incendio_config.get('fechaInicio', 'actual')}. \n Los días a planificar son: "
             f"{dias_incendio_str}.\n\n"
 
             "1. **Período de Planificación:**\n"
@@ -173,7 +169,7 @@ def generar_planificacion_trabajos_openai(datos_trabajadores, token_openai, arch
             "- Ningún trabajador debe estar sobrecargado ni subutilizado.\n"
             "- Evita que los mismos trabajadores sean asignados repetidamente a los mismos turnos todos los días.\n"
             "- Distribuye los turnos de manera que todos los trabajadores acumulen una cantidad similar de horas "
-            "de trabajo en la semana, evitando asignar más de 4 días en total por trabajador.\n\n"
+            "de trabajo en la semana.\n\n"
 
             "5. **Formato de Respuesta en caso de Incendio:**\n"
             "- Inicia con el texto 'PLANIFICACIÓN EN CASO DE INCENDIO:'\n"
@@ -185,12 +181,11 @@ def generar_planificacion_trabajos_openai(datos_trabajadores, token_openai, arch
             "- Se deben respetar las reglas de rotación y descanso sin excepciones.\n\n"
         )
 
-    # Prompt para caso de no incendio
     if generar_no_incendio:
         prompt += (
             f"Genera una planificación detallada de turnos para los retenes en caso de no incendio para los próximos "
             f"{no_incendio_config.get('dias')} días a "
-            f"partir de la fecha {no_incendio_config.get('fechaInicio', 'actual')}. Los días a planificar son: "
+            f"partir de la fecha {no_incendio_config.get('fechaInicio', 'actual')}. \n Los días a planificar son: "
             f"{dias_no_incendio_str}.\n\n"
 
             "1. **Período de Planificación:**\n"
@@ -204,30 +199,22 @@ def generar_planificacion_trabajos_openai(datos_trabajadores, token_openai, arch
             "- En caso de no incendio, los turnos de los retenes del Cabildo y los de los retenes de refuerzo son "
             "independientes.\n"
             "- De 12:30 a 17:30 coinciden los turnos de ambas cuadrillas.\n\n"
-            "- **Un retén de refuerzo no puede trabajar dos turnos el mismo día obligatoriamente.**"
-            "- Los retenes del Cabildo deben trabajar exclusivamente en los días en los que tengan disponibilidad. "
+            "- **Un retén de refuerzo no puede trabajar dos turnos el mismo día obligatoriamente.**\n"
+            "- Los retenes del Cabildo deben trabajar exclusivamente en los días en los que tengan disponibilidad.\n"
             "Si un trabajador del Cabildo no tiene disponibilidad en un día específico, no debe ser asignado.\n"
-            "- Los retenes de refuerzo deben ser asignados únicamente en los turnos y días específicos en los que "
-            "estén disponibles. "
-            "Si un retén de refuerzo solo está disponible para turnos nocturnos, no puede ser asignado a un turno "
-            "diurno, y viceversa.\n"
+            "- Los retenes de refuerzo deben ser asignados únicamente en los días específicos en los que "
+            "estén disponibles.\n"
             "- **Asegúrate de que se respeten las disponibilidades de cada trabajador, tanto del Cabildo como de "
             "refuerzo.**\n"
             "- **Distribuye los turnos de forma equitativa entre todos los trabajadores disponibles, teniendo en "
             "cuenta sus disponibilidades individuales.**\n"
-            "- **Evita asignar a trabajadores a turnos que no sean parte de su disponibilidad, como en el caso de Juan "
-            "Mata, quien solo está disponible para turnos nocturnos.**\n\n"
-            "- En todo momento deben haber como mínimo 4 retenes de guardia y como máximo 8, 4 del Cabildo y 4 de "
-            "refuerzo de 12:30 a 17:30, que es cuando coinciden.\n\n"
             "- Los retenes que estén de baja o de vacaciones no podrán ser convocados para trabajar.\n"
             "- Los retenes del Cabildo que no tengan disponibilidad para ese día no pueden ser convocados para "
             "trabajar.\n"
-            "- Los retenes de refuerzo que no tengan disponibilidad para ese día durante ese turno no pueden ser "
+            "- Los retenes de refuerzo que no tengan disponibilidad para ese día no pueden ser "
             "convocados para trabajar.\n\n"
-            "- Los retenes **NO** deben ser asignados a un turno donde no estén disponibles según su lista de días y "
-            "turnos disponibles.\n"
-            "- Los retenes de refuerzo **NO** deben trabajar en turnos no especificados como parte de su "
-            "disponibilidad.\n"
+            "- Los retenes **NO** deben ser asignados a un turno donde no estén disponibles según su lista de días"
+            " disponibles.\n"
             "- **Distribuye los turnos de forma equitativa entre todos los trabajadores disponibles, teniendo en "
             "cuenta sus disponibilidades individuales.**\n"
             "- **Ningún trabajador debe estar asignado a ambos turnos en el mismo día.**\n\n"
@@ -246,28 +233,27 @@ def generar_planificacion_trabajos_openai(datos_trabajadores, token_openai, arch
             "- Usa EXACTAMENTE el siguiente formato para cada día:\n"
             "  **Día N (Nombre del día)(Fecha):**\n"
             f"**Las horas de los turnos de los retenes refuerzo se dividiran de forma equitativa en función de "
-            f"la cantidad de turnos que haya {cantidad_turnos} "
+            f"la cantidad de turnos que haya {cantidad_turnos} \n"
             f"**La duración de los turnos de los retenes de refuerzo deben ser las mismas**.\n\n"
         )
 
-        # Añadir información de cada turno de no incendio
         for turno, personas in retenes_configuracion.items():
             turno_num = int(turno) if isinstance(turno, str) and turno.isdigit() else turno
             horario = horarios_turnos.get(turno_num, "horario")
             prompt += f"  - Turno Retenes de refuerzo {turno} ({horario}): (Lista de {personas} nombres)\n"
 
         prompt += f"  - Turno Retenes del Cabildo (12:30-21:30): (Lista de {cabildo_personas} nombres)\n"
-        prompt += "- Los turnos de los retenes de refuerzo deben variar, un trabajador no puede tener más de un turno."
+        prompt += ("- Los turnos de los retenes de refuerzo deben variar, un trabajador no puede tener más de "
+                   "un turno.\n")
         prompt += "- Los nombres de los trabajadores deben estar separados por comas en una sola línea por turno.\n"
         prompt += (
             "- Si hay más de un Turno Retenes de refuerzo, un trabajador no puede ser asignado a más de un turno en "
-            "un mismo día")
+            "un mismo día \n")
         prompt += (
             "- No se deben incluir recomendaciones sobre el uso de software de planificación ni ningún comentario "
             "extra; ")
         prompt += "solo la planificación.\n\n"
 
-    # Añadir información de los trabajadores
     prompt += "Datos de disponibilidad del personal:\n\n"
 
     for trabajador in datos_trabajadores:
@@ -280,9 +266,76 @@ def generar_planificacion_trabajos_openai(datos_trabajadores, token_openai, arch
         prompt += f"Días No Disponibles: {json.dumps(trabajador['diasNoDisponibles'], ensure_ascii=False)}\n"
         prompt += f"Excepciones: {json.dumps(trabajador.get('excepciones', {}), ensure_ascii=False)}\n\n"
 
-    print(prompt)
+    prompt += (
+        "- ES OBLIGATORIO asignar a TODOS los 22 retenes disponibles al menos en algún turno.\n"
+        "- ES CRÍTICO no asignar a ningún retén en un día que no esté en su lista de disponibilidad.\n"
+        "- Ningún trabajador debe ser asignado más de 3-4 días para garantizar una distribución equitativa.\n"
+        "- Antes de confirmar cualquier asignación, verifica explícitamente que el día de la semana está en la lista "
+        "de disponibilidad del trabajador.\n"
+    )
 
-    # Generar la planificación
+    # Si hay resultados de validación, añadir instrucciones específicas
+    if resultados_validacion:
+        prompt += "\n\nATENCIÓN: Revisa el informe de validación que se te proporciona a continuación:\n"
+        if resultados_validacion and isinstance(resultados_validacion, dict):
+            # Procesar la planificación de NO INCENDIO si está presente
+            if "planificacion_no_incendio" in resultados_validacion:
+                no_incendio = resultados_validacion["planificacion_no_incendio"]
+                prompt += "\n- **Planificación NO INCENDIO:**\n"
+
+                if no_incendio.get("errores"):
+                    prompt += "  - **Errores encontrados:**\n"
+                    prompt += "".join(f"    - {error}\n" for error in no_incendio["errores"])
+                else:
+                    prompt += "  - ✅ No se encontraron errores.\n"
+
+                prompt += f"  - **Respeto de disponibilidad:** {'✅ SÍ' if no_incendio.get('respeto_disponibilidad') else '❌ NO'}\n"
+                prompt += f"  - **Total usuarios asignados:** {no_incendio.get('total_usuarios_asignados', 0)}\n"
+                prompt += f"  - **Total usuarios no asignados:** {no_incendio.get('total_usuarios_no_asignados', 0)}\n"
+                if no_incendio.get('total_usuarios_no_asignados', 0) > 0:
+                    prompt += f"  - **Usuarios no asignados:** {no_incendio.get('usuarios_no_asignados', 0)}\n"
+
+                if no_incendio.get("dias_trabajados"):
+                    prompt += "  - **Días trabajados por usuario:**\n"
+                    prompt += "".join(
+                        f"    - {usuario}: {dias} día(s)\n" for usuario, dias in no_incendio["dias_trabajados"].items())
+
+            # Procesar la planificación de INCENDIO si está presente
+            if "planificacion_incendio" in resultados_validacion:
+                incendio = resultados_validacion["planificacion_incendio"]
+                prompt += "\n- **Planificación INCENDIO:**\n"
+
+                if incendio.get("errores"):
+                    prompt += "  - **Errores encontrados:**\n"
+                    prompt += "".join(f"    - {error}\n" for error in incendio["errores"])
+                else:
+                    prompt += "  - ✅ No se encontraron errores.\n"
+
+                prompt += f"  - **Respeto de disponibilidad:** {'✅ SÍ' if incendio.get('respeto_disponibilidad') else '❌ NO'}\n"
+                prompt += f"  - **Total usuarios asignados:** {incendio.get('total_usuarios_asignados', 0)}\n"
+                prompt += f"  - **Total usuarios no asignados:** {incendio.get('total_usuarios_no_asignados', 0)}\n"
+                if incendio.get('total_usuarios_no_asignados', 0) > 0:
+                    prompt += f"  - **Usuarios no asignados:** {incendio.get('usuarios_no_asignados', 0)}\n"
+
+                if incendio.get("dias_trabajados"):
+                    prompt += "  - **Días trabajados por usuario:**\n"
+                    prompt += "".join(
+                        f"    - {usuario}: {dias} día(s)\n" for usuario, dias in incendio["dias_trabajados"].items())
+
+        else:
+            prompt += "- ❌ **No hay resultados de validación previa disponibles.**\n"
+
+        prompt += "\n6. **Instrucciones para rehacer la planificación:**\n"
+        prompt += "- IMPORTANTE: Corrige TODOS los errores de disponibilidad mencionados en la validación.\n"
+        prompt += "- Asegúrate de NO asignar trabajadores en días donde no tienen disponibilidad.\n"
+        prompt += "- Distribuye la carga de trabajo de manera más equitativa entre todos los usuarios disponibles.\n"
+        prompt += "- Intenta incluir a los usuarios que no fueron asignados en la planificación anterior.\n"
+        prompt += "- Respeta estrictamente las reglas de rotación y descansos obligatorios.\n"
+
+    print(prompt)
+    if resultados_validacion:
+        print("Se están utilizando resultados de validación para corregir problemas")
+
     response = client.chat.completions.create(
         model="gpt-4",
         messages=[
@@ -295,4 +348,4 @@ def generar_planificacion_trabajos_openai(datos_trabajadores, token_openai, arch
     )
     planificacion = response.choices[0].message.content.strip()
 
-    return planificacion
+    return planificacion, prompt

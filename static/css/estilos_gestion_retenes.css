@@ -1,0 +1,95 @@
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+        }
+        .options {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .option-button {
+            padding: 15px 30px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            background-color: #4CAF50;
+            color: white;
+            flex: 1;
+        }
+        .option-button:hover {
+            background-color: #45a049;
+        }
+        .search-container {
+            display: none;
+            margin-top: 20px;
+        }
+        .error-message {
+            color: red;
+            margin-top: 5px;
+            display: none;
+        }
+        .success-message {
+            color: green;
+            margin-top: 5px;
+            display: none;
+        }
+        #formContainer {
+            display: none;
+        }
+        .estado-trabajador {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        .back-button {
+            margin-bottom: 20px;
+            padding: 10px 20px;
+            background-color: #666;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .back-button:hover {
+            background-color: #555;
+        }
+        .shift-selection {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .day-container {
+            margin: 15px 0;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        .day-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .shift-option {
+            margin: 5px 0;
+            display: inline-block;
+            margin-right: 20px;
+        }
+        .shift-option input[type="radio"] {
+            margin-right: 5px;
+        }
+        .no-shift-option {
+            color: #666;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+        }
+        .hidden {
+            display: none;
+        }
+        .day-container {
+            margin: 10px 0;
+        }

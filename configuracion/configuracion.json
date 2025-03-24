@@ -1,23 +1,19 @@
 {
   "tipoPlanificacion": "ambos",
   "incendio": {
-    "dias": 8,
-    "fechaInicio": "2025-03-20",
+    "dias": 12,
+    "fechaInicio": "2025-03-24",
     "turnoDiurno": 4,
     "turnoNocturno": 4
   },
   "noIncendio": {
-    "dias": 5,
-    "fechaInicio": "2025-03-28",
-    "cabildoPersonas": 2,
+    "dias": 12,
+    "fechaInicio": "2025-03-24",
+    "cabildoPersonas": 4,
     "retenes": [
       {
         "turno": 1,
-        "personas": 3
-      },
-      {
-        "turno": 2,
-        "personas": 2
+        "personas": 4
       }
     ]
   }

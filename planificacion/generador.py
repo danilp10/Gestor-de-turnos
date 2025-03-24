@@ -4,7 +4,6 @@ import pandas as pd
 import traceback
 from datetime import datetime
 
-# Importar funciones externas
 from procesamiento.leer_datos import leer_datos_json
 from generadores.generar_planificaciones import generar_planificacion_trabajos_openai
 from procesamiento.separar_planificaciones import separar_planificaciones
@@ -13,13 +12,15 @@ from generadores.generar_html import generar_html_con_toggle
 
 
 def generar_planificacion_completa(fichero_json='trabajadores/disponibilidades.json',
-                                   fichero_conf_json='configuracion/configuracion.json'):
+                                   fichero_conf_json='configuracion/configuracion.json',
+                                   resultados_validacion=None):
     """
     Genera una planificación completa basada en la configuración actual.
 
     Args:
         fichero_json: Ruta al archivo JSON con datos de trabajadores
         fichero_conf_json: Ruta al archivo JSON con la configuración
+        resultados_validacion: Ruta al archivo JSON con resultados de validación
 
     Returns:
         tuple: (texto_planificacion, df_incendio, df_no_incendio, html_content)
@@ -33,7 +34,9 @@ def generar_planificacion_completa(fichero_json='trabajadores/disponibilidades.j
             return None, None, None, None
 
         apikey = os.getenv("apikey")
-        planificacion_texto = generar_planificacion_trabajos_openai(datos_trabajadores, apikey, fichero_conf_json)
+
+        planificacion_texto, prompt_usado = generar_planificacion_trabajos_openai(
+            datos_trabajadores, apikey, fichero_conf_json, resultados_validacion)
 
         # Cargar la configuración para determinar el tipo de planificación
         try:
@@ -45,7 +48,7 @@ def generar_planificacion_completa(fichero_json='trabajadores/disponibilidades.j
                 no_incendio_config = config.get('noIncendio', {})
         except Exception as e:
             print(f"Error al leer el tipo de planificación: {e}")
-            tipo_planificacion = 'ambos'  # Valor por defecto
+            tipo_planificacion = 'ambos'
             incendio_config = {}
             no_incendio_config = {}
 
@@ -53,25 +56,20 @@ def generar_planificacion_completa(fichero_json='trabajadores/disponibilidades.j
         planificacion_incendio_df = pd.DataFrame(columns=['Fecha', 'Día', 'Turno', 'Trabajadores'])
         planificacion_no_incendio_df = pd.DataFrame(columns=['Fecha', 'Día', 'Turno', 'Trabajadores'])
 
-        # Procesar según el tipo de planificación
         if tipo_planificacion in ['ambos', 'incendio', 'noIncendio']:
             planificacion_incendio = ""
             planificacion_no_incendio = ""
 
-            # Si es ambos, separar las planificaciones
             if tipo_planificacion == 'ambos':
                 planificacion_incendio, planificacion_no_incendio = separar_planificaciones(planificacion_texto)
-            # Si es solo incendio
             elif tipo_planificacion == 'incendio':
                 planificacion_incendio = planificacion_texto
-            # Si es solo no incendio
             else:
                 planificacion_no_incendio = planificacion_texto
 
             # Procesar planificación de incendio si es necesario
             if tipo_planificacion in ['ambos', 'incendio'] and planificacion_incendio:
                 try:
-                    # Pasar la fecha de inicio correctamente
                     fecha_inicio_incendio = incendio_config.get('fechaInicio')
                     planificacion_incendio_df = convertir_a_tabla(planificacion_incendio,
                                                                   fecha_inicio_str=fecha_inicio_incendio)
@@ -83,7 +81,6 @@ def generar_planificacion_completa(fichero_json='trabajadores/disponibilidades.j
             # Procesar planificación de no incendio si es necesario
             if tipo_planificacion in ['ambos', 'noIncendio'] and planificacion_no_incendio:
                 try:
-                    # Pasar la fecha de inicio correctamente
                     fecha_inicio_no_incendio = no_incendio_config.get('fechaInicio')
                     planificacion_no_incendio_df = convertir_a_tabla(planificacion_no_incendio,
                                                                      fecha_inicio_str=fecha_inicio_no_incendio)
@@ -92,11 +89,11 @@ def generar_planificacion_completa(fichero_json='trabajadores/disponibilidades.j
                     mensaje = f"Error al convertir planificación de no incendio: {e}"
                     print(mensaje)
 
-        # Generar el HTML con las planificaciones procesadas
         hora_actual = datetime.now().time()
-        html_content = generar_html_con_toggle(planificacion_incendio_df, planificacion_no_incendio_df, hora_actual)
+        html_content = generar_html_con_toggle(planificacion_incendio_df, planificacion_no_incendio_df,
+                                               hora_actual, prompt=prompt_usado)
 
-        return planificacion_texto, planificacion_incendio_df, planificacion_no_incendio_df, html_content
+        return planificacion_texto, planificacion_incendio_df, planificacion_no_incendio_df, html_content, prompt_usado
     except Exception as e:
         print(f"Error en generar_planificacion_completa: {str(e)}")
         traceback.print_exc()
