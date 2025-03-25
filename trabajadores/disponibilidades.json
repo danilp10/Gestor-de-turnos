@@ -31,6 +31,7 @@
     "apellidos": "Mata",
     "estado": "activo",
     "disponibilidad": [
+      "lunes",
       "miércoles",
       "jueves",
       "viernes",
@@ -38,7 +39,6 @@
       "domingo"
     ],
     "diasNoDisponibles": [
-      "lunes",
       "martes"
     ],
     "excepciones": {
@@ -61,11 +61,11 @@
       "miércoles",
       "jueves",
       "sábado",
-      "domingo"
+      "domingo",
+      "viernes"
     ],
     "diasNoDisponibles": [
-      "martes",
-      "viernes"
+      "martes"
     ],
     "excepciones": {
       "vacaciones": null,
@@ -130,10 +130,10 @@
       "martes",
       "miércoles",
       "jueves",
-      "viernes"
+      "viernes",
+      "sábado"
     ],
     "diasNoDisponibles": [
-      "sábado",
       "domingo"
     ],
     "excepciones": {
@@ -153,11 +153,11 @@
       "miércoles",
       "jueves",
       "viernes",
+      "sábado",
       "domingo"
     ],
     "diasNoDisponibles": [
-      "martes",
-      "sábado"
+      "martes"
     ],
     "excepciones": {
       "vacaciones": null,
@@ -176,11 +176,11 @@
       "martes",
       "viernes",
       "sábado",
-      "domingo"
+      "domingo",
+      "jueves"
     ],
     "diasNoDisponibles": [
-      "miércoles",
-      "jueves"
+      "miércoles"
     ],
     "excepciones": {
       "vacaciones": null,
@@ -199,11 +199,11 @@
       "miércoles",
       "jueves",
       "sábado",
+      "viernes",
       "domingo"
     ],
     "diasNoDisponibles": [
-      "martes",
-      "viernes"
+      "martes"
     ],
     "excepciones": {
       "vacaciones": null,
@@ -222,11 +222,11 @@
       "martes",
       "miércoles",
       "jueves",
-      "viernes"
+      "viernes",
+      "domingo"
     ],
     "diasNoDisponibles": [
-      "sábado",
-      "domingo"
+      "sábado"
     ],
     "excepciones": {
       "vacaciones": null,
@@ -241,6 +241,7 @@
     "apellidos": "Hernández",
     "estado": "activo",
     "disponibilidad": [
+      "lunes",
       "martes",
       "jueves",
       "viernes",
@@ -253,7 +254,6 @@
     },
     "timestamp": "2025-03-17T09:10:14.327181",
     "diasNoDisponibles": [
-      "lunes",
       "miércoles"
     ],
     "personalCabildo": true
@@ -268,7 +268,8 @@
       "martes",
       "miércoles",
       "jueves",
-      "viernes"
+      "viernes",
+      "sábado"
     ],
     "excepciones": {
       "vacaciones": null,
@@ -276,7 +277,6 @@
     },
     "timestamp": "2025-03-05T11:06:32.035Z",
     "diasNoDisponibles": [
-      "sábado",
       "domingo"
     ],
     "personalCabildo": false
@@ -287,11 +287,12 @@
     "apellidos": "Bueno",
     "estado": "activo",
     "disponibilidad": [
+      "lunes",
       "martes",
       "miércoles",
       "jueves",
       "viernes",
-      "sábado"
+      "domingo"
     ],
     "excepciones": {
       "vacaciones": null,
@@ -299,8 +300,7 @@
     },
     "timestamp": "2025-03-05T11:06:21.660Z",
     "diasNoDisponibles": [
-      "lunes",
-      "domingo"
+      "sábado"
     ],
     "personalCabildo": false
   },
@@ -335,6 +335,7 @@
     "disponibilidad": [
       "martes",
       "miércoles",
+      "jueves",
       "viernes",
       "sábado",
       "domingo"
@@ -346,8 +347,7 @@
     "timestamp": "2025-03-05T11:06:27.124Z",
     "personalCabildo": false,
     "diasNoDisponibles": [
-      "lunes",
-      "jueves"
+      "lunes"
     ]
   },
   {
@@ -380,9 +380,10 @@
     "estado": "activo",
     "disponibilidad": [
       "lunes",
-      "martes",
       "miércoles",
+      "jueves",
       "viernes",
+      "sábado",
       "domingo"
     ],
     "excepciones": {
@@ -392,8 +393,7 @@
     "timestamp": "2025-03-05T11:06:04.729Z",
     "personalCabildo": false,
     "diasNoDisponibles": [
-      "jueves",
-      "sábado"
+      "martes"
     ]
   },
   {
@@ -472,6 +472,7 @@
     "estado": "activo",
     "disponibilidad": [
       "lunes",
+      "martes",
       "miércoles",
       "jueves",
       "sábado",
@@ -484,7 +485,6 @@
     "timestamp": "2025-03-05T11:05:24.133Z",
     "personalCabildo": false,
     "diasNoDisponibles": [
-      "martes",
       "viernes"
     ]
   },
@@ -495,6 +495,7 @@
     "estado": "activo",
     "disponibilidad": [
       "lunes",
+      "martes",
       "miércoles",
       "jueves",
       "sábado",
@@ -506,7 +507,6 @@
     },
     "timestamp": "2025-02-25T11:47:32.686Z",
     "diasNoDisponibles": [
-      "martes",
       "viernes"
     ],
     "personalCabildo": true

@@ -150,15 +150,15 @@ def generar_planificacion_trabajos_openai(datos_trabajadores, token_openai, arch
             "TOTALIDAD A LO LARGO DE LA PLANIFICACIÓN.\n\n"
 
             "3. **Reglas de Rotación y Descansos OBLIGATORIOS:**\n"
-            "- **Patrón de turnos permitido en caso de incendio:** Noche, Noche, Descanso, Mañana, Mañana, Descanso, "
-            "Noche, Noche, Descanso...\n"
+            # "- **Patrón de turnos permitido en caso de incendio:** Noche, Noche, Descanso, Mañana, Mañana, Descanso, "
+            # "Noche, Noche, Descanso...\n"
             "- **Ningún trabajador puede trabajar más de 2 días seguidos.**\n"
             "- **Después de trabajar 2 días consecutivos, el siguiente día es obligatoriamente de descanso.**\n"
             "- **Está absolutamente prohibido que un trabajador trabaje 3 o más días seguidos.**\n"
             "- **No puede haber un cambio directo de nocturno a diurno sin un día de descanso obligatorio en medio.**\n"
-            "- **Cada trabajador debe seguir el patrón de turnos de forma estricta, asegurando que después de dos días "
-            "seguidos haya un día de descanso obligatorio.**\n"
-            "- **No se puede asignar a un trabajador a dos turnos el mismo día.**\n"
+            # "- **Cada trabajador debe seguir el patrón de turnos de forma estricta, asegurando que después de dos días "
+            # "seguidos haya un día de descanso obligatorio.**\n"
+            "- **No se puede asignar un trabajador a dos turnos el mismo día.**\n"
             "- **Distribuye de forma equitativa los turnos entre los trabajadores y trata de utilizar a todos los "
             "trabajadores que estén disponibles.**\n"
             "- **Asegúrate de que todos los trabajadores tengan días de descanso equilibrados, evitando sobrecargar a "
@@ -198,7 +198,6 @@ def generar_planificacion_trabajos_openai(datos_trabajadores, token_openai, arch
             f"las 21:30 hasta 17:30.\n"
             "- En caso de no incendio, los turnos de los retenes del Cabildo y los de los retenes de refuerzo son "
             "independientes.\n"
-            "- De 12:30 a 17:30 coinciden los turnos de ambas cuadrillas.\n\n"
             "- **Un retén de refuerzo no puede trabajar dos turnos el mismo día obligatoriamente.**\n"
             "- Los retenes del Cabildo deben trabajar exclusivamente en los días en los que tengan disponibilidad.\n"
             "Si un trabajador del Cabildo no tiene disponibilidad en un día específico, no debe ser asignado.\n"
@@ -218,6 +217,11 @@ def generar_planificacion_trabajos_openai(datos_trabajadores, token_openai, arch
             "- **Distribuye los turnos de forma equitativa entre todos los trabajadores disponibles, teniendo en "
             "cuenta sus disponibilidades individuales.**\n"
             "- **Ningún trabajador debe estar asignado a ambos turnos en el mismo día.**\n\n"
+            "- Antes de asignar un trabajador a un turno, verifica que el día (por ejemplo, 'lunes', 'martes', etc.) "
+            "figure en su lista de disponibilidad.\n Si no es así, no se debe asignar en ese día.\n"
+            "ES OBLIGATORIO que en la planificación se asignen los 22 retenes disponibles. \n "
+            "- ES CRÍTICO no asignar a ningún retén en un día que no esté en su lista de disponibilidad.\n"
+            "Si algún retén no aparece asignado en ningún turno, la planificación debe ser rechazada y corregida.\n\n"
 
             "3. **Formato y Detalle de la Respuesta en caso de No Incendio:**\n"
         )
@@ -243,8 +247,8 @@ def generar_planificacion_trabajos_openai(datos_trabajadores, token_openai, arch
             prompt += f"  - Turno Retenes de refuerzo {turno} ({horario}): (Lista de {personas} nombres)\n"
 
         prompt += f"  - Turno Retenes del Cabildo (12:30-21:30): (Lista de {cabildo_personas} nombres)\n"
-        prompt += ("- Los turnos de los retenes de refuerzo deben variar, un trabajador no puede tener más de "
-                   "un turno.\n")
+        prompt += ("- Los turnos de los retenes de refuerzo deben variar, un retén no puede tener más de "
+                   "un turno seguido.\n")
         prompt += "- Los nombres de los trabajadores deben estar separados por comas en una sola línea por turno.\n"
         prompt += (
             "- Si hay más de un Turno Retenes de refuerzo, un trabajador no puede ser asignado a más de un turno en "
@@ -268,10 +272,8 @@ def generar_planificacion_trabajos_openai(datos_trabajadores, token_openai, arch
 
     prompt += (
         "- ES OBLIGATORIO asignar a TODOS los 22 retenes disponibles al menos en algún turno.\n"
-        "- ES CRÍTICO no asignar a ningún retén en un día que no esté en su lista de disponibilidad.\n"
-        "- Ningún trabajador debe ser asignado más de 3-4 días para garantizar una distribución equitativa.\n"
-        "- Antes de confirmar cualquier asignación, verifica explícitamente que el día de la semana está en la lista "
-        "de disponibilidad del trabajador.\n"
+        "- Ningún trabajador debe ser asignado más de 3-4 días a la semana para garantizar una distribución "
+        "equitativa.\n"
     )
 
     # Si hay resultados de validación, añadir instrucciones específicas
@@ -327,23 +329,26 @@ def generar_planificacion_trabajos_openai(datos_trabajadores, token_openai, arch
 
         prompt += "\n6. **Instrucciones para rehacer la planificación:**\n"
         prompt += "- IMPORTANTE: Corrige TODOS los errores de disponibilidad mencionados en la validación.\n"
-        prompt += "- Asegúrate de NO asignar trabajadores en días donde no tienen disponibilidad.\n"
-        prompt += "- Distribuye la carga de trabajo de manera más equitativa entre todos los usuarios disponibles.\n"
-        prompt += "- Intenta incluir a los usuarios que no fueron asignados en la planificación anterior.\n"
-        prompt += "- Respeta estrictamente las reglas de rotación y descansos obligatorios.\n"
+        prompt += "- IMPORTANTE: Si un retén no tiene el lunes como día disponible no lo asignes un lunes a trabajar.\n"
+        prompt += ("- IMPORTANTE: Si un retén tiene entre 0 y 1 días asignados, quita algún día a alguno de los"
+                   " retenes que más trabajan y súmaselo a este retén.\n")
+        prompt += ("- Asegúrate de NO asignar trabajadores en días donde no tienen disponibilidad en caso de "
+                   "no incendio.\n")
+        prompt += ("- Incluye obligatoriamente a todos los retenes disponibles "
+                   "que no fueron asignados en la planificación anterior.\n")
 
     print(prompt)
     if resultados_validacion:
         print("Se están utilizando resultados de validación para corregir problemas")
 
     response = client.chat.completions.create(
-        model="gpt-4",
+        model="gpt-4-turbo",
         messages=[
             {"role": "system", "content": "Eres un asistente especializado en planificación de turnos y horarios. "
                                           "Tu objetivo es crear una planificación justa y equilibrada respetando "
                                           "absolutamente todas las restricciones de disponibilidad."},
             {"role": "user", "content": prompt}],
-        max_tokens=2500,
+        max_tokens=3000,
         temperature=0.1
     )
     planificacion = response.choices[0].message.content.strip()

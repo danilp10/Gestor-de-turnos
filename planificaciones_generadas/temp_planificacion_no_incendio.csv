@@ -1,25 +1,37 @@
 Fecha,Día,Turno,Trabajadores
-24/03/2025,Lunes,Retenes de refuerzo 1 (21:30-17:30),"Juan Mata, Sergio López, Juanma Rodríguez, Alberto Melián"
-24/03/2025,Lunes,Retenes del Cabildo (12:30-21:30),"Pepe Mel, Omenuke Mfulu, Fernando Torres, Pedro Gónzalez"
-25/03/2025,Martes,Retenes de refuerzo 1 (21:30-17:30),"Sergio Ramos, Sergio Santana, Pepe Bueno, Andrés Jímenez"
-25/03/2025,Martes,Retenes del Cabildo (12:30-21:30),"Alberto Moleiro, David García, Federico Valverde, Daniel Carvajal"
-26/03/2025,Miércoles,Retenes de refuerzo 1 (21:30-17:30),"Jaime Mata, Omenuke Mfulu, Raúl Asencio, Daniel Carvajal"
-26/03/2025,Miércoles,Retenes del Cabildo (12:30-21:30),"Pepe Mel, Fernando Torres, Alberto Moleiro, Federico Valverde"
-27/03/2025,Jueves,Retenes de refuerzo 1 (21:30-17:30),"Sergio Ramos, Sergio Santana, Juan Mata, Pablo Maffeo"
-27/03/2025,Jueves,Retenes del Cabildo (12:30-21:30),"Jaime Mata, Omenuke Mfulu, Pepe Bueno, Kike García"
-28/03/2025,Viernes,Retenes de refuerzo 1 (21:30-17:30),"Pepe Mel, Fernando Torres, Pepe Bueno, Kike García"
-28/03/2025,Viernes,Retenes del Cabildo (12:30-21:30),"Sergio Ramos, Sergio Santana, Pedro Gónzalez, Daniel Carvajal"
-29/03/2025,Sábado,Retenes de refuerzo 1 (21:30-17:30),"Jaime Mata, Omenuke Mfulu, Juan Mata, Pablo Maffeo"
-29/03/2025,Sábado,Retenes del Cabildo (12:30-21:30),"Pepe Mel, Fernando Torres, Pepe Bueno, Kike García"
-30/03/2025,Domingo,Retenes de refuerzo 1 (21:30-17:30),"Sergio Ramos, Sergio Santana, Pedro Gónzalez, Daniel Carvajal"
-30/03/2025,Domingo,Retenes del Cabildo (12:30-21:30),"Jaime Mata, Omenuke Mfulu, Juan Mata, Pablo Maffeo"
-31/03/2025,Lunes,Retenes de refuerzo 1 (21:30-17:30),"Pepe Mel, Fernando Torres, Pepe Bueno, Kike García"
-31/03/2025,Lunes,Retenes del Cabildo (12:30-21:30),"Sergio Ramos, Sergio Santana, Pedro Gónzalez, Daniel Carvajal"
-01/04/2025,Martes,Retenes de refuerzo 1 (21:30-17:30),"Jaime Mata, Omenuke Mfulu, Juan Mata, Pablo Maffeo"
-01/04/2025,Martes,Retenes del Cabildo (12:30-21:30),"Pepe Mel, Fernando Torres, Pepe Bueno, Kike García"
-02/04/2025,Miércoles,Retenes de refuerzo 1 (21:30-17:30),"Sergio Ramos, Sergio Santana, Pedro Gónzalez, Daniel Carvajal"
-02/04/2025,Miércoles,Retenes del Cabildo (12:30-21:30),"Jaime Mata, Omenuke Mfulu, Juan Mata, Pablo Maffeo"
-03/04/2025,Jueves,Retenes de refuerzo 1 (21:30-17:30),"Pepe Mel, Fernando Torres, Pepe Bueno, Kike García"
-03/04/2025,Jueves,Retenes del Cabildo (12:30-21:30),"Sergio Ramos, Sergio Santana, Pedro Gónzalez, Daniel Carvajal"
-04/04/2025,Viernes,Retenes de refuerzo 1 (21:30-17:30),"Jaime Mata, Omenuke Mfulu, Juan Mata, Pablo Maffeo"
-04/04/2025,Viernes,Retenes del Cabildo (12:30-21:30),"Pepe Mel, Fernando Torres, Pepe Bueno, Kike García"
+25/03/2025,Martes,Retenes de refuerzo 1 (21:30-07:30),"Juan Mata, Juanma Rodríguez"
+25/03/2025,Martes,Retenes de refuerzo 2 (07:30-17:30),Pepe Bueno
+25/03/2025,Martes,Retenes del Cabildo (12:30-21:30),"Sergio Santana, Sergio Ramos, David García"
+26/03/2025,Miércoles,Retenes de refuerzo 1 (21:30-07:30),"Sergio López, Kike García"
+26/03/2025,Miércoles,Retenes de refuerzo 2 (07:30-17:30),Alberto Melián
+26/03/2025,Miércoles,Retenes del Cabildo (12:30-21:30),"Jaime Mata, Omenuke Mfulu, Fernando Torres"
+27/03/2025,Jueves,Retenes de refuerzo 1 (21:30-07:30),"Pablo Maffeo, Pedro Gónzalez"
+27/03/2025,Jueves,Retenes de refuerzo 2 (07:30-17:30),Andrés Jímenez
+27/03/2025,Jueves,Retenes del Cabildo (12:30-21:30),"Felipe Hernández, Alberto Moleiro, Federico Valverde"
+28/03/2025,Viernes,Retenes de refuerzo 1 (21:30-07:30),"Daniel Carvajal, Antonio Gil"
+28/03/2025,Viernes,Retenes de refuerzo 2 (07:30-17:30),Raúl Asencio
+28/03/2025,Viernes,Retenes del Cabildo (12:30-21:30),"Pepe Mel, Sergio Santana, Sergio Ramos"
+29/03/2025,Sábado,Retenes de refuerzo 1 (21:30-07:30),"Juan Mata, Juanma Rodríguez"
+29/03/2025,Sábado,Retenes de refuerzo 2 (07:30-17:30),Pepe Bueno
+29/03/2025,Sábado,Retenes del Cabildo (12:30-21:30),"Jaime Mata, Omenuke Mfulu, David García"
+30/03/2025,Domingo,Retenes de refuerzo 1 (21:30-07:30),"Sergio López, Kike García"
+30/03/2025,Domingo,Retenes de refuerzo 2 (07:30-17:30),Alberto Melián
+30/03/2025,Domingo,Retenes del Cabildo (12:30-21:30),"Fernando Torres, Alberto Moleiro, Federico Valverde"
+31/03/2025,Lunes,Retenes de refuerzo 1 (21:30-07:30),"Pablo Maffeo, Pedro Gónzalez"
+31/03/2025,Lunes,Retenes de refuerzo 2 (07:30-17:30),Andrés Jímenez
+31/03/2025,Lunes,Retenes del Cabildo (12:30-21:30),"Felipe Hernández, Pepe Mel, Sergio Santana"
+01/04/2025,Martes,Retenes de refuerzo 1 (21:30-07:30),"Daniel Carvajal, Antonio Gil"
+01/04/2025,Martes,Retenes de refuerzo 2 (07:30-17:30),Raúl Asencio
+01/04/2025,Martes,Retenes del Cabildo (12:30-21:30),"Sergio Ramos, David García, Sergio Santana"
+02/04/2025,Miércoles,Retenes de refuerzo 1 (21:30-07:30),"Juan Mata, Juanma Rodríguez"
+02/04/2025,Miércoles,Retenes de refuerzo 2 (07:30-17:30),Pepe Bueno
+02/04/2025,Miércoles,Retenes del Cabildo (12:30-21:30),"Jaime Mata, Omenuke Mfulu, Fernando Torres"
+03/04/2025,Jueves,Retenes de refuerzo 1 (21:30-07:30),"Sergio López, Kike García"
+03/04/2025,Jueves,Retenes de refuerzo 2 (07:30-17:30),Alberto Melián
+03/04/2025,Jueves,Retenes del Cabildo (12:30-21:30),"Felipe Hernández, Alberto Moleiro, Federico Valverde"
+04/04/2025,Viernes,Retenes de refuerzo 1 (21:30-07:30),"Pablo Maffeo, Pedro Gónzalez"
+04/04/2025,Viernes,Retenes de refuerzo 2 (07:30-17:30),Andrés Jímenez
+04/04/2025,Viernes,Retenes del Cabildo (12:30-21:30),"Pepe Mel, Sergio Ramos, David García"
+05/04/2025,Sábado,Retenes de refuerzo 1 (21:30-07:30),"Daniel Carvajal, Antonio Gil"
+05/04/2025,Sábado,Retenes de refuerzo 2 (07:30-17:30),Raúl Asencio
+05/04/2025,Sábado,Retenes del Cabildo (12:30-21:30),"Jaime Mata, Omenuke Mfulu, Sergio Santana"
