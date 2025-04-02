@@ -1,7 +1,6 @@
 import json
 from openai import OpenAI
 from datetime import datetime, timedelta
-import os
 
 
 def calcular_horarios_turnos(cantidad_turnos):
@@ -156,8 +155,8 @@ def generar_planificacion_trabajos_openai(datos_trabajadores, token_openai, arch
             "- **Después de trabajar 2 días consecutivos, el siguiente día es obligatoriamente de descanso.**\n"
             "- **Está absolutamente prohibido que un trabajador trabaje 3 o más días seguidos.**\n"
             "- **No puede haber un cambio directo de nocturno a diurno sin un día de descanso obligatorio en medio.**\n"
-            # "- **Cada trabajador debe seguir el patrón de turnos de forma estricta, asegurando que después de dos días "
-            # "seguidos haya un día de descanso obligatorio.**\n"
+            # "- **Cada trabajador debe seguir el patrón de turnos de forma estricta, asegurando que después de dos 
+            # días seguidos haya un día de descanso obligatorio.**\n"
             "- **No se puede asignar un trabajador a dos turnos el mismo día.**\n"
             "- **Distribuye de forma equitativa los turnos entre los trabajadores y trata de utilizar a todos los "
             "trabajadores que estén disponibles.**\n"
@@ -276,11 +275,9 @@ def generar_planificacion_trabajos_openai(datos_trabajadores, token_openai, arch
         "equitativa.\n"
     )
 
-    # Si hay resultados de validación, añadir instrucciones específicas
     if resultados_validacion:
         prompt += "\n\nATENCIÓN: Revisa el informe de validación que se te proporciona a continuación:\n"
         if resultados_validacion and isinstance(resultados_validacion, dict):
-            # Procesar la planificación de NO INCENDIO si está presente
             if "planificacion_no_incendio" in resultados_validacion:
                 no_incendio = resultados_validacion["planificacion_no_incendio"]
                 prompt += "\n- **Planificación NO INCENDIO:**\n"
@@ -302,7 +299,6 @@ def generar_planificacion_trabajos_openai(datos_trabajadores, token_openai, arch
                     prompt += "".join(
                         f"    - {usuario}: {dias} día(s)\n" for usuario, dias in no_incendio["dias_trabajados"].items())
 
-            # Procesar la planificación de INCENDIO si está presente
             if "planificacion_incendio" in resultados_validacion:
                 incendio = resultados_validacion["planificacion_incendio"]
                 prompt += "\n- **Planificación INCENDIO:**\n"
@@ -347,10 +343,21 @@ def generar_planificacion_trabajos_openai(datos_trabajadores, token_openai, arch
             {"role": "system", "content": "Eres un asistente especializado en planificación de turnos y horarios. "
                                           "Tu objetivo es crear una planificación justa y equilibrada respetando "
                                           "absolutamente todas las restricciones de disponibilidad."},
-            {"role": "user", "content": prompt}],
+            {"role": "user", "content": prompt}
+        ],
         max_tokens=3000,
-        temperature=0.1
+        temperature=0.1,
+        stream=True
     )
-    planificacion = response.choices[0].message.content.strip()
+
+    print("\nGenerando planificación...\n")
+    planificacion_completa = ""
+    for chunk in response:
+        if chunk.choices[0].delta.content:
+            content_chunk = chunk.choices[0].delta.content
+            planificacion_completa += content_chunk
+            print(content_chunk, end="", flush=True)
+
+    planificacion = planificacion_completa.strip()
 
     return planificacion, prompt

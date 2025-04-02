@@ -305,12 +305,12 @@ def generar_html_con_toggle(df_incendio, df_no_incendio, hora_actual=None, promp
             animation: spin 1s linear infinite;
             vertical-align: middle;
         }
-        
+
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-        
+
         .button-text {
             margin-right: 20px;
         }
@@ -557,26 +557,26 @@ def generar_html_con_toggle(df_incendio, df_no_incendio, hora_actual=None, promp
                 spinner.style.display = 'inline-block';
             }
         }
-        
+
         // Modifica la función ocultarSpinners para ocultar todos los spinners
         function ocultarSpinners() {
             document.querySelectorAll('.spinner').forEach(spinner => {
                 spinner.style.display = 'none';
             });
         }
-        
+
         function habilitarBotones() {
             document.querySelectorAll('button').forEach(button => {
                 button.disabled = false;
             });
         }
-        
+
         function generarPlanificacion(tipo) {
             const mensajeEstado = document.getElementById('mensajeEstado');
-            
+
             // Mostrar spinner
             mostrarSpinner(tipo);
-            
+
             // Iniciar contador de tiempo
             let segundos = 0;
             const contadorId = setInterval(() => {
@@ -586,7 +586,7 @@ def generar_html_con_toggle(df_incendio, df_no_incendio, hora_actual=None, promp
                     tiempoTexto.textContent = `Tiempo transcurrido: ${segundos} segundos`;
                 }
             }, 1000);
-        
+
             let mensajeTexto = '';
             if (tipo === 'ambas') {
                 mensajeTexto = 'Generando ambas planificaciones, por favor espere...';
@@ -594,14 +594,14 @@ def generar_html_con_toggle(df_incendio, df_no_incendio, hora_actual=None, promp
                 mensajeTexto = 'Generando nueva planificación para caso de ' + 
                               (tipo === 'incendio' ? 'incendio' : 'no incendio') + ', por favor espere...';
             }
-        
+
             mensajeEstado.innerHTML = '<div class="mensaje-estado mensaje-info">' + mensajeTexto + 
                                      '<div id="tiempoTexto">Tiempo transcurrido: 0 segundos</div></div>';
-        
+
             document.querySelectorAll('button').forEach(button => {
                 button.disabled = true;
             });
-        
+
             // Realizar la petición AJAX a la ruta /regenerar
             fetch('/regenerar', {
                 method: 'POST',
@@ -614,7 +614,7 @@ def generar_html_con_toggle(df_incendio, df_no_incendio, hora_actual=None, promp
             .then(data => {
                 clearInterval(contadorId); // Detener contador
                 ocultarSpinners(); // Ocultar spinners
-                
+
                 if (data.success) {
                     mensajeEstado.innerHTML = '<div class="mensaje-estado mensaje-exito">¡Planificación regenerada correctamente! Recargando página...</div>';
                     // Esperar un momento y recargar la página para mostrar la nueva planificación
@@ -629,7 +629,7 @@ def generar_html_con_toggle(df_incendio, df_no_incendio, hora_actual=None, promp
             .catch(error => {
                 clearInterval(contadorId); // Detener contador
                 ocultarSpinners(); // Ocultar spinners
-                
+
                 console.error('Error:', error);
                 mensajeEstado.innerHTML = '<div class="mensaje-estado mensaje-error">Error en la comunicación con el servidor. Por favor, intente nuevamente.</div>';
                 habilitarBotones();
