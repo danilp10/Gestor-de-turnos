@@ -35,9 +35,14 @@
             document.getElementById('searchContainer').style.display = 'none';
             document.getElementById('searchError').style.display = 'none';
             document.getElementById('idError').style.display = 'none';
+
+            document.getElementById('resultadosBusqueda').innerHTML = '';
+
+            document.getElementById('searchId').value = '';
+            document.getElementById('searchNombre').value = '';
+            document.getElementById('searchApellidos').value = '';
         }
 
-        // Cambio en la URL de la API para usar la ruta relativa
         const API_URL = "/api/trabajadores";
 
         async function buscarTrabajador() {
@@ -63,30 +68,25 @@
             document.getElementById('formContainer').style.display = 'block';
             document.getElementById('formTitle').textContent = 'Modificar Trabajador';
 
-            // Datos básicos
             document.getElementById('id').value = datos.id;
             document.getElementById('id').disabled = true;
             document.getElementById('nombre').value = datos.nombre || '';
             document.getElementById('apellidos').value = datos.apellidos || '';
             document.getElementById('personalCabildo').checked = datos.personalCabildo || false;
 
-            // Resetear todos los días primero
             diasSemana.forEach(dia => {
                 const diaLower = dia.toLowerCase();
                 const checkboxDia = document.getElementById(diaLower);
                 if (checkboxDia) checkboxDia.checked = false;
             });
 
-            // Marcar los días disponibles según el formato recibido
             if (datos.disponibilidad) {
                 if (Array.isArray(datos.disponibilidad)) {
-                    // Si es un array de strings (formato nuevo)
                     datos.disponibilidad.forEach(dia => {
                         const checkbox = document.getElementById(dia.toLowerCase());
                         if (checkbox) checkbox.checked = true;
                     });
                 } else if (typeof datos.disponibilidad === 'object') {
-                    // Si es un objeto (formato antiguo)
                     Object.keys(datos.disponibilidad).forEach(dia => {
                         if (datos.disponibilidad[dia]) {
                             const checkbox = document.getElementById(dia.toLowerCase());
@@ -95,12 +95,10 @@
                     });
                 }
             }
-             // Resetear excepciones
             document.getElementById('vacacionesInicio').value = '';
             document.getElementById('vacacionesFin').value = '';
             document.getElementById('reincorporacion').value = '';
 
-            // Cargar excepciones si existen
             if (datos.excepciones) {
                 if (datos.excepciones.vacaciones) {
                     document.getElementById('vacacionesInicio').value = datos.excepciones.vacaciones.inicio || '';
@@ -237,3 +235,62 @@
                 alert('Error al procesar la solicitud');
             }
         });
+
+        async function buscarTrabajadoresPorNombreApellidos() {
+            const nombreBuscado = document.getElementById('searchNombre').value.trim();
+            const apellidosBuscados = document.getElementById('searchApellidos').value.trim();
+
+            if (!nombreBuscado && !apellidosBuscados) {
+                alert("Ingrese al menos un nombre o apellido para buscar.");
+                return;
+            }
+
+            try {
+                // Construir la URL con los parámetros de búsqueda
+                let url = `${API_URL}/buscar?`;
+                if (nombreBuscado) {
+                    url += `nombre=${encodeURIComponent(nombreBuscado)}`;
+                }
+                if (apellidosBuscados) {
+                    if (nombreBuscado) url += '&';
+                    url += `apellidos=${encodeURIComponent(apellidosBuscados)}`;
+                }
+
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error('Error al obtener los datos');
+                }
+
+                const data = await response.json();
+
+                if (data.status === 'error') {
+                    throw new Error(data.mensaje);
+                }
+
+                const coincidencias = data.resultados || [];
+                const resultadosContainer = document.getElementById('resultadosBusqueda');
+                resultadosContainer.innerHTML = "";
+
+                if (coincidencias.length === 0) {
+                    resultadosContainer.innerHTML = "<p>No se encontraron coincidencias.</p>";
+                    return;
+                }
+
+                const listaResultados = document.createElement("ul");
+                listaResultados.className = "lista-resultados";
+
+                coincidencias.forEach(trabajador => {
+                    const item = document.createElement("li");
+                    item.innerHTML = `<strong>${trabajador.nombre} ${trabajador.apellidos}</strong> (ID: ${trabajador.id})`;
+                    item.style.cursor = "pointer";
+                    item.onclick = () => cargarDatosTrabajador(trabajador);
+                    listaResultados.appendChild(item);
+                });
+
+                resultadosContainer.appendChild(listaResultados);
+
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error al procesar la búsqueda: ' + error.message);
+            }
+        }

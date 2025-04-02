@@ -33,7 +33,6 @@ def configurar_rutas_trabajadores(app):
         try:
             datos = request.get_json()
 
-            # Validar campos obligatorios
             if not datos.get("id") or not datos.get("nombre") or not datos.get("apellidos"):
                 return jsonify({
                     "status": "error",
@@ -42,7 +41,6 @@ def configurar_rutas_trabajadores(app):
             fichero_json = 'trabajadores/disponibilidades.json'
             trabajadores = leer_datos_json(fichero_json)
 
-            # Validar que el ID no exista
             if any(str(t["id"]) == str(datos["id"]) for t in trabajadores):
                 return jsonify({
                     "status": "error",
@@ -50,27 +48,20 @@ def configurar_rutas_trabajadores(app):
                     "mensaje": "Ya existe un trabajador con este ID"
                 }), 409
 
-            # Aseguramos que ID sea un entero
-            datos["id"] = str(datos["id"])  # Convertir a string para consistencia con server.js
+            datos["id"] = str(datos["id"])
 
-            # Determinamos el estado inicial
             datos["estado"] = determinar_estado(
                 datos.get("excepciones", {}).get("reincorporacion"),
                 datos.get("excepciones", {}).get("vacaciones")
             )
 
-            # Calculamos los días no disponibles si hay disponibilidad
             if "disponibilidad" in datos:
                 todos_dias = ['lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado', 'domingo']
                 datos["diasNoDisponibles"] = [dia for dia in todos_dias if dia not in datos["disponibilidad"]]
 
-            # Añadimos timestamp de creación
             datos["timestamp"] = datetime.now().isoformat()
-
-            # Agregar el trabajador a la lista
             trabajadores.append(datos)
 
-            # Guardar los datos
             if guardar_datos(trabajadores):
                 print(f"Trabajador con ID {datos['id']} agregado correctamente")
                 return jsonify({
@@ -102,28 +93,22 @@ def configurar_rutas_trabajadores(app):
             if index == -1:
                 return jsonify({"status": "error", "mensaje": "Trabajador no encontrado"}), 404
 
-            # Mantener el ID original
             datos["id"] = id
 
-            # Calcular días no disponibles si hay disponibilidad
             if "disponibilidad" in datos:
                 todos_dias = ['lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado', 'domingo']
                 datos["diasNoDisponibles"] = [dia for dia in todos_dias if dia not in datos["disponibilidad"]]
 
-            # Calcular el estado
             datos["estado"] = determinar_estado(
                 datos.get("excepciones", {}).get("reincorporacion"),
                 datos.get("excepciones", {}).get("vacaciones")
             )
 
-            # Actualizar timestamp
             datos["timestamp"] = datetime.now().isoformat()
 
-            # Preservar datos que no se están actualizando
             trabajador_actualizado = {**trabajadores[index], **datos}
             trabajadores[index] = trabajador_actualizado
 
-            # Guardar los cambios
             if guardar_datos(trabajadores):
                 print(f"Trabajador con ID {id} actualizado correctamente")
                 return jsonify({
@@ -139,6 +124,45 @@ def configurar_rutas_trabajadores(app):
 
         except Exception as e:
             print(f"Error al actualizar trabajador: {e}")
+            return jsonify({
+                "status": "error",
+                "mensaje": f"Error: {str(e)}"
+            }), 500
+
+    @app.route('/api/trabajadores/buscar', methods=['GET'])
+    def buscar_trabajadores():
+        try:
+            nombre = request.args.get('nombre', '').lower()
+            apellidos = request.args.get('apellidos', '').lower()
+
+            if not nombre and not apellidos:
+                return jsonify({
+                    "status": "error",
+                    "mensaje": "Debe proporcionar al menos un parámetro de búsqueda (nombre o apellidos)"
+                }), 400
+
+            fichero_json = 'trabajadores/disponibilidades.json'
+            trabajadores = leer_datos_json(fichero_json)
+
+            resultados = []
+            for trabajador in trabajadores:
+                nombre_trabajador = trabajador.get("nombre", "").lower()
+                apellidos_trabajador = trabajador.get("apellidos", "").lower()
+
+                coincide_nombre = not nombre or nombre in nombre_trabajador
+                coincide_apellidos = not apellidos or apellidos in apellidos_trabajador
+
+                if coincide_nombre and coincide_apellidos:
+                    resultados.append(trabajador)
+
+            return jsonify({
+                "status": "ok",
+                "total": len(resultados),
+                "resultados": resultados
+            })
+
+        except Exception as e:
+            print(f"Error en búsqueda de trabajadores: {e}")
             return jsonify({
                 "status": "error",
                 "mensaje": f"Error: {str(e)}"

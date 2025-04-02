@@ -16,9 +16,25 @@
 
             <div id="searchContainer" class="search-container">
                 <h2>Buscar Trabajador</h2>
-                <input type="number" id="searchId" placeholder="Introducir ID del trabajador">
-                <button onclick="buscarTrabajador()">Buscar</button>
-                <div id="searchError" class="error-message"></div>
+
+                <div class="search-section">
+                    <h3>Buscar por nombre y/o apellidos</h3>
+                    <div class="search-row">
+                        <input type="text" id="searchNombre" placeholder="Ingrese nombre">
+                        <input type="text" id="searchApellidos" placeholder="Ingrese apellidos">
+                        <button onclick="buscarTrabajadoresPorNombreApellidos()">Buscar</button>
+                    </div>
+                    <div id="resultadosBusqueda" class="resultados-busqueda"></div>
+                </div>
+
+                <div class="search-section">
+                    <h3>Buscar por ID</h3>
+                    <div class="search-row">
+                        <input type="number" id="searchId" placeholder="Introducir ID del trabajador">
+                        <button onclick="buscarTrabajador()">Buscar por ID</button>
+                    </div>
+                    <div id="searchError" class="error-message"></div>
+                </div>
             </div>
         </div>
 
@@ -40,7 +56,6 @@
 
                 <div id="estadoTrabajador" class="estado-trabajador"></div>
 
-                <!-- Días de la Semana (siempre visibles) -->
                 <div id="diasContainer" class="day-selection">
                     <h3>Días Disponibles</h3>
                     <div id="dias"></div>
@@ -62,3 +77,6 @@
 
 </body>
 </html>
+
+
+
