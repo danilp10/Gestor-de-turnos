@@ -67,6 +67,7 @@ def generar_planificacion_trabajos_openai(datos_trabajadores, token_openai, arch
 
     incendio_config = config_planificacion.get('incendio', {}) if generar_incendio else {}
     no_incendio_config = config_planificacion.get('noIncendio', {}) if generar_no_incendio else {}
+    materiales_config = config_planificacion.get('materiales', {})
 
     fecha_inicio_incendio = None
     fecha_inicio_no_incendio = None
@@ -173,7 +174,12 @@ def generar_planificacion_trabajos_openai(datos_trabajadores, token_openai, arch
             "de trabajo en la semana.\n\n"
             
             "5. **Recursos materiales y humanos:**\n"
-            f"- Debes asignar exactamente {conductores_por_turno} conductores en cada turno.\n\n"
+            f"- Debes asignar exactamente {conductores_por_turno} conductores en cada turno.\n"
+            f"- Incluye en cada día de la planificación los siguientes materiales obligatorios:\n"
+            f"  * {materiales_config.get('camionesCisterna', 1)} camiones cisterna\n"
+            f"  * {materiales_config.get('mascarasGas', 0)} máscaras de gas\n"
+            f"  * {materiales_config.get('hachas', 0)} hachas\n"
+            f"  * {materiales_config.get('escalerasMecanicas', 1)} escaleras mecánicas\n\n"
 
             "6. **Formato de Respuesta en caso de Incendio:**\n"
             "- Inicia con el texto 'PLANIFICACIÓN EN CASO DE INCENDIO:'\n"
@@ -183,6 +189,7 @@ def generar_planificacion_trabajos_openai(datos_trabajadores, token_openai, arch
             f"de conducir)\n"
             f"  - Turno Nocturno (20:00-08:00): (Lista de {turno_nocturno_incendio} nombres, indicando [C] si tiene "
             f"carnet de conducir)\n"
+            "  - Materiales requeridos: Enumera los materiales obligatorios según lo especificado\n"
             "- Ejemplo: Juan Pérez [C], María López, Pedro Rodríguez [C], Ana García\n"
             "- Los nombres deben estar separados por comas y en una sola línea por turno.\n"
             "- Se deben respetar las reglas de rotación y descanso sin excepciones.\n\n"

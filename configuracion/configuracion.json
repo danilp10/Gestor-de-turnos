@@ -2,14 +2,14 @@
   "tipoPlanificacion": "ambos",
   "incendio": {
     "dias": 12,
-    "fechaInicio": "2025-04-25",
+    "fechaInicio": "2025-04-28",
     "turnoDiurno": 4,
     "turnoNocturno": 4,
     "conductores": 1
   },
   "noIncendio": {
     "dias": 12,
-    "fechaInicio": "2025-04-25",
+    "fechaInicio": "2025-04-28",
     "cabildoPersonas": 3,
     "retenes": [
       {
@@ -17,5 +17,11 @@
         "personas": 3
       }
     ]
+  },
+  "materiales": {
+    "camionesCisterna": 1,
+    "mascarasGas": 4,
+    "hachas": 4,
+    "escalerasMecanicas": 2
   }
 }

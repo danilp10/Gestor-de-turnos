@@ -61,6 +61,12 @@
             document.getElementById('no-incendio-retenes-turnos').value = 1;
             document.getElementById('conductores-incendio').value = 2;
 
+            // Valores por defecto para materiales
+            document.getElementById('camiones-cisterna').value = 1;
+            document.getElementById('mascaras-gas').value = 0;
+            document.getElementById('hachas').value = 0;
+            document.getElementById('escaleras-mecanicas').value = 1;
+
 
             // Generar el primer turno por defecto
             let turnosContainer = document.getElementById('no-incendio-turnos-container');
@@ -111,7 +117,13 @@
                         document.getElementById('tipo-planificacion').value = config.tipoPlanificacion;
                         actualizarSecciones();
                     }
-
+                    // Cargar configuración de materiales si existe
+                    if (config.materiales) {
+                        document.getElementById('camiones-cisterna').value = config.materiales.camionesCisterna || 1;
+                        document.getElementById('mascaras-gas').value = config.materiales.mascarasGas || 0;
+                        document.getElementById('hachas').value = config.materiales.hachas || 0;
+                        document.getElementById('escaleras-mecanicas').value = config.materiales.escalerasMecanicas || 1;
+                    }
                     // Cargar configuración de incendio si existe
                     if (config.incendio) {
                         document.getElementById('dias-incendio').value = config.incendio.dias;
@@ -238,6 +250,13 @@
                     retenes: retenes
                 };
             }
+
+            configuracion.materiales = {
+                camionesCisterna: parseInt(document.getElementById('camiones-cisterna').value) || 1,
+                mascarasGas: parseInt(document.getElementById('mascaras-gas').value) || 0,
+                hachas: parseInt(document.getElementById('hachas').value) || 0,
+                escalerasMecanicas: parseInt(document.getElementById('escaleras-mecanicas').value) || 1
+            };
 
             fetch('/configuracion', {
                 method: 'POST',

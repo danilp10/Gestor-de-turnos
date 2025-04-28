@@ -74,6 +74,22 @@ def configurar_rutas_configuracion(app):
                     ]
                 }
 
+                if 'materiales' in config:
+                    configuracion_procesada['materiales'] = {
+                        'camionesCisterna': max(1, int(config['materiales'].get('camionesCisterna', 1))),
+                        'mascarasGas': max(0, int(config['materiales'].get('mascarasGas', 0))),
+                        'hachas': max(0, int(config['materiales'].get('hachas', 0))),
+                        'escalerasMecanicas': max(1, int(config['materiales'].get('escalerasMecanicas', 1)))
+                    }
+                else:
+                    # Default materials configuration
+                    configuracion_procesada['materiales'] = {
+                        'camionesCisterna': 1,
+                        'mascarasGas': 0,
+                        'hachas': 0,
+                        'escalerasMecanicas': 1
+                    }
+
             # Save to JSON file
             with open('configuracion/configuracion.json', 'w', encoding='utf-8') as f:
                 json.dump(configuracion_procesada, f, indent=2, ensure_ascii=False)
