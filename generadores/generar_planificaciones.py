@@ -78,6 +78,7 @@ def generar_planificacion_trabajos_openai(datos_trabajadores, token_openai, arch
     dias_incendio_str = ""
     dias_no_incendio_str = ""
     horarios_turnos = {}
+    conductores_por_turno = 0
 
     if generar_incendio:
         fecha_inicio_incendio = datetime.strptime(
@@ -88,6 +89,7 @@ def generar_planificacion_trabajos_openai(datos_trabajadores, token_openai, arch
         turno_nocturno_incendio = incendio_config.get('turnoNocturno')
         dias_incendio = generar_dias_semana(fecha_inicio_incendio, incendio_config.get('dias'))
         dias_incendio_str = ", ".join([f"Día {i + 1} ({dia[1]}) ({dia[0]})" for i, dia in enumerate(dias_incendio)])
+        conductores_por_turno = incendio_config.get('conductores')
 
     if generar_no_incendio:
         fecha_inicio_no_incendio = datetime.strptime(
@@ -169,13 +171,19 @@ def generar_planificacion_trabajos_openai(datos_trabajadores, token_openai, arch
             "- Evita que los mismos trabajadores sean asignados repetidamente a los mismos turnos todos los días.\n"
             "- Distribuye los turnos de manera que todos los trabajadores acumulen una cantidad similar de horas "
             "de trabajo en la semana.\n\n"
+            
+            "5. **Recursos materiales y humanos:**\n"
+            f"- Debes asignar exactamente {conductores_por_turno} conductores en cada turno.\n\n"
 
-            "5. **Formato de Respuesta en caso de Incendio:**\n"
+            "6. **Formato de Respuesta en caso de Incendio:**\n"
             "- Inicia con el texto 'PLANIFICACIÓN EN CASO DE INCENDIO:'\n"
             "- Usa EXACTAMENTE el siguiente formato para cada día:\n"
             "  **Día N (Nombre del día)(Fecha):**\n"
-            f"  - Turno Diurno (08:00-20:00): (Lista de {turno_diurno_incendio} nombres)\n"
-            f"  - Turno Nocturno (20:00-08:00): (Lista de {turno_nocturno_incendio} nombres)\n"
+            f"  - Turno Diurno (08:00-20:00): (Lista de {turno_diurno_incendio} nombres, indicando [C] si tiene carnet "
+            f"de conducir)\n"
+            f"  - Turno Nocturno (20:00-08:00): (Lista de {turno_nocturno_incendio} nombres, indicando [C] si tiene "
+            f"carnet de conducir)\n"
+            "- Ejemplo: Juan Pérez [C], María López, Pedro Rodríguez [C], Ana García\n"
             "- Los nombres deben estar separados por comas y en una sola línea por turno.\n"
             "- Se deben respetar las reglas de rotación y descanso sin excepciones.\n\n"
         )
@@ -261,10 +269,12 @@ def generar_planificacion_trabajos_openai(datos_trabajadores, token_openai, arch
 
     for trabajador in datos_trabajadores:
         pertenece_cabildo = "Sí" if trabajador.get('personalCabildo', False) else "No"
+        tiene_carnet = "Sí" if trabajador.get('carnetConducir', False) else "No"
         estado = trabajador.get('estado', 'No especificado')
         prompt += f"Trabajador: {trabajador['nombre']} {trabajador['apellidos']}\n"
         prompt += f"Estado: {estado}\n"
         prompt += f"Pertenece al Cabildo: {pertenece_cabildo}\n"
+        prompt += f"Carnet de Conducir: {tiene_carnet}\n"
         prompt += f"Disponibilidad: {json.dumps(trabajador['disponibilidad'], ensure_ascii=False)}\n"
         prompt += f"Días No Disponibles: {json.dumps(trabajador['diasNoDisponibles'], ensure_ascii=False)}\n"
         prompt += f"Excepciones: {json.dumps(trabajador.get('excepciones', {}), ensure_ascii=False)}\n\n"

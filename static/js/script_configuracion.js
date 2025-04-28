@@ -59,6 +59,8 @@
             document.getElementById('dias-no-incendio').value = 7;
             document.getElementById('cabildo-personas').value = 2;
             document.getElementById('no-incendio-retenes-turnos').value = 1;
+            document.getElementById('conductores-incendio').value = 2;
+
 
             // Generar el primer turno por defecto
             let turnosContainer = document.getElementById('no-incendio-turnos-container');
@@ -116,6 +118,7 @@
                         document.getElementById('fecha-incendio').value = config.incendio.fechaInicio;
                         document.getElementById('incendio-diurno').value = config.incendio.turnoDiurno;
                         document.getElementById('incendio-nocturno').value = config.incendio.turnoNocturno;
+                        document.getElementById('conductores-incendio').value = config.incendio.conductores;
                     }
 
                     // Cargar configuración de no incendio si existe
@@ -209,7 +212,8 @@
                     dias: document.getElementById('dias-incendio').value,
                     fechaInicio: document.getElementById('fecha-incendio').value,
                     turnoDiurno: document.getElementById('incendio-diurno').value,
-                    turnoNocturno: document.getElementById('incendio-nocturno').value
+                    turnoNocturno: document.getElementById('incendio-nocturno').value,
+                    conductores: document.getElementById('conductores-incendio').value
                 };
             }
 

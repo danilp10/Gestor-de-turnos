@@ -50,7 +50,8 @@ def configurar_rutas_configuracion(app):
                     'dias': int(config['incendio']['dias']),
                     'fechaInicio': config['incendio']['fechaInicio'],
                     'turnoDiurno': int(config['incendio']['turnoDiurno']),
-                    'turnoNocturno': int(config['incendio']['turnoNocturno'])
+                    'turnoNocturno': int(config['incendio']['turnoNocturno']),
+                    'conductores' : int(config['incendio']['conductores'])
                 }
 
             # Validate non-fire configuration if needed

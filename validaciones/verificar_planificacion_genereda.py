@@ -31,7 +31,8 @@ def cargar_planificacion_desde_csv(ruta_csv):
                     continue
 
                 fecha, dia, turno, trabajadores = fila
-                trabajadores_lista = [t.strip() for t in trabajadores.split(',')]
+                # Dividir y limpiar los nombres de trabajadores, eliminando [C] si existe
+                trabajadores_lista = [t.strip().replace(" [C]", "").strip() for t in trabajadores.split(',')]
 
                 fecha_obj = parsear_fecha(fecha)
                 dia_semana = obtener_dia_semana(fecha_obj)
@@ -147,19 +148,22 @@ def validar_planificacion(usuarios, planificacion, es_incendio=False):
 
     for turno in planificacion:
         for nombre_trabajador in turno['trabajadores']:
-            if nombre_trabajador in mapa_usuarios:
-                usuario = mapa_usuarios[nombre_trabajador]
-                usuarios_asignados.add(nombre_trabajador)
+            # Eliminar la etiqueta [C] si está presente
+            nombre_limpio = nombre_trabajador.replace(" [C]", "").strip()
+
+            if nombre_limpio in mapa_usuarios:
+                usuario = mapa_usuarios[nombre_limpio]
+                usuarios_asignados.add(nombre_limpio)
 
                 # Contar días trabajados
-                resultados['dias_trabajados'][nombre_trabajador] += 1
+                resultados['dias_trabajados'][nombre_limpio] += 1
 
                 # Verificación según tipo de planificación
                 if es_incendio:
                     # En caso de incendio, solo verificar que no esté de baja o vacaciones
                     if not usuario_disponible_incendio(usuario, turno['fecha_obj']):
                         resultados['errores'].append(
-                            f"ERROR: {nombre_trabajador} asignado el {turno['fecha']} en planificación de INCENDIO, "
+                            f"ERROR: {nombre_limpio} asignado el {turno['fecha']} en planificación de INCENDIO, "
                             f"pero está de baja o vacaciones."
                         )
                         resultados['respeto_disponibilidad'] = False
@@ -167,13 +171,13 @@ def validar_planificacion(usuarios, planificacion, es_incendio=False):
                     # Verificación normal de disponibilidad para no incendio
                     if not usuario_disponible(usuario, turno['dia_semana'], turno['fecha_obj']):
                         resultados['errores'].append(
-                            f"ERROR: {nombre_trabajador} asignado el {turno['fecha']} ({turno['dia_semana']}), "
+                            f"ERROR: {nombre_limpio} asignado el {turno['fecha']} ({turno['dia_semana']}), "
                             f"pero no está disponible ese día."
                         )
                         resultados['respeto_disponibilidad'] = False
             else:
                 resultados['errores'].append(
-                    f"ADVERTENCIA: No se encontró información de disponibilidad para {nombre_trabajador}"
+                    f"ADVERTENCIA: No se encontró información de disponibilidad para {nombre_limpio}"
                 )
 
     # Calcular usuarios no asignados según el tipo de planificación

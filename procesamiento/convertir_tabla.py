@@ -20,7 +20,6 @@ def convertir_a_tabla(planificacion, fecha_inicio_str=None):
 
     turnos_data = []
 
-    # Si se proporciona una fecha de inicio, usarla; de lo contrario, usar la fecha actual
     fecha_inicio = None
     if fecha_inicio_str:
         try:
@@ -29,7 +28,6 @@ def convertir_a_tabla(planificacion, fecha_inicio_str=None):
         except ValueError:
             print(f"⚠ Formato de fecha inválido: {fecha_inicio_str}. Se usará detección automática.")
 
-    # Diccionario de mapeo de días de la semana
     dia_a_numero = {
         "Lunes": 0, "Martes": 1, "Miércoles": 2, "Jueves": 3,
         "Viernes": 4, "Sábado": 5, "Domingo": 6
@@ -52,7 +50,6 @@ def convertir_a_tabla(planificacion, fecha_inicio_str=None):
             dia_nombre = dia_match.group(2).strip()
             print(f"✅ Encontrado: Día {dia_num} - {dia_nombre}")
 
-            # Si no tenemos fecha de inicio y es el primer día, intentar determinarla
             if fecha_inicio is None and dia_num == 1:
                 if dia_nombre.capitalize() in dia_a_numero:
                     dia_actual = dia_a_numero[dia_nombre.capitalize()]

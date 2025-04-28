@@ -7,8 +7,6 @@ import traceback
 from generadores.generar_html import generar_html_con_toggle
 from planificacion.generador import generar_planificacion_completa
 from planificacion.utilidades import cargar_planificaciones_existentes, guardar_planificaciones_temporales
-
-# Importar las funciones de validación
 from validaciones.verificar_planificacion_genereda import (
     cargar_datos_usuarios,
     cargar_planificacion_desde_csv,
@@ -80,18 +78,18 @@ def configurar_rutas_planificacion(app):
 
             # Conservar la otra planificación si solo se regeneró una
             if (tipo_planificacion_solicitada == 'incendio' and not planificacion_no_incendio_df.empty and not
-            planificacion_no_incendio_existente.empty):
+                planificacion_no_incendio_existente.empty):
                 planificacion_no_incendio_df = planificacion_no_incendio_existente
                 print("Se conservó la planificación de no incendio existente")
             elif (tipo_planificacion_solicitada == 'noIncendio' and not planificacion_incendio_df.empty and not
-            planificacion_incendio_existente.empty):
+                  planificacion_incendio_existente.empty):
                 planificacion_incendio_df = planificacion_incendio_existente
                 print("Se conservó la planificación de incendio existente")
 
             # Guardar las planificaciones en archivos temporales para futuras regeneraciones parciales
             guardar_planificaciones_temporales(planificacion_incendio_df, planificacion_no_incendio_df)
 
-            # NUEVO: Validar planificaciones automáticamente
+            # Validar planificaciones automáticamente
             print("Validando planificaciones generadas...")
             validar_planificaciones_generadas()
 
@@ -106,10 +104,6 @@ def configurar_rutas_planificacion(app):
 
                 # Sobrescribir el archivo existente
                 with open("templates/planificacion_turnos_interactiva.html", "w", encoding='utf-8') as f:
-                    f.write(html_content)
-
-                # También guardamos en la raíz para mantener compatibilidad con el modo script
-                with open("planificacion_turnos_interactiva.html", "w", encoding='utf-8') as f:
                     f.write(html_content)
 
                 print("Generación completada en modo web")
@@ -213,7 +207,7 @@ def configurar_rutas_planificacion(app):
             # Guardar las planificaciones en archivos temporales para futuras regeneraciones parciales
             guardar_planificaciones_temporales(planificacion_incendio_df, planificacion_no_incendio_df)
 
-            # NUEVO: Validar planificaciones automáticamente
+            # Validar planificaciones automáticamente
             print("Validando planificaciones regeneradas...")
             validar_planificaciones_generadas()
 
@@ -230,10 +224,6 @@ def configurar_rutas_planificacion(app):
                 with open("templates/planificacion_turnos_interactiva.html", "w", encoding='utf-8') as f:
                     f.write(html_content)
 
-                # También guardamos en la raíz para mantener compatibilidad con el modo script
-                with open("planificacion_turnos_interactiva.html", "w", encoding='utf-8') as f:
-                    f.write(html_content)
-
                 print("Regeneración completada")
                 return jsonify({'success': True, 'message': 'Planificación regenerada y validada correctamente'})
             else:
@@ -244,7 +234,6 @@ def configurar_rutas_planificacion(app):
             traceback.print_exc()
             return jsonify({'success': False, 'error': str(e)}), 500
 
-    # NUEVA RUTA: para ver el resultado de la validación
     @app.route('/resultados-validacion')
     def ver_resultados_validacion():
         try:
@@ -278,29 +267,23 @@ def validar_planificaciones_generadas():
     y guardar los resultados en un archivo JSON.
     """
     try:
-        # Rutas a los archivos necesarios
         disponibilidades = 'trabajadores/disponibilidades.json'
         planificacion_no_incendio = "planificaciones_generadas/temp_planificacion_no_incendio.csv"
         planificacion_incendio = "planificaciones_generadas/temp_planificacion_incendio.csv"
         ruta_resultados_json = "validaciones/resultados_validacion.json"
 
-        # Asegurar que el directorio de salida existe
         os.makedirs(os.path.dirname(ruta_resultados_json), exist_ok=True)
 
-        # Cargar datos de usuarios
         usuarios = cargar_datos_usuarios(disponibilidades)
 
-        # Validar planificación de no incendio
         print("Validando planificación sin incendio...")
         plan_no_incendio = cargar_planificacion_desde_csv(planificacion_no_incendio)
         resultados_no_incendio = validar_planificacion(usuarios, plan_no_incendio, es_incendio=False)
 
-        # Validar planificación de incendio
         print("Validando planificación con incendio...")
         plan_incendio = cargar_planificacion_desde_csv(planificacion_incendio)
         resultados_incendio = validar_planificacion(usuarios, plan_incendio, es_incendio=True)
 
-        # Exportar resultados a JSON
         exportar_resultados_json(resultados_no_incendio, resultados_incendio, ruta_resultados_json)
 
         print("Validación completada y resultados guardados en:", ruta_resultados_json)

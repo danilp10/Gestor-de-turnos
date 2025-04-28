@@ -38,12 +38,10 @@ def generar_planificacion_completa(fichero_json='trabajadores/disponibilidades.j
         planificacion_texto, prompt_usado = generar_planificacion_trabajos_openai(
             datos_trabajadores, apikey, fichero_conf_json, resultados_validacion)
 
-        # Cargar la configuración para determinar el tipo de planificación
         try:
             with open(fichero_conf_json, 'r', encoding='utf-8') as f:
                 config = json.load(f)
                 tipo_planificacion = config.get('tipoPlanificacion', 'ambos')
-                # Cargar las configuraciones específicas
                 incendio_config = config.get('incendio', {})
                 no_incendio_config = config.get('noIncendio', {})
         except Exception as e:
@@ -52,7 +50,6 @@ def generar_planificacion_completa(fichero_json='trabajadores/disponibilidades.j
             incendio_config = {}
             no_incendio_config = {}
 
-        # Inicializar dataframes vacíos
         planificacion_incendio_df = pd.DataFrame(columns=['Fecha', 'Día', 'Turno', 'Trabajadores'])
         planificacion_no_incendio_df = pd.DataFrame(columns=['Fecha', 'Día', 'Turno', 'Trabajadores'])
 
@@ -67,7 +64,6 @@ def generar_planificacion_completa(fichero_json='trabajadores/disponibilidades.j
             else:
                 planificacion_no_incendio = planificacion_texto
 
-            # Procesar planificación de incendio si es necesario
             if tipo_planificacion in ['ambos', 'incendio'] and planificacion_incendio:
                 try:
                     fecha_inicio_incendio = incendio_config.get('fechaInicio')
@@ -78,7 +74,6 @@ def generar_planificacion_completa(fichero_json='trabajadores/disponibilidades.j
                     mensaje = f"Error al convertir planificación de incendio: {e}"
                     print(mensaje)
 
-            # Procesar planificación de no incendio si es necesario
             if tipo_planificacion in ['ambos', 'noIncendio'] and planificacion_no_incendio:
                 try:
                     fecha_inicio_no_incendio = no_incendio_config.get('fechaInicio')

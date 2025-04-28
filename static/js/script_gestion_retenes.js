@@ -73,6 +73,7 @@
             document.getElementById('nombre').value = datos.nombre || '';
             document.getElementById('apellidos').value = datos.apellidos || '';
             document.getElementById('personalCabildo').checked = datos.personalCabildo || false;
+            document.getElementById('carnetConducir').checked = datos.carnetConducir || false;
 
             diasSemana.forEach(dia => {
                 const diaLower = dia.toLowerCase();
@@ -170,6 +171,7 @@
             const nombre = document.getElementById('nombre').value;
             const apellidos = document.getElementById('apellidos').value;
             const personalCabildo = document.getElementById('personalCabildo').checked;
+            const carnetConducir = document.getElementById('carnetConducir').checked; // Nuevo campo
 
 
             let disponibilidad = [];
@@ -204,6 +206,7 @@
                 nombre,
                 apellidos,
                 personalCabildo,
+                carnetConducir,
                 disponibilidad,
                 excepciones
             };
